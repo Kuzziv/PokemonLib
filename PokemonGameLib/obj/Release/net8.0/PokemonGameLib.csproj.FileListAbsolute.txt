@@ -1,0 +1,11 @@
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/bin/Release/net8.0/PokemonGameLib.deps.json
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/bin/Release/net8.0/PokemonGameLib.dll
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/bin/Release/net8.0/PokemonGameLib.pdb
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/PokemonGameLib.GeneratedMSBuildEditorConfig.editorconfig
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/PokemonGameLib.AssemblyInfoInputs.cache
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/PokemonGameLib.AssemblyInfo.cs
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/PokemonGameLib.csproj.CoreCompileInputs.cache
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/PokemonGameLib.dll
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/refint/PokemonGameLib.dll
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/PokemonGameLib.pdb
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/ref/PokemonGameLib.dll

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <PackageId>PokemonGameLib</PackageId>
+    <Version>1.0.0-beta.1</Version>
+    <Authors>Mads72</Authors>
+    <Company>Zealand</Company>
+    <Product>Custom pokemon game</Product>
+    <Description>A library for creating your own pokeman game, with custom pokemons, moves, and map</Description>
+    <PackageTags>pokemon library</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Add any package dependencies here -->
+  </ItemGroup>
+
+</Project>
