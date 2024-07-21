@@ -99,3 +99,4 @@
 /Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/obj/Debug/net8.0/PokemonGameLib.Tests.pdb
 /Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/obj/Debug/net8.0/PokemonGameLib.Tests.genruntimeconfig.cache
 /Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/obj/Debug/net8.0/ref/PokemonGameLib.Tests.dll
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/obj/Debug/net8.0/PokemonGameLib.Tests.sourcelink.json
