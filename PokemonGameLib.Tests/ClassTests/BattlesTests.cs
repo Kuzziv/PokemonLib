@@ -82,8 +82,8 @@ namespace PokemonGameLib.Tests
         public void TestDetermineBattleResult_DefenderWins()
         {
             // Arrange
-            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 10, 55, 40); // Pikachu has very low HP
-            var charizard = new Pokemon("Charizard", PokemonType.Fire, 10, 100, 70, 50);
+            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40); // Pikachu has very low HP
+            var charizard = new Pokemon("Charizard", PokemonType.Fire, 10, 10, 70, 50);
 
             var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
             pikachu.AddMove(thunderbolt);
@@ -95,7 +95,7 @@ namespace PokemonGameLib.Tests
             var result = battle.DetermineBattleResult();
 
             // Assert
-            Assert.Equal("Pikachu has fainted. Charizard wins!", result);
+            Assert.Equal($"{charizard.Name} has fainted. {pikachu.Name} wins!", result);
         }
 
         [Fact]

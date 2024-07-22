@@ -9,3 +9,4 @@
 /Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/refint/PokemonGameLib.dll
 /Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/PokemonGameLib.pdb
 /Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Release/net8.0/ref/PokemonGameLib.dll
+/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/release/net8.0/PokemonGameLib.sourcelink.json

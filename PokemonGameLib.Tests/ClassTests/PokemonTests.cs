@@ -77,10 +77,10 @@ namespace PokemonGameLib.Tests
         public void TestAddMove_TooManyMoves()
         {
             // Arrange
-            var pokemon = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+            var pokemon = new Pokemon("Pikachu", PokemonType.Electric, 40, 100, 55, 40);
             var move1 = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
-            var move2 = new Move("Quick Attack", PokemonType.Normal, 40, 1);
-            var move3 = new Move("Iron Tail", PokemonType.Steel, 100, 20);
+            var move2 = new Move("Quick Attack", PokemonType.Electric, 40, 1);
+            var move3 = new Move("Iron Tail", PokemonType.Electric, 100, 20);
             var move4 = new Move("Electro Ball", PokemonType.Electric, 100, 25);
             var move5 = new Move("Volt Tackle", PokemonType.Electric, 120, 35);
 

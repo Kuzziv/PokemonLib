@@ -4,7 +4,6 @@
     <id>PokemonGameLib</id>
     <version>1.0.0-beta.1</version>
     <authors>Mads72</authors>
-    <readme>README.md</readme>
     <projectUrl>https://github.com/Kuzziv/PokemonLib</projectUrl>
     <description>A library for creating your own pokeman game, with custom pokemons, moves, and map</description>
     <tags>pokemon library</tags>
@@ -14,7 +13,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/bin/release/net8.0/PokemonGameLib.dll" target="lib/net8.0/PokemonGameLib.dll" />
-    <file src="/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/README.md" target="README.md" />
+    <file src="/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/bin/relase/net8.0/PokemonGameLib.dll" target="lib/net8.0/PokemonGameLib.dll" />
   </files>
 </package>

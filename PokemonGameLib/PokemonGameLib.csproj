@@ -6,16 +6,23 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <PackageId>PokemonGameLib</PackageId>
-    <Version>1.0.0-beta.1</Version>
+    <Version>1.0.0-beta.1.1</Version>
     <Authors>Mads72</Authors>
     <Company>Zealand</Company>
     <Product>Custom pokemon game</Product>
     <Description>A library for creating your own pokeman game, with custom pokemons, moves, and map</Description>
     <PackageTags>pokemon library</PackageTags>
+    <PackageProjectUrl>https://github.com/Kuzziv/PokemonLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Kuzziv/PokemonLib.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Add any package dependencies here -->
-  </ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>README.md</PackagePath>
+    </None>
+  </ItemGroup>  
 
 </Project>
