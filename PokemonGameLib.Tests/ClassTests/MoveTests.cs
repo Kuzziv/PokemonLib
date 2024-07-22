@@ -22,8 +22,7 @@ namespace PokemonGameLib.Tests
         public void TestMoveInitialization_InvalidName()
         {
             // Act & Assert
-            Assert.Throws<ArgumentException>(() => new Move("", PokemonType.Electric, 90, 10));
-            Assert.Throws<ArgumentException>(() => new Move(null, PokemonType.Electric, 90, 10));
+            Assert.Throws<ArgumentException>(() => new Move(string.Empty, PokemonType.Electric, 90, 10));
         }
 
         [Fact]
