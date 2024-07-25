@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mdj8MnnUYoA3itAKgMVACmeTfviEwmI7J/bPEbJu2HKYyKeqlSzOX8ogshtCon3CXbMEcH77xgslU2lhsubEXw==",
+  "dgSpecHash": "wd9sKmLY72y7UgNYkJaoeqWytQYPnywh+/YC6whuF6ubKi8K7JnmZKcTMokWE1UUQH3LRUz9Sr6Fp4A3qYdbUQ==",
   "success": true,
-  "projectFilePath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/PokemonGameLib.csproj",
+  "projectFilePath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

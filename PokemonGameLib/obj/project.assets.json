@@ -11,13 +11,13 @@
     "/Users/madsludvigsen/.nuget/packages/": {}
   },
   "project": {
-    "version": "1.0.0-beta.1.1",
+    "version": "1.0.0-beta.1.2",
     "restore": {
-      "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/PokemonGameLib.csproj",
+      "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj",
       "projectName": "PokemonGameLib",
-      "projectPath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/PokemonGameLib.csproj",
+      "projectPath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj",
       "packagesPath": "/Users/madsludvigsen/.nuget/packages/",
-      "outputPath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/",
+      "outputPath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/madsludvigsen/.nuget/NuGet/NuGet.Config"

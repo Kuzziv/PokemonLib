@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj": {}
+    "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj": {}
   },
   "projects": {
-    "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj": {
+    "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
+        "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
         "projectName": "PokemonGameLib.Tests",
-        "projectPath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
+        "projectPath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
         "packagesPath": "/Users/madsludvigsen/.nuget/packages/",
-        "outputPath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/obj/",
+        "outputPath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/madsludvigsen/.nuget/NuGet/NuGet.Config"
@@ -26,8 +26,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/PokemonGameLib.csproj": {
-                "projectPath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/PokemonGameLib.csproj"
+              "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj": {
+                "projectPath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj"
               }
             }
           }
@@ -79,14 +79,14 @@
         }
       }
     },
-    "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/PokemonGameLib.csproj": {
-      "version": "1.0.0-beta.1.1",
+    "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj": {
+      "version": "1.0.0-beta.1.2",
       "restore": {
-        "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/PokemonGameLib.csproj",
+        "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj",
         "projectName": "PokemonGameLib",
-        "projectPath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/PokemonGameLib.csproj",
+        "projectPath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj",
         "packagesPath": "/Users/madsludvigsen/.nuget/packages/",
-        "outputPath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/",
+        "outputPath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/madsludvigsen/.nuget/NuGet/NuGet.Config"

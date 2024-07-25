@@ -1,65 +1,89 @@
+using PokemonGameLib.Models;
 using System;
+using System.Linq;
 
 /// <summary>
-/// Manages the battle between two Pokémon, handling attacks and damage calculation.
+/// Manages the battle between two Trainers, handling Pokémon attacks and damage calculation.
 /// </summary>
 public class Battle
 {
     /// <summary>
-    /// Gets the first Pokémon in the battle.
+    /// Gets the first Trainer in the battle.
     /// </summary>
-    public Pokemon Attacker { get; }
+    public Trainer AttackingTrainer { get; }
 
     /// <summary>
-    /// Gets the second Pokémon in the battle.
+    /// Gets the second Trainer in the battle.
     /// </summary>
-    public Pokemon Defender { get; }
+    public Trainer DefendingTrainer { get; }
+
+    /// <summary>
+    /// Gets the current Pokémon of the attacking Trainer.
+    /// </summary>
+    public Pokemon? Attacker => AttackingTrainer.Pokemons.FirstOrDefault();
+
+    /// <summary>
+    /// Gets the current Pokémon of the defending Trainer.
+    /// </summary>
+    public Pokemon? Defender => DefendingTrainer.Pokemons.FirstOrDefault();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Battle"/> class.
     /// </summary>
-    /// <param name="attacker">The Pokémon initiating the attack.</param>
-    /// <param name="defender">The Pokémon receiving the attack.</param>
-    /// <exception cref="ArgumentNullException">Thrown if either attacker or defender is null.</exception>
-    public Battle(Pokemon attacker, Pokemon defender)
+    /// <param name="attackingTrainer">The Trainer initiating the attack.</param>
+    /// <param name="defendingTrainer">The Trainer receiving the attack.</param>
+    /// <exception cref="ArgumentNullException">Thrown if either attackingTrainer or defendingTrainer is null.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if either trainer is invalid.</exception>
+    public Battle(Trainer attackingTrainer, Trainer defendingTrainer)
     {
-        Attacker = attacker ?? throw new ArgumentNullException(nameof(attacker), "Attacker cannot be null.");
-        Defender = defender ?? throw new ArgumentNullException(nameof(defender), "Defender cannot be null.");
+        if (attackingTrainer == null) throw new ArgumentNullException(nameof(attackingTrainer), "Attacking Trainer cannot be null.");
+        if (defendingTrainer == null) throw new ArgumentNullException(nameof(defendingTrainer), "Defending Trainer cannot be null.");
+
+        if (!attackingTrainer.HasValidPokemons()) throw new InvalidOperationException("Attacking Trainer is invalid.");
+        if (!defendingTrainer.HasValidPokemons()) throw new InvalidOperationException("Defending Trainer is invalid.");
+
+        AttackingTrainer = attackingTrainer;
+        DefendingTrainer = defendingTrainer;
     }
 
     /// <summary>
-    /// Performs an attack by the attacker Pokémon on the defender Pokémon.
+    /// Performs an attack by the specified Trainer's Pokémon on the opponent's Pokémon.
     /// </summary>
-    /// <param name="move">The move used by the attacker.</param>
+    /// <param name="attackingTrainer">The Trainer whose Pokémon is performing the attack.</param>
+    /// <param name="move">The move used by the attacking Pokémon.</param>
     /// <exception cref="ArgumentNullException">Thrown if the move is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if the attacker is fainted or does not know the move.</exception>
-    public void PerformAttack(Move move)
+    /// <exception cref="InvalidOperationException">Thrown if the attacking Pokémon is fainted or does not know the move.</exception>
+    public void PerformAttack(Trainer attackingTrainer, Move move)
     {
         if (move == null)
         {
             throw new ArgumentNullException(nameof(move), "Move cannot be null.");
         }
 
-        if (Attacker.IsFainted())
+        Pokemon? attacker = attackingTrainer.Pokemons.FirstOrDefault();
+        Trainer defendingTrainer = attackingTrainer == AttackingTrainer ? DefendingTrainer : AttackingTrainer;
+        Pokemon? defender = defendingTrainer.Pokemons.FirstOrDefault();
+
+        if (attacker == null || attacker.IsFainted())
         {
-            throw new InvalidOperationException("Attacker is fainted and cannot perform an attack.");
+            throw new InvalidOperationException("Attacking Trainer's Pokémon is fainted and cannot perform an attack.");
         }
 
-        if (!Attacker.Moves.Contains(move))
+        if (!attacker.Moves.Contains(move))
         {
-            throw new InvalidOperationException("Attacker does not know the specified move.");
+            throw new InvalidOperationException("Attacking Trainer's Pokémon does not know the specified move.");
         }
 
-        if (Defender.IsFainted())
+        if (defender == null || defender.IsFainted())
         {
-            throw new InvalidOperationException("Defender is already fainted.");
+            throw new InvalidOperationException("Defending Trainer's Pokémon is already fainted.");
         }
 
         // Calculate damage
         int damage = move.Power; // Simplified damage calculation
-        Defender.TakeDamage(damage);
+        defender.TakeDamage(damage);
 
-        Console.WriteLine($"{Attacker.Name} attacks {Defender.Name} with {move.Name}!");
+        Console.WriteLine($"{attacker.Name} attacks {defender.Name} with {move.Name}!");
     }
 
     /// <summary>
@@ -68,14 +92,17 @@ public class Battle
     /// <returns>A string indicating the result of the battle.</returns>
     public string DetermineBattleResult()
     {
-        if (Defender.IsFainted())
+        Pokemon? attacker = Attacker;
+        Pokemon? defender = Defender;
+
+        if (defender == null || defender.IsFainted())
         {
-            return $"{Defender.Name} has fainted. {Attacker.Name} wins!";
+            return $"{DefendingTrainer.Name}'s {defender?.Name ?? "Pokémon"} has fainted. {AttackingTrainer.Name} wins!";
         }
 
-        if (Attacker.IsFainted())
+        if (attacker == null || attacker.IsFainted())
         {
-            return $"{Attacker.Name} has fainted. {Defender.Name} wins!";
+            return $"{AttackingTrainer.Name}'s {attacker?.Name ?? "Pokémon"} has fainted. {DefendingTrainer.Name} wins!";
         }
 
         return "The battle is ongoing.";

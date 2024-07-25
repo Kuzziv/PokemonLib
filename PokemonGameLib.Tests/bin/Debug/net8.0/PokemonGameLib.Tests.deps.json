@@ -9,7 +9,7 @@
       "PokemonGameLib.Tests/1.0.0": {
         "dependencies": {
           "Microsoft.NET.Test.Sdk": "17.6.0",
-          "PokemonGameLib": "1.0.0-beta.1.1",
+          "PokemonGameLib": "1.0.0-beta.1.2",
           "coverlet.collector": "6.0.0",
           "xunit": "2.4.2",
           "xunit.runner.visualstudio": "2.4.3"
@@ -1021,7 +1021,7 @@
         }
       },
       "xunit.runner.visualstudio/2.4.3": {},
-      "PokemonGameLib/1.0.0-beta.1.1": {
+      "PokemonGameLib/1.0.0-beta.1.2": {
         "runtime": {
           "PokemonGameLib.dll": {}
         }
@@ -1657,7 +1657,7 @@
       "path": "xunit.runner.visualstudio/2.4.3",
       "hashPath": "xunit.runner.visualstudio.2.4.3.nupkg.sha512"
     },
-    "PokemonGameLib/1.0.0-beta.1.1": {
+    "PokemonGameLib/1.0.0-beta.1.2": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

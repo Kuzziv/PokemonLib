@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <PackageId>PokemonGameLib</PackageId>
-    <Version>1.0.0-beta.1.1</Version>
+    <Version>1.0.0-beta.1.2</Version>
     <Authors>Mads72</Authors>
     <Company>Zealand</Company>
     <Product>Custom pokemon game</Product>
