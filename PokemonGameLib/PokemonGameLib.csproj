@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <PackageId>PokemonGameLib</PackageId>
-    <Version>1.0.0-beta.1.2</Version>
+    <Version>1.0.0-beta.1.2.1</Version>
     <Authors>Mads72</Authors>
     <Company>Zealand</Company>
     <Product>Custom pokemon game</Product>
@@ -16,6 +16,8 @@
     <RepositoryUrl>https://github.com/Kuzziv/PokemonLib.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\Debug\net8.0\PokemonGameLib.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

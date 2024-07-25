@@ -202,3 +202,4 @@
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/obj/Debug/net8.0/PokemonGameLib.Tests.pdb
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/obj/Debug/net8.0/PokemonGameLib.Tests.genruntimeconfig.cache
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/obj/Debug/net8.0/ref/PokemonGameLib.Tests.dll
+/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/bin/Debug/net8.0/PokemonGameLib.xml
