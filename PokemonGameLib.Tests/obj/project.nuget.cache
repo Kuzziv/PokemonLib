@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dj4SSX2W4x3Djj2FT6Uf/jivweCfpDh05wHq3gO0W5V3BsY09mrjd8RWyLN+GDXAyp1JEDO2o4kn7h91ClOZJQ==",
+  "dgSpecHash": "n0VTVz3qSAydgU+Cl7TnljIJ3Q9JcddE3ptpI0QzL6YMHNguj98cSW/R8yCc70EpmHlMXQtK9sKKbQO9LH5oBQ==",
   "success": true,
-  "projectFilePath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
+  "projectFilePath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
   "expectedPackageFiles": [
     "/Users/madsludvigsen/.nuget/packages/coverlet.collector/6.0.0/coverlet.collector.6.0.0.nupkg.sha512",
     "/Users/madsludvigsen/.nuget/packages/microsoft.codecoverage/17.6.0/microsoft.codecoverage.17.6.0.nupkg.sha512",
