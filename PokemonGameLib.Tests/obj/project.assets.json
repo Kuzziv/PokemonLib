@@ -1707,7 +1707,7 @@
           "build/netcoreapp2.1/xunit.runner.visualstudio.props": {}
         }
       },
-      "PokemonGameLib/1.0.0-beta.1.1": {
+      "PokemonGameLib/1.0.0-beta.1.2.1": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "compile": {
@@ -5509,7 +5509,7 @@
         "xunit.runner.visualstudio.nuspec"
       ]
     },
-    "PokemonGameLib/1.0.0-beta.1.1": {
+    "PokemonGameLib/1.0.0-beta.1.2.1": {
       "type": "project",
       "path": "../PokemonGameLib/PokemonGameLib.csproj",
       "msbuildProject": "../PokemonGameLib/PokemonGameLib.csproj"
@@ -5518,7 +5518,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "Microsoft.NET.Test.Sdk >= 17.6.0",
-      "PokemonGameLib >= 1.0.0-beta.1.1",
+      "PokemonGameLib >= 1.0.0-beta.1.2.1",
       "coverlet.collector >= 6.0.0",
       "xunit >= 2.4.2",
       "xunit.runner.visualstudio >= 2.4.3"
@@ -5530,11 +5530,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
+      "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
       "projectName": "PokemonGameLib.Tests",
-      "projectPath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
+      "projectPath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
       "packagesPath": "/Users/madsludvigsen/.nuget/packages/",
-      "outputPath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib.Tests/obj/",
+      "outputPath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/madsludvigsen/.nuget/NuGet/NuGet.Config"
@@ -5549,8 +5549,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/PokemonGameLib.csproj": {
-              "projectPath": "/Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/PokemonGameLib.csproj"
+            "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj": {
+              "projectPath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj"
             }
           }
         }

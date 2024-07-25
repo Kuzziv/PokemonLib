@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>PokemonGameLib</id>
+    <version>1.0.0-beta.1.2.1</version>
+    <authors>Mads72</authors>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/Kuzziv/PokemonLib</projectUrl>
+    <description>A library for creating your own pokeman game, with custom pokemons, moves, and map</description>
+    <tags>pokemon library</tags>
+    <repository type="git" url="https://github.com/Kuzziv/PokemonLib.git" commit="364ea341df7178171d088c213fcf11a250541462" />
+    <dependencies>
+      <group targetFramework="net8.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/bin/Release/net8.0/PokemonGameLib.dll" target="lib/net8.0/PokemonGameLib.dll" />
+    <file src="/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/bin/Release/net8.0/PokemonGameLib.xml" target="lib/net8.0/PokemonGameLib.xml" />
+    <file src="/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/README.md" target="README.md" />
+  </files>
+</package>
