@@ -29,8 +29,86 @@ namespace PokemonGameLib.Tests
             battle.PerformAttack(ash, thunderbolt);
 
             // Assert
-            Assert.Equal(60, charizard.HP); // Thunderbolt should deal 90 damage, Charizard should have 60 HP left
+            Assert.Equal(137, charizard.HP); // Verify based on your actual formula
         }
+
+        [Fact]
+        public void TestPerformAttack_SuperEffective()
+        {
+            // Arrange
+            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+            var flyingPokemon = new Pokemon("Flying Pokemon", PokemonType.Flying, 10, 100, 55, 40);
+
+            var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
+            pikachu.AddMove(thunderbolt);
+
+            var ash = new Trainer("Ash");
+            ash.AddPokemon(pikachu);
+
+            var brock = new Trainer("Brock");
+            brock.AddPokemon(flyingPokemon);
+
+            var battle = new Battle(ash, brock);
+
+            // Act
+            battle.PerformAttack(ash, thunderbolt);
+
+            // Assert
+            Assert.Equal(67, flyingPokemon.HP); // Expected value after applying 2.0 effectiveness
+        }
+
+
+        [Fact]
+        public void TestPerformAttack_NotVeryEffective()
+        {
+            // Arrange
+            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+            var grassPokemon = new Pokemon("Grass Pokemon", PokemonType.Grass, 10, 100, 55, 40);
+
+            var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
+            pikachu.AddMove(thunderbolt);
+
+            var ash = new Trainer("Ash");
+            ash.AddPokemon(pikachu);
+
+            var brock = new Trainer("Brock");
+            brock.AddPokemon(grassPokemon);
+
+            var battle = new Battle(ash, brock);
+
+            // Act
+            battle.PerformAttack(ash, thunderbolt);
+
+            // Assert
+            Assert.Equal(92, grassPokemon.HP); // Expected value after applying 0.5 effectiveness
+        }
+
+
+        [Fact]
+        public void TestPerformAttack_NoEffect()
+        {
+           // Arrange
+            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+            var groundPokemon = new Pokemon("Ground Pokemon", PokemonType.Ground, 10, 100, 55, 40);
+
+            var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
+            pikachu.AddMove(thunderbolt);
+
+            var ash = new Trainer("Ash");
+            ash.AddPokemon(pikachu);
+
+            var brock = new Trainer("Brock");
+            brock.AddPokemon(groundPokemon);
+
+            var battle = new Battle(ash, brock);
+
+            // Act
+            battle.PerformAttack(ash, thunderbolt);
+
+            // Assert
+            Assert.Equal(100, groundPokemon.HP); 
+        }
+
 
         [Fact]
         public void TestPerformAttack_WithInvalidMove()

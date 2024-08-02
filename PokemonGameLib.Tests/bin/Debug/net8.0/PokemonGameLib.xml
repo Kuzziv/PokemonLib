@@ -35,8 +35,8 @@
             </summary>
             <param name="attackingTrainer">The Trainer initiating the attack.</param>
             <param name="defendingTrainer">The Trainer receiving the attack.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if either attackingTrainer or defendingTrainer is null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown if either trainer is invalid.</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown if either <paramref name="attackingTrainer"/> or <paramref name="defendingTrainer"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown if either Trainer has no valid Pokémon.</exception>
         </member>
         <member name="M:Battle.PerformAttack(PokemonGameLib.Models.Trainer,Move)">
             <summary>
@@ -44,8 +44,25 @@
             </summary>
             <param name="attackingTrainer">The Trainer whose Pokémon is performing the attack.</param>
             <param name="move">The move used by the attacking Pokémon.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if the move is null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown if the attacking Pokémon is fainted or does not know the move.</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="move"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown if the attacking Pokémon is fainted, does not know the move, or if the defending Pokémon is fainted.</exception>
+        </member>
+        <member name="M:Battle.CalculateDamage(Pokemon,Pokemon,Move,System.Double)">
+            <summary>
+            Calculates the damage dealt by an attacking Pokémon to a defending Pokémon based on move power, attacker and defender stats, and type effectiveness.
+            </summary>
+            <param name="attacker">The attacking Pokémon.</param>
+            <param name="defender">The defending Pokémon.</param>
+            <param name="move">The move being used.</param>
+            <param name="effectiveness">The type effectiveness multiplier.</param>
+            <returns>The calculated damage.</returns>
+        </member>
+        <member name="M:Battle.GetEffectivenessText(System.Double)">
+            <summary>
+            Gets a string representing the effectiveness of the move.
+            </summary>
+            <param name="effectiveness">The effectiveness multiplier.</param>
+            <returns>A string describing the effectiveness.</returns>
         </member>
         <member name="M:Battle.DetermineBattleResult">
             <summary>
@@ -304,6 +321,24 @@
             that is not in a fainted state (i.e., it has non-zero HP). If all Pokémon are fainted or if the list is empty,
             the method will return <c>false</c>.
             </remarks>
+        </member>
+        <member name="T:TypeEffectiveness">
+            <summary>
+            Provides methods to determine type effectiveness in Pokémon battles.
+            </summary>
+        </member>
+        <member name="F:TypeEffectiveness.effectiveness">
+            <summary>
+            A dictionary that maps a tuple of attacking and defending Pokémon types to their effectiveness multiplier.
+            </summary>
+        </member>
+        <member name="M:TypeEffectiveness.GetEffectiveness(PokemonType,PokemonType)">
+            <summary>
+            Gets the effectiveness of an attacking Pokémon's move type against a defending Pokémon's type.
+            </summary>
+            <param name="attackType">The type of the attacking move.</param>
+            <param name="defenseType">The type of the defending Pokémon.</param>
+            <returns>A multiplier representing the effectiveness of the attack.</returns>
         </member>
     </members>
 </doc>
