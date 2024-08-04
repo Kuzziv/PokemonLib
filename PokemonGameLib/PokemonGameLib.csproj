@@ -38,7 +38,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Include release notes in the package -->
+    <!-- Include release notes and read me in the package -->
     <None Update="README.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
