@@ -9,43 +9,56 @@ namespace PokemonGameLib.Models
     /// </summary>
     public class Battle
     {
-        /// <summary>
-        /// Gets the attacking trainer.
-        /// </summary>
-        public Trainer AttackingTrainer { get; private set; }
+        private bool isFirstTrainerAttacking; // A flag to keep track of the turn
 
         /// <summary>
-        /// Gets the defending trainer.
+        /// Gets the first trainer in the battle.
         /// </summary>
-        public Trainer DefendingTrainer { get; private set; }
+        public Trainer FirstTrainer { get; private set; }
 
         /// <summary>
-        /// Gets the current attacking Pokémon.
+        /// Gets the second trainer in the battle.
+        /// </summary>
+        public Trainer SecondTrainer { get; private set; }
+
+        /// <summary>
+        /// Gets the current attacking trainer based on the turn.
+        /// </summary>
+        public Trainer AttackingTrainer => isFirstTrainerAttacking ? FirstTrainer : SecondTrainer;
+
+        /// <summary>
+        /// Gets the current defending trainer based on the turn.
+        /// </summary>
+        public Trainer DefendingTrainer => isFirstTrainerAttacking ? SecondTrainer : FirstTrainer;
+
+        /// <summary>
+        /// Gets the current attacking Pokémon based on the turn.
         /// </summary>
         private Pokemon? Attacker => AttackingTrainer.CurrentPokemon; // Mark as nullable
 
         /// <summary>
-        /// Gets the current defending Pokémon.
+        /// Gets the current defending Pokémon based on the turn.
         /// </summary>
         private Pokemon? Defender => DefendingTrainer.CurrentPokemon; // Mark as nullable
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Battle"/> class.
         /// </summary>
-        /// <param name="attackingTrainer">The trainer initiating the attack.</param>
-        /// <param name="defendingTrainer">The trainer defending against the attack.</param>
+        /// <param name="firstTrainer">The first trainer in the battle.</param>
+        /// <param name="secondTrainer">The second trainer in the battle.</param>
         /// <exception cref="ArgumentNullException">Thrown when either trainer is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown when either trainer has no valid Pokémon to battle.</exception>
-        public Battle(Trainer attackingTrainer, Trainer defendingTrainer)
+        public Battle(Trainer firstTrainer, Trainer secondTrainer)
         {
-            if (attackingTrainer == null || defendingTrainer == null)
+            if (firstTrainer == null || secondTrainer == null)
                 throw new ArgumentNullException("Trainers cannot be null");
 
-            if (!attackingTrainer.HasValidPokemon() || !defendingTrainer.HasValidPokemon())
+            if (!firstTrainer.HasValidPokemon() || !secondTrainer.HasValidPokemon())
                 throw new InvalidOperationException("Both trainers must have valid Pokémon to start the battle");
 
-            AttackingTrainer = attackingTrainer;
-            DefendingTrainer = defendingTrainer;
+            FirstTrainer = firstTrainer;
+            SecondTrainer = secondTrainer;
+            isFirstTrainerAttacking = true; // Set the initial turn
         }
 
         /// <summary>
@@ -68,6 +81,9 @@ namespace PokemonGameLib.Models
             Console.WriteLine($"{Attacker.Name} used {move.Name}!");
             Console.WriteLine(EffectivenessMessage(effectiveness));
             Console.WriteLine($"{Defender.Name} took {damage} damage!");
+
+            // Switch turns after the attack
+            isFirstTrainerAttacking = !isFirstTrainerAttacking;
         }
 
         /// <summary>

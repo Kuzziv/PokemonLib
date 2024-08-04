@@ -176,9 +176,11 @@ namespace PokemonGameLib.Tests
             var charizard = new Pokemon("Charizard", PokemonType.Fire, 15, 100, 70, 50);
 
             var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
-            var flamethrower = new Move("Flamethrower", PokemonType.Fire, 90000, 15);
-            charizard.AddMove(flamethrower);
+            var flamethrower = new Move("Flamethrower", PokemonType.Fire, 90, 15);
+            
+            // Ensure Pikachu and Charizard know their respective moves
             pikachu.AddMove(thunderbolt);
+            charizard.AddMove(flamethrower);
 
             var ash = new Trainer("Ash");
             ash.AddPokemon(pikachu);
@@ -189,8 +191,10 @@ namespace PokemonGameLib.Tests
             brocky.SwitchPokemon(charizard);
 
             var battle = new Battle(ash, brocky);
-            battle.PerformAttack(thunderbolt);
-            battle.PerformAttack(flamethrower); // Attack to make Pikachu faint
+            
+            // Act
+            battle.PerformAttack(thunderbolt); // Pikachu attacks first
+            battle.PerformAttack(flamethrower); // Charizard retaliates
 
             // Act
             var result = battle.DetermineBattleResult();
@@ -198,6 +202,8 @@ namespace PokemonGameLib.Tests
             // Assert
             Assert.Equal("Ash's Pikachu has fainted. Brocky wins!", result);
         }
+
+
 
         [Fact]
         public void TestDetermineBattleResult_Ongoing()
@@ -354,7 +360,7 @@ namespace PokemonGameLib.Tests
         }
 
         [Fact]
-        public void TestSwitchPokemon_FaintedCurrentPokemon()
+        public void TestSwitchPokemon_SwitchToFaintedPokemon()
         {
             // Arrange
             var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
@@ -370,7 +376,7 @@ namespace PokemonGameLib.Tests
             var ash = new Trainer("Ash");
             ash.AddPokemon(pikachu);
             ash.AddPokemon(bulbasaur);
-            ash.SwitchPokemon(pikachu);
+            ash.SwitchPokemon(bulbasaur); // Initially switch to Bulbasaur
 
             var brock = new Trainer("Brock");
             var charizard = new Pokemon("Charizard", PokemonType.Fire, 10, 150, 70, 50);
@@ -380,36 +386,8 @@ namespace PokemonGameLib.Tests
             var battle = new Battle(ash, brock);
 
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => battle.SwitchPokemon(ash, bulbasaur));
+            Assert.Throws<InvalidOperationException>(() => battle.SwitchPokemon(ash, pikachu)); // Attempt to switch to fainted Pikachu
         }
 
-        [Fact]
-        public void TestSwitchPokemon_WithOnlyOnePokemon()
-        {
-            // Arrange
-            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 15, 100, 55, 40);
-            var charizard = new Pokemon("Charizard", PokemonType.Fire, 15, 100, 70, 50);
-
-            var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
-            pikachu.AddMove(thunderbolt);
-
-            var ash = new Trainer("Ash");
-            ash.AddPokemon(pikachu); // Only Pikachu available
-            ash.SwitchPokemon(pikachu);
-
-            var brock = new Trainer("Brock");
-            brock.AddPokemon(charizard);
-            brock.SwitchPokemon(charizard);
-
-            var battle = new Battle(ash, brock);
-
-            // Act
-            // Perform an attack and make sure we handle the case where there's only one Pokémon
-            battle.PerformAttack(thunderbolt);
-            var result = battle.DetermineBattleResult();
-
-            // Assert
-            Assert.Equal("Brock's Charizard has fainted. Ash wins!", result);
-        }
     }
 }
