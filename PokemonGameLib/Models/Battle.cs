@@ -1,146 +1,179 @@
-using PokemonGameLib.Models;
 using System;
 using System.Linq;
+using PokemonGameLib.Models; // Add this using directive to ensure access to Trainer and Pokemon
 
-/// <summary>
-/// Manages the battle between two Trainers, handling Pokémon attacks and damage calculation.
-/// </summary>
-public class Battle
+namespace PokemonGameLib.Models
 {
     /// <summary>
-    /// Gets the first Trainer in the battle.
+    /// Represents a Pokémon battle between two trainers.
     /// </summary>
-    public Trainer AttackingTrainer { get; }
-
-    /// <summary>
-    /// Gets the second Trainer in the battle.
-    /// </summary>
-    public Trainer DefendingTrainer { get; }
-
-    /// <summary>
-    /// Gets the current Pokémon of the attacking Trainer.
-    /// </summary>
-    public Pokemon? Attacker => AttackingTrainer.Pokemons.FirstOrDefault();
-
-    /// <summary>
-    /// Gets the current Pokémon of the defending Trainer.
-    /// </summary>
-    public Pokemon? Defender => DefendingTrainer.Pokemons.FirstOrDefault();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Battle"/> class.
-    /// </summary>
-    /// <param name="attackingTrainer">The Trainer initiating the attack.</param>
-    /// <param name="defendingTrainer">The Trainer receiving the attack.</param>
-    /// <exception cref="ArgumentNullException">Thrown if either <paramref name="attackingTrainer"/> or <paramref name="defendingTrainer"/> is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if either Trainer has no valid Pokémon.</exception>
-    public Battle(Trainer attackingTrainer, Trainer defendingTrainer)
+    public class Battle
     {
-        AttackingTrainer = attackingTrainer ?? throw new ArgumentNullException(nameof(attackingTrainer), "Attacking Trainer cannot be null.");
-        DefendingTrainer = defendingTrainer ?? throw new ArgumentNullException(nameof(defendingTrainer), "Defending Trainer cannot be null.");
+        private bool isFirstTrainerAttacking; // A flag to keep track of the turn
 
-        if (!AttackingTrainer.HasValidPokemons())
-            throw new InvalidOperationException("Attacking Trainer has no valid Pokémon.");
-        if (!DefendingTrainer.HasValidPokemons())
-            throw new InvalidOperationException("Defending Trainer has no valid Pokémon.");
-    }
+        /// <summary>
+        /// Gets the first trainer in the battle.
+        /// </summary>
+        public Trainer FirstTrainer { get; private set; }
 
-    /// <summary>
-    /// Performs an attack by the specified Trainer's Pokémon on the opponent's Pokémon.
-    /// </summary>
-    /// <param name="attackingTrainer">The Trainer whose Pokémon is performing the attack.</param>
-    /// <param name="move">The move used by the attacking Pokémon.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="move"/> is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if the attacking Pokémon is fainted, does not know the move, or if the defending Pokémon is fainted.</exception>
-    public void PerformAttack(Trainer attackingTrainer, Move move)
-    {
-        if (move == null)
-            throw new ArgumentNullException(nameof(move), "Move cannot be null.");
+        /// <summary>
+        /// Gets the second trainer in the battle.
+        /// </summary>
+        public Trainer SecondTrainer { get; private set; }
 
-        Pokemon? attacker = attackingTrainer.Pokemons.FirstOrDefault();
-        Trainer defendingTrainer = attackingTrainer == AttackingTrainer ? DefendingTrainer : AttackingTrainer;
-        Pokemon? defender = defendingTrainer.Pokemons.FirstOrDefault();
+        /// <summary>
+        /// Gets the current attacking trainer based on the turn.
+        /// </summary>
+        public Trainer AttackingTrainer => isFirstTrainerAttacking ? FirstTrainer : SecondTrainer;
 
-        if (attacker == null || attacker.IsFainted())
-            throw new InvalidOperationException("Attacking Trainer's Pokémon is fainted and cannot perform an attack.");
-        
-        if (!attacker.Moves.Contains(move))
-            throw new InvalidOperationException("Attacking Trainer's Pokémon does not know the specified move.");
-        
-        if (defender == null || defender.IsFainted())
-            throw new InvalidOperationException("Defending Trainer's Pokémon is fainted and cannot be attacked.");
+        /// <summary>
+        /// Gets the current defending trainer based on the turn.
+        /// </summary>
+        public Trainer DefendingTrainer => isFirstTrainerAttacking ? SecondTrainer : FirstTrainer;
 
-        double effectiveness = TypeEffectiveness.GetEffectiveness(move.Type, defender.Type);
-        int damage = CalculateDamage(attacker, defender, move, effectiveness);
-        defender.TakeDamage(damage);
+        /// <summary>
+        /// Gets the current attacking Pokémon based on the turn.
+        /// </summary>
+        private Pokemon? Attacker => AttackingTrainer.CurrentPokemon; // Mark as nullable
 
-        Console.WriteLine($"{attacker.Name} used {move.Name}!");
-        Console.WriteLine($"It's {GetEffectivenessText(effectiveness)}!");
-        Console.WriteLine($"{defender.Name} took {damage} damage!");
+        /// <summary>
+        /// Gets the current defending Pokémon based on the turn.
+        /// </summary>
+        private Pokemon? Defender => DefendingTrainer.CurrentPokemon; // Mark as nullable
 
-        if (defender.IsFainted())
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Battle"/> class.
+        /// </summary>
+        /// <param name="firstTrainer">The first trainer in the battle.</param>
+        /// <param name="secondTrainer">The second trainer in the battle.</param>
+        /// <exception cref="ArgumentNullException">Thrown when either trainer is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when either trainer has no valid Pokémon to battle.</exception>
+        public Battle(Trainer firstTrainer, Trainer secondTrainer)
         {
-            Console.WriteLine($"{defender.Name} has fainted!");
-        }
-    }
+            if (firstTrainer == null || secondTrainer == null)
+                throw new ArgumentNullException("Trainers cannot be null");
 
-    /// <summary>
-    /// Calculates the damage dealt by an attacking Pokémon to a defending Pokémon based on move power, attacker and defender stats, and type effectiveness.
-    /// </summary>
-    /// <param name="attacker">The attacking Pokémon.</param>
-    /// <param name="defender">The defending Pokémon.</param>
-    /// <param name="move">The move being used.</param>
-    /// <param name="effectiveness">The type effectiveness multiplier.</param>
-    /// <returns>The calculated damage.</returns>
-    private int CalculateDamage(Pokemon attacker, Pokemon defender, Move move, double effectiveness)
-    {
-        // Base damage calculation
-        double levelFactor = (2.0 * attacker.Level / 5.0) + 2.0;
-        double powerFactor = move.Power * attacker.Attack / defender.Defense;
-        double baseDamage = (levelFactor * powerFactor / 50.0) + 2.0;
-        
-        // Apply effectiveness
-        double totalDamage = baseDamage * effectiveness;
-        
-        // Ensure damage is at least 1
-        return (int)(totalDamage);
-    }
+            if (!firstTrainer.HasValidPokemon() || !secondTrainer.HasValidPokemon())
+                throw new InvalidOperationException("Both trainers must have valid Pokémon to start the battle");
 
-    /// <summary>
-    /// Gets a string representing the effectiveness of the move.
-    /// </summary>
-    /// <param name="effectiveness">The effectiveness multiplier.</param>
-    /// <returns>A string describing the effectiveness.</returns>
-    private string GetEffectivenessText(double effectiveness)
-    {
-        return effectiveness switch
-        {
-            2.0 => "super effective",
-            0.5 => "not very effective",
-            0.0 => "no effect",
-            _ => "effective"
-        };
-    }
-
-    /// <summary>
-    /// Determines the result of the battle.
-    /// </summary>
-    /// <returns>A string indicating the result of the battle.</returns>
-    public string DetermineBattleResult()
-    {
-        Pokemon? attacker = Attacker;
-        Pokemon? defender = Defender;
-
-        if (defender == null || defender.IsFainted())
-        {
-            return $"{DefendingTrainer.Name}'s {defender?.Name ?? "Pokémon"} has fainted. {AttackingTrainer.Name} wins!";
+            FirstTrainer = firstTrainer;
+            SecondTrainer = secondTrainer;
+            isFirstTrainerAttacking = true; // Set the initial turn
         }
 
-        if (attacker == null || attacker.IsFainted())
+        /// <summary>
+        /// Performs an attack using the specified move.
+        /// </summary>
+        /// <param name="move">The move to be used for the attack.</param>
+        /// <exception cref="InvalidOperationException">Thrown when the move is not valid for the attacker.</exception>
+        public void PerformAttack(Move move)
         {
-            return $"{AttackingTrainer.Name}'s {attacker?.Name ?? "Pokémon"} has fainted. {DefendingTrainer.Name} wins!";
+            if (Attacker == null || !Attacker.Moves.Contains(move))
+                throw new InvalidOperationException("Invalid move for the current attacker");
+
+            if (Defender == null)
+                throw new InvalidOperationException("Defender cannot be null");
+
+            double effectiveness = CalculateEffectiveness(move.Type, Defender.Type);
+            double damage = CalculateDamage(move.Power, Attacker.Attack, Defender.Defense, effectiveness, move.Type);
+            Defender.TakeDamage((int)damage);
+
+            Console.WriteLine($"{Attacker.Name} used {move.Name}!");
+            Console.WriteLine(EffectivenessMessage(effectiveness));
+            Console.WriteLine($"{Defender.Name} took {damage} damage!");
+
+            // Switch turns after the attack
+            isFirstTrainerAttacking = !isFirstTrainerAttacking;
         }
 
-        return "The battle is ongoing.";
+        /// <summary>
+        /// Calculates the effectiveness of a move based on types.
+        /// </summary>
+        /// <param name="moveType">The type of the move.</param>
+        /// <param name="pokemonType">The type of the defending Pokémon.</param>
+        /// <returns>The effectiveness multiplier.</returns>
+        private double CalculateEffectiveness(PokemonType moveType, PokemonType pokemonType)
+        {
+            return TypeEffectiveness.GetEffectiveness(moveType, pokemonType);
+        }
+
+        /// <summary>
+        /// Calculates the damage dealt by a move, incorporating factors like effectiveness, STAB (Same Type Attack Bonus), 
+        /// critical hits, and a random factor to simulate variability in battle outcomes.
+        /// </summary>
+        /// <param name="movePower">The base power of the move being used, which determines the move's strength.</param>
+        /// <param name="attackerAttack">The attack stat of the attacking Pokémon, affecting the potency of physical attacks.</param>
+        /// <param name="defenderDefense">The defense stat of the defending Pokémon, reducing damage from incoming physical attacks.</param>
+        /// <param name="effectiveness">
+        /// A multiplier representing the effectiveness of the move against the defender's type. 
+        /// Values greater than 1.0 indicate super effectiveness, values less than 1.0 indicate reduced effectiveness, 
+        /// and a value of 0 means no effect.
+        /// </param>
+        /// <param name="moveType">The type of the move being used, which interacts with the defender's type to determine effectiveness.</param>
+        /// <returns>The total calculated damage to be dealt to the defender, after applying all modifiers.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when either the attacker or the defender Pokémon is null, indicating a misconfiguration of the battle state.
+        /// </exception>
+        private double CalculateDamage(int movePower, int attackerAttack, int defenderDefense, double effectiveness, PokemonType moveType)
+        {
+            if (Attacker == null)
+            {
+                throw new InvalidOperationException("Attacker cannot be null.");
+            }
+
+            if (Defender == null)
+            {
+                throw new InvalidOperationException("Defender cannot be null.");
+            }
+            
+            double randomFactor = new Random().Next(85, 101) / 100.0; // Random factor between 0.85 and 1.0
+            double stab = Attacker.Type == moveType ? 1.5 : 1.0; // STAB
+            double critical = new Random().NextDouble() < 0.0625 ? 2.0 : 1.0; // 6.25% chance for a critical hit
+
+            return (((2 * Attacker.Level / 5.0 + 2) * movePower * (attackerAttack / (double)defenderDefense) / 50.0) + 2) * effectiveness * stab * critical * randomFactor;
+        }
+
+        /// <summary>
+        /// Provides a message based on the effectiveness of the move.
+        /// </summary>
+        /// <param name="effectiveness">The effectiveness multiplier.</param>
+        /// <returns>A string message describing the effectiveness.</returns>
+        private string EffectivenessMessage(double effectiveness)
+        {
+            if (effectiveness > 1.0) return "It's super effective!";
+            if (effectiveness < 1.0) return "It's not very effective!";
+            return "It's effective!";
+        }
+
+        /// <summary>
+        /// Determines the result of the battle.
+        /// </summary>
+        /// <returns>A string describing the result of the battle.</returns>
+        public string DetermineBattleResult()
+        {
+            if (Attacker != null && Attacker.IsFainted())
+                return $"{AttackingTrainer.Name}'s {Attacker.Name} has fainted. {DefendingTrainer.Name} wins!";
+            if (Defender != null && Defender.IsFainted())
+                return $"{DefendingTrainer.Name}'s {Defender.Name} has fainted. {AttackingTrainer.Name} wins!";
+            return "The battle is ongoing.";
+        }
+
+        /// <summary>
+        /// Switches the current attacking Pokémon to a new Pokémon.
+        /// </summary>
+        /// <param name="trainer">The trainer requesting the switch.</param>
+        /// <param name="newPokemon">The new Pokémon to switch to.</param>
+        /// <exception cref="InvalidOperationException">Thrown when attempting to switch to a fainted Pokémon or a Pokémon not owned by the trainer.</exception>
+        public void SwitchPokemon(Trainer trainer, Pokemon newPokemon)
+        {
+            if (!trainer.Pokemons.Contains(newPokemon))
+                throw new InvalidOperationException("Cannot switch to a Pokémon not owned by the trainer");
+
+            if (newPokemon.IsFainted())
+                throw new InvalidOperationException("Cannot switch to a fainted Pokémon");
+
+            trainer.CurrentPokemon = newPokemon;
+            Console.WriteLine($"{trainer.Name} switched to {newPokemon.Name}!");
+        }
     }
 }

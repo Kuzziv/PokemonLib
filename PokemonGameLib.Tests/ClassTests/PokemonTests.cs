@@ -1,5 +1,6 @@
 using Xunit;
 using System;
+using PokemonGameLib.Models;
 
 namespace PokemonGameLib.Tests
 {
@@ -15,7 +16,7 @@ namespace PokemonGameLib.Tests
             Assert.Equal("Pikachu", pokemon.Name);
             Assert.Equal(PokemonType.Electric, pokemon.Type);
             Assert.Equal(10, pokemon.Level);
-            Assert.Equal(100, pokemon.HP);
+            Assert.Equal(100, pokemon.CurrentHP);
             Assert.Equal(55, pokemon.Attack);
             Assert.Equal(40, pokemon.Defense);
         }
@@ -30,7 +31,7 @@ namespace PokemonGameLib.Tests
             pokemon.TakeDamage(30);
 
             // Assert
-            Assert.Equal(70, pokemon.HP);
+            Assert.Equal(70, pokemon.CurrentHP);
         }
 
         [Fact]
@@ -43,16 +44,17 @@ namespace PokemonGameLib.Tests
             pokemon.TakeDamage(40);
 
             // Assert
-            Assert.Equal(0, pokemon.HP);
+            Assert.Equal(0, pokemon.CurrentHP);
         }
 
         [Fact]
         public void TestIsFainted()
         {
             // Arrange
-            var pokemon = new Pokemon("Pikachu", PokemonType.Electric, 10, 0, 55, 40);
+            var pokemon = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
 
             // Act
+            pokemon.TakeDamage(100); // Simulate fainting
             var isFainted = pokemon.IsFainted();
 
             // Assert

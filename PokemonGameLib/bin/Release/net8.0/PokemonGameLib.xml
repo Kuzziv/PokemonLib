@@ -4,71 +4,240 @@
         <name>PokemonGameLib</name>
     </assembly>
     <members>
-        <member name="T:Battle">
+        <member name="T:PokemonGameLib.Models.Battle">
             <summary>
-            Manages the battle between two Trainers, handling Pokémon attacks and damage calculation.
+            Represents a Pokémon battle between two trainers.
             </summary>
         </member>
-        <member name="P:Battle.AttackingTrainer">
+        <member name="P:PokemonGameLib.Models.Battle.FirstTrainer">
             <summary>
-            Gets the first Trainer in the battle.
+            Gets the first trainer in the battle.
             </summary>
         </member>
-        <member name="P:Battle.DefendingTrainer">
+        <member name="P:PokemonGameLib.Models.Battle.SecondTrainer">
             <summary>
-            Gets the second Trainer in the battle.
+            Gets the second trainer in the battle.
             </summary>
         </member>
-        <member name="P:Battle.Attacker">
+        <member name="P:PokemonGameLib.Models.Battle.AttackingTrainer">
             <summary>
-            Gets the current Pokémon of the attacking Trainer.
+            Gets the current attacking trainer based on the turn.
             </summary>
         </member>
-        <member name="P:Battle.Defender">
+        <member name="P:PokemonGameLib.Models.Battle.DefendingTrainer">
             <summary>
-            Gets the current Pokémon of the defending Trainer.
+            Gets the current defending trainer based on the turn.
             </summary>
         </member>
-        <member name="M:Battle.#ctor(PokemonGameLib.Models.Trainer,PokemonGameLib.Models.Trainer)">
+        <member name="P:PokemonGameLib.Models.Battle.Attacker">
             <summary>
-            Initializes a new instance of the <see cref="T:Battle"/> class.
+            Gets the current attacking Pokémon based on the turn.
             </summary>
-            <param name="attackingTrainer">The Trainer initiating the attack.</param>
-            <param name="defendingTrainer">The Trainer receiving the attack.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if either <paramref name="attackingTrainer"/> or <paramref name="defendingTrainer"/> is null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown if either Trainer has no valid Pokémon.</exception>
         </member>
-        <member name="M:Battle.PerformAttack(PokemonGameLib.Models.Trainer,Move)">
+        <member name="P:PokemonGameLib.Models.Battle.Defender">
             <summary>
-            Performs an attack by the specified Trainer's Pokémon on the opponent's Pokémon.
+            Gets the current defending Pokémon based on the turn.
             </summary>
-            <param name="attackingTrainer">The Trainer whose Pokémon is performing the attack.</param>
-            <param name="move">The move used by the attacking Pokémon.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="move"/> is null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown if the attacking Pokémon is fainted, does not know the move, or if the defending Pokémon is fainted.</exception>
         </member>
-        <member name="M:Battle.CalculateDamage(Pokemon,Pokemon,Move,System.Double)">
+        <member name="M:PokemonGameLib.Models.Battle.#ctor(PokemonGameLib.Models.Trainer,PokemonGameLib.Models.Trainer)">
             <summary>
-            Calculates the damage dealt by an attacking Pokémon to a defending Pokémon based on move power, attacker and defender stats, and type effectiveness.
+            Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Battle"/> class.
             </summary>
-            <param name="attacker">The attacking Pokémon.</param>
-            <param name="defender">The defending Pokémon.</param>
-            <param name="move">The move being used.</param>
-            <param name="effectiveness">The type effectiveness multiplier.</param>
-            <returns>The calculated damage.</returns>
+            <param name="firstTrainer">The first trainer in the battle.</param>
+            <param name="secondTrainer">The second trainer in the battle.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when either trainer is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when either trainer has no valid Pokémon to battle.</exception>
         </member>
-        <member name="M:Battle.GetEffectivenessText(System.Double)">
+        <member name="M:PokemonGameLib.Models.Battle.PerformAttack(Move)">
             <summary>
-            Gets a string representing the effectiveness of the move.
+            Performs an attack using the specified move.
+            </summary>
+            <param name="move">The move to be used for the attack.</param>
+            <exception cref="T:System.InvalidOperationException">Thrown when the move is not valid for the attacker.</exception>
+        </member>
+        <member name="M:PokemonGameLib.Models.Battle.CalculateEffectiveness(PokemonType,PokemonType)">
+            <summary>
+            Calculates the effectiveness of a move based on types.
+            </summary>
+            <param name="moveType">The type of the move.</param>
+            <param name="pokemonType">The type of the defending Pokémon.</param>
+            <returns>The effectiveness multiplier.</returns>
+        </member>
+        <member name="M:PokemonGameLib.Models.Battle.CalculateDamage(System.Int32,System.Int32,System.Int32,System.Double,PokemonType)">
+            <summary>
+            Calculates the damage dealt by a move, incorporating factors like effectiveness, STAB (Same Type Attack Bonus), 
+            critical hits, and a random factor to simulate variability in battle outcomes.
+            </summary>
+            <param name="movePower">The base power of the move being used, which determines the move's strength.</param>
+            <param name="attackerAttack">The attack stat of the attacking Pokémon, affecting the potency of physical attacks.</param>
+            <param name="defenderDefense">The defense stat of the defending Pokémon, reducing damage from incoming physical attacks.</param>
+            <param name="effectiveness">
+            A multiplier representing the effectiveness of the move against the defender's type. 
+            Values greater than 1.0 indicate super effectiveness, values less than 1.0 indicate reduced effectiveness, 
+            and a value of 0 means no effect.
+            </param>
+            <param name="moveType">The type of the move being used, which interacts with the defender's type to determine effectiveness.</param>
+            <returns>The total calculated damage to be dealt to the defender, after applying all modifiers.</returns>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown when either the attacker or the defender Pokémon is null, indicating a misconfiguration of the battle state.
+            </exception>
+        </member>
+        <member name="M:PokemonGameLib.Models.Battle.EffectivenessMessage(System.Double)">
+            <summary>
+            Provides a message based on the effectiveness of the move.
             </summary>
             <param name="effectiveness">The effectiveness multiplier.</param>
-            <returns>A string describing the effectiveness.</returns>
+            <returns>A string message describing the effectiveness.</returns>
         </member>
-        <member name="M:Battle.DetermineBattleResult">
+        <member name="M:PokemonGameLib.Models.Battle.DetermineBattleResult">
             <summary>
             Determines the result of the battle.
             </summary>
-            <returns>A string indicating the result of the battle.</returns>
+            <returns>A string describing the result of the battle.</returns>
+        </member>
+        <member name="M:PokemonGameLib.Models.Battle.SwitchPokemon(PokemonGameLib.Models.Trainer,PokemonGameLib.Models.Pokemon)">
+            <summary>
+            Switches the current attacking Pokémon to a new Pokémon.
+            </summary>
+            <param name="trainer">The trainer requesting the switch.</param>
+            <param name="newPokemon">The new Pokémon to switch to.</param>
+            <exception cref="T:System.InvalidOperationException">Thrown when attempting to switch to a fainted Pokémon or a Pokémon not owned by the trainer.</exception>
+        </member>
+        <member name="T:PokemonGameLib.Models.Pokemon">
+            <summary>
+            Represents a Pokémon with properties for name, type, level, stats, and methods to manage its state.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Pokemon.Name">
+            <summary>
+            Gets the name of the Pokémon.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Pokemon.Type">
+            <summary>
+            Gets the type of the Pokémon.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Pokemon.Level">
+            <summary>
+            Gets the level of the Pokémon.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Pokemon.MaxHP">
+            <summary>
+            Gets the maximum HP of the Pokémon.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Pokemon.CurrentHP">
+            <summary>
+            Gets the current HP of the Pokémon.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Pokemon.Attack">
+            <summary>
+            Gets the attack stat of the Pokémon.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Pokemon.Defense">
+            <summary>
+            Gets the defense stat of the Pokémon.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Pokemon.Moves">
+            <summary>
+            Gets the list of moves the Pokémon knows.
+            </summary>
+        </member>
+        <member name="M:PokemonGameLib.Models.Pokemon.#ctor(System.String,PokemonType,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Pokemon"/> class.
+            </summary>
+            <param name="name">The name of the Pokémon.</param>
+            <param name="type">The type of the Pokémon.</param>
+            <param name="level">The level of the Pokémon.</param>
+            <param name="maxHp">The maximum HP of the Pokémon.</param>
+            <param name="attack">The attack stat of the Pokémon.</param>
+            <param name="defense">The defense stat of the Pokémon.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when name or type is null.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown when level, hp, attack, or defense are negative.</exception>
+        </member>
+        <member name="M:PokemonGameLib.Models.Pokemon.TakeDamage(System.Int32)">
+            <summary>
+            Applies damage to the Pokémon.
+            </summary>
+            <param name="damage">The amount of damage to apply.</param>
+        </member>
+        <member name="M:PokemonGameLib.Models.Pokemon.IsFainted">
+            <summary>
+            Determines whether the Pokémon has fainted.
+            </summary>
+            <returns><c>true</c> if the Pokémon's HP is less than or equal to 0; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:PokemonGameLib.Models.Pokemon.AddMove(Move)">
+            <summary>
+            Adds a move to the Pokémon's move list.
+            </summary>
+            <param name="move">The move to add to the Pokémon's move list.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the move is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown if the Pokémon already knows the maximum number of moves.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if the move is already known by the Pokémon, is not compatible with the Pokémon's type, or is not compatible with the Pokémon's level.</exception>
+        </member>
+        <member name="T:PokemonGameLib.Models.Trainer">
+            <summary>
+            Represents a Trainer in the Pokémon game.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Trainer.Pokemons">
+            <summary>
+            Gets the list of Pokemons owned by the Trainer.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Trainer.Name">
+            <summary>
+            Gets or sets the name of the Trainer.
+            </summary>
+        </member>
+        <member name="P:PokemonGameLib.Models.Trainer.CurrentPokemon">
+            <summary>
+            Gets or sets the current Pokémon of the Trainer.
+            </summary>
+        </member>
+        <member name="M:PokemonGameLib.Models.Trainer.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Trainer"/> class with the specified name.
+            </summary>
+            <param name="name">The name of the Trainer.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the name is null.</exception>
+        </member>
+        <member name="M:PokemonGameLib.Models.Trainer.AddPokemon(PokemonGameLib.Models.Pokemon)">
+            <summary>
+            Adds a Pokémon to the Trainer's list of Pokemons.
+            </summary>
+            <param name="pokemon">The Pokémon to be added.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the Pokémon is null.</exception>
+        </member>
+        <member name="M:PokemonGameLib.Models.Trainer.HasValidPokemon">
+            <summary>
+            Determines whether the Trainer has any Pokémon that are not fainted.
+            </summary>
+            <returns>
+            <c>true</c> if the Trainer has at least one Pokémon that is not fainted; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:PokemonGameLib.Models.Trainer.RemovePokemon(PokemonGameLib.Models.Pokemon)">
+            <summary>
+            Removes a Pokémon from the Trainer's list of Pokemons.
+            </summary>
+            <param name="pokemon">The Pokémon to remove.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the Pokémon is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown if the Pokémon is not in the Trainer's list.</exception>
+        </member>
+        <member name="M:PokemonGameLib.Models.Trainer.SwitchPokemon(PokemonGameLib.Models.Pokemon)">
+            <summary>
+            Switches the Trainer's current Pokémon to the specified new Pokémon.
+            </summary>
+            <param name="newPokemon">The new Pokémon to switch to.</param>
+            <exception cref="T:System.InvalidOperationException">Thrown if the new Pokémon is fainted or not owned by the Trainer.</exception>
         </member>
         <member name="T:Move">
             <summary>
@@ -112,80 +281,6 @@
             <param name="pokemonType">The type of the Pokémon.</param>
             <param name="pokemonLevel">The level of the Pokémon.</param>
             <returns><c>true</c> if the move type is compatible with the Pokémon type and the Pokémon's level is sufficient to learn the move; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="T:Pokemon">
-            <summary>
-            Represents a Pokémon with properties for name, type, level, stats, and methods to manage its state.
-            </summary>
-        </member>
-        <member name="P:Pokemon.Name">
-            <summary>
-            Gets the name of the Pokémon.
-            </summary>
-        </member>
-        <member name="P:Pokemon.Type">
-            <summary>
-            Gets the type of the Pokémon.
-            </summary>
-        </member>
-        <member name="P:Pokemon.Level">
-            <summary>
-            Gets the level of the Pokémon.
-            </summary>
-        </member>
-        <member name="P:Pokemon.HP">
-            <summary>
-            Gets the current HP of the Pokémon.
-            </summary>
-        </member>
-        <member name="P:Pokemon.Attack">
-            <summary>
-            Gets the attack stat of the Pokémon.
-            </summary>
-        </member>
-        <member name="P:Pokemon.Defense">
-            <summary>
-            Gets the defense stat of the Pokémon.
-            </summary>
-        </member>
-        <member name="P:Pokemon.Moves">
-            <summary>
-            Gets the list of moves the Pokémon knows.
-            </summary>
-        </member>
-        <member name="M:Pokemon.#ctor(System.String,PokemonType,System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Pokemon"/> class.
-            </summary>
-            <param name="name">The name of the Pokémon.</param>
-            <param name="type">The type of the Pokémon.</param>
-            <param name="level">The level of the Pokémon.</param>
-            <param name="hp">The starting HP of the Pokémon.</param>
-            <param name="attack">The attack stat of the Pokémon.</param>
-            <param name="defense">The defense stat of the Pokémon.</param>
-        </member>
-        <member name="M:Pokemon.TakeDamage(System.Int32)">
-            <summary>
-            Applies damage to the Pokémon.
-            </summary>
-            <param name="damage">The amount of damage to apply.</param>
-        </member>
-        <member name="M:Pokemon.IsFainted">
-            <summary>
-            Determines whether the Pokémon has fainted.
-            </summary>
-            <returns><c>true</c> if the Pokémon's HP is less than or equal to 0; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:Pokemon.AddMove(Move)">
-            <summary>
-            Adds a move to the Pokémon's move list.
-            </summary>
-            <param name="move">The move to add to the Pokémon's move list.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if the move is null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown if the Pokémon already knows the maximum number of moves.</exception>
-            <exception cref="T:System.ArgumentException">Thrown if the move is already known by the Pokémon.</exception>
-            <exception cref="T:System.ArgumentException">Thrown if the move is not compatible with the Pokémon's type.</exception>
-            <exception cref="T:System.ArgumentException">Thrown if the move is not compatible with the Pokémon's level.</exception>
         </member>
         <member name="T:PokemonType">
             <summary>
@@ -281,46 +376,6 @@
             <summary>
             Steel type Pokémon, characterized by their ability to use steel-based attacks.
             </summary>
-        </member>
-        <member name="T:PokemonGameLib.Models.Trainer">
-            <summary>
-            Represents a Trainer in the Pokemon game.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Trainer.Pokemons">
-            <summary>
-            Gets or sets the list of Pokemons owned by the Trainer.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Trainer.Name">
-            <summary>
-            Gets or sets the name of the Trainer.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainer.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Trainer"/> class with the specified name.
-            </summary>
-            <param name="name">The name of the Trainer.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainer.AddPokemon(Pokemon)">
-            <summary>
-            Adds a Pokemon to the Trainer's list of Pokemons.
-            </summary>
-            <param name="pokemon">The Pokemon to be added.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainer.HasValidPokemons">
-            <summary>
-            Determines whether the trainer has any Pokémon that are not fainted.
-            </summary>
-            <returns>
-            <c>true</c> if the trainer has at least one Pokémon that is not fainted; otherwise, <c>false</c>.
-            </returns>
-            <remarks>
-            This method checks the list of Pokémon associated with the trainer and returns <c>true</c> if there is any Pokémon
-            that is not in a fainted state (i.e., it has non-zero HP). If all Pokémon are fainted or if the list is empty,
-            the method will return <c>false</c>.
-            </remarks>
         </member>
         <member name="T:TypeEffectiveness">
             <summary>
