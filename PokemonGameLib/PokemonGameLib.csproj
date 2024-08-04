@@ -25,10 +25,6 @@
       <Pack>True</Pack>
       <PackagePath>RELEASE_NOTES.md</PackagePath>
     </None>
-    <None Update="README.md">
-      <Pack>True</Pack>
-      <PackagePath>README.md</PackagePath>
-    </None>
   </ItemGroup>
 
 </Project>

@@ -6,27 +6,32 @@
     <members>
         <member name="T:Battle">
             <summary>
-            Manages the battle between two Trainers, handling Pokémon attacks and damage calculation.
+            Manages the battle between two Trainers, handling Pokémon attacks, damage calculation, and turn-based mechanics.
             </summary>
         </member>
         <member name="P:Battle.AttackingTrainer">
             <summary>
-            Gets the first Trainer in the battle.
+            Gets the Trainer initiating the attack.
             </summary>
         </member>
         <member name="P:Battle.DefendingTrainer">
             <summary>
-            Gets the second Trainer in the battle.
+            Gets the Trainer receiving the attack.
+            </summary>
+        </member>
+        <member name="P:Battle.IsAttackingTurn">
+            <summary>
+            Indicates whether it is the attacking Trainer's turn.
             </summary>
         </member>
         <member name="P:Battle.Attacker">
             <summary>
-            Gets the current Pokémon of the attacking Trainer.
+            Gets the current Pokémon of the active Trainer.
             </summary>
         </member>
         <member name="P:Battle.Defender">
             <summary>
-            Gets the current Pokémon of the defending Trainer.
+            Gets the current Pokémon of the opposing Trainer.
             </summary>
         </member>
         <member name="M:Battle.#ctor(PokemonGameLib.Models.Trainer,PokemonGameLib.Models.Trainer)">
@@ -38,14 +43,30 @@
             <exception cref="T:System.ArgumentNullException">Thrown if either <paramref name="attackingTrainer"/> or <paramref name="defendingTrainer"/> is null.</exception>
             <exception cref="T:System.InvalidOperationException">Thrown if either Trainer has no valid Pokémon.</exception>
         </member>
-        <member name="M:Battle.PerformAttack(PokemonGameLib.Models.Trainer,Move)">
+        <member name="M:Battle.PerformAttack(Move)">
             <summary>
-            Performs an attack by the specified Trainer's Pokémon on the opponent's Pokémon.
+            Performs an attack by the current active Pokémon.
             </summary>
-            <param name="attackingTrainer">The Trainer whose Pokémon is performing the attack.</param>
             <param name="move">The move used by the attacking Pokémon.</param>
             <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="move"/> is null.</exception>
             <exception cref="T:System.InvalidOperationException">Thrown if the attacking Pokémon is fainted, does not know the move, or if the defending Pokémon is fainted.</exception>
+        </member>
+        <member name="M:Battle.GetPokemonSelection(PokemonGameLib.Models.Trainer)">
+            <summary>
+            Prompts the Trainer to select a new Pokémon to switch in.
+            </summary>
+            <param name="trainer">The Trainer who needs to select a new Pokémon.</param>
+            <returns>The selected Pokémon.</returns>
+        </member>
+        <member name="M:Battle.SwitchPokemon(PokemonGameLib.Models.Trainer,Pokemon)">
+            <summary>
+            Switches the current Pokémon of the specified Trainer with another Pokémon from the Trainer's team.
+            </summary>
+            <param name="trainer">The Trainer whose Pokémon will be switched.</param>
+            <param name="newPokemon">The new Pokémon to switch in.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="trainer"/> or <paramref name="newPokemon"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if the new Pokémon is not in the Trainer's team.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown if the new Pokémon is fainted.</exception>
         </member>
         <member name="M:Battle.CalculateDamage(Pokemon,Pokemon,Move,System.Double)">
             <summary>
@@ -66,7 +87,7 @@
         </member>
         <member name="M:Battle.DetermineBattleResult">
             <summary>
-            Determines the result of the battle.
+            Determines the result of the battle based on the state of the Pokémon.
             </summary>
             <returns>A string indicating the result of the battle.</returns>
         </member>
@@ -289,7 +310,7 @@
         </member>
         <member name="P:PokemonGameLib.Models.Trainer.Pokemons">
             <summary>
-            Gets or sets the list of Pokemons owned by the Trainer.
+            Gets the list of Pokemons owned by the Trainer.
             </summary>
         </member>
         <member name="P:PokemonGameLib.Models.Trainer.Name">
@@ -308,6 +329,7 @@
             Adds a Pokemon to the Trainer's list of Pokemons.
             </summary>
             <param name="pokemon">The Pokemon to be added.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="pokemon"/> is null.</exception>
         </member>
         <member name="M:PokemonGameLib.Models.Trainer.HasValidPokemons">
             <summary>
@@ -316,11 +338,14 @@
             <returns>
             <c>true</c> if the trainer has at least one Pokémon that is not fainted; otherwise, <c>false</c>.
             </returns>
-            <remarks>
-            This method checks the list of Pokémon associated with the trainer and returns <c>true</c> if there is any Pokémon
-            that is not in a fainted state (i.e., it has non-zero HP). If all Pokémon are fainted or if the list is empty,
-            the method will return <c>false</c>.
-            </remarks>
+        </member>
+        <member name="M:PokemonGameLib.Models.Trainer.RemovePokemon(Pokemon)">
+            <summary>
+            Removes a Pokémon from the Trainer's list of Pokemons.
+            </summary>
+            <param name="pokemon">The Pokémon to remove.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="pokemon"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown if the Pokémon is not in the Trainer's list.</exception>
         </member>
         <member name="T:TypeEffectiveness">
             <summary>

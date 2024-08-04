@@ -1,7 +1,6 @@
 using Xunit;
 using System;
 using PokemonGameLib.Models;
-using System.Runtime.CompilerServices;
 
 namespace PokemonGameLib.Tests
 {
@@ -26,7 +25,7 @@ namespace PokemonGameLib.Tests
             var battle = new Battle(ash, brock);
 
             // Act
-            battle.PerformAttack(ash, thunderbolt);
+            battle.PerformAttack(thunderbolt);
 
             // Assert
             Assert.Equal(137, charizard.HP); // Verify based on your actual formula
@@ -51,12 +50,11 @@ namespace PokemonGameLib.Tests
             var battle = new Battle(ash, brock);
 
             // Act
-            battle.PerformAttack(ash, thunderbolt);
+            battle.PerformAttack(thunderbolt);
 
             // Assert
             Assert.Equal(67, flyingPokemon.HP); // Expected value after applying 2.0 effectiveness
         }
-
 
         [Fact]
         public void TestPerformAttack_NotVeryEffective()
@@ -77,17 +75,16 @@ namespace PokemonGameLib.Tests
             var battle = new Battle(ash, brock);
 
             // Act
-            battle.PerformAttack(ash, thunderbolt);
+            battle.PerformAttack(thunderbolt);
 
             // Assert
             Assert.Equal(92, grassPokemon.HP); // Expected value after applying 0.5 effectiveness
         }
 
-
         [Fact]
         public void TestPerformAttack_NoEffect()
         {
-           // Arrange
+            // Arrange
             var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
             var groundPokemon = new Pokemon("Ground Pokemon", PokemonType.Ground, 10, 100, 55, 40);
 
@@ -103,12 +100,11 @@ namespace PokemonGameLib.Tests
             var battle = new Battle(ash, brock);
 
             // Act
-            battle.PerformAttack(ash, thunderbolt);
+            battle.PerformAttack(thunderbolt);
 
             // Assert
-            Assert.Equal(100, groundPokemon.HP); 
+            Assert.Equal(100, groundPokemon.HP); // No effect should leave HP unchanged
         }
-
 
         [Fact]
         public void TestPerformAttack_WithInvalidMove()
@@ -131,7 +127,7 @@ namespace PokemonGameLib.Tests
             var battle = new Battle(ash, brock);
 
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => battle.PerformAttack(ash, fireBlast));
+            Assert.Throws<InvalidOperationException>(() => battle.PerformAttack(fireBlast));
         }
 
         [Fact]
@@ -151,13 +147,13 @@ namespace PokemonGameLib.Tests
             brock.AddPokemon(charizard);
 
             var battle = new Battle(ash, brock);
-            battle.PerformAttack(ash, thunderbolt);
+            battle.PerformAttack(thunderbolt); // Attack to make Charizard faint
 
             // Act
             var result = battle.DetermineBattleResult();
 
             // Assert
-            Assert.Equal("Brock's Charizard has fainted. Ash wins!", result);
+            Assert.Equal("Brock's Pokémon have all fainted. Ash wins!", result);
         }
 
         [Fact]
@@ -167,23 +163,26 @@ namespace PokemonGameLib.Tests
             var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 15, 10, 55, 40); // Pikachu has very low HP
             var charizard = new Pokemon("Charizard", PokemonType.Fire, 15, 100, 70, 50);
 
-            var flamethrower = new Move("Flamethrower", PokemonType.Fire, 90, 15);
+            var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
+            var flamethrower = new Move("Flamethrower", PokemonType.Fire, 90000, 15);
             charizard.AddMove(flamethrower);
+            pikachu.AddMove(thunderbolt);
 
             var ash = new Trainer("Ash");
             ash.AddPokemon(pikachu);
 
-            var brock = new Trainer("Brock");
-            brock.AddPokemon(charizard);
+            var brocky = new Trainer("Brocky");
+            brocky.AddPokemon(charizard);
 
-            var battle = new Battle(ash, brock);
-            battle.PerformAttack(brock, flamethrower);
+            var battle = new Battle(ash, brocky);
+            battle.PerformAttack(thunderbolt); 
+            battle.PerformAttack(flamethrower); // Attack to make Pikachu faint
 
             // Act
             var result = battle.DetermineBattleResult();
 
             // Assert
-            Assert.Equal("Ash's Pikachu has fainted. Brock wins!", result);
+            Assert.Equal("Ash's Pikachu has fainted. Brocky wins!", result);
         }
 
         [Fact]
@@ -273,5 +272,119 @@ namespace PokemonGameLib.Tests
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => new Battle(ash, brock));
         }
+
+        [Fact]
+        public void TestSwitchPokemon_Success()
+        {
+            // Arrange
+            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+            var bulbasaur = new Pokemon("Bulbasaur", PokemonType.Grass, 10, 100, 49, 49);
+
+            var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
+            var vineWhip = new Move("Vine Whip", PokemonType.Grass, 45, 10);
+
+            pikachu.AddMove(thunderbolt);
+            bulbasaur.AddMove(vineWhip);
+
+            var ash = new Trainer("Ash");
+            ash.AddPokemon(pikachu);
+            ash.AddPokemon(bulbasaur);
+
+            var brock = new Trainer("Brock");
+            var charizard = new Pokemon("Charizard", PokemonType.Fire, 10, 150, 70, 50);
+            brock.AddPokemon(charizard);
+
+            var battle = new Battle(ash, brock);
+
+            // Act
+            battle.SwitchPokemon(ash, bulbasaur);
+
+            // Assert
+            Assert.Contains(bulbasaur, ash.Pokemons);
+            Assert.DoesNotContain(pikachu, ash.Pokemons);
+            Assert.Equal(bulbasaur, battle.Attacker);
+        }
+
+        [Fact]
+        public void TestSwitchPokemon_TrainerNotInTeam()
+        {
+            // Arrange
+            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+            var charmander = new Pokemon("Charmander", PokemonType.Fire, 10, 100, 52, 43);
+
+            var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
+            var flamethrower = new Move("Flamethrower", PokemonType.Fire, 90, 10);
+
+            pikachu.AddMove(thunderbolt);
+            charmander.AddMove(flamethrower);
+
+            var ash = new Trainer("Ash");
+            ash.AddPokemon(pikachu);
+
+            var brock = new Trainer("Brock");
+            brock.AddPokemon(charmander);
+
+            var battle = new Battle(ash, brock);
+
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => battle.SwitchPokemon(ash, charmander));
+        }
+
+        [Fact]
+        public void TestSwitchPokemon_FaintedCurrentPokemon()
+        {
+            // Arrange
+            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 0, 55, 40); // Fainted
+            var bulbasaur = new Pokemon("Bulbasaur", PokemonType.Grass, 10, 100, 49, 49);
+
+            var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
+            var vineWhip = new Move("Vine Whip", PokemonType.Grass, 45, 10);
+
+            pikachu.AddMove(thunderbolt);
+            bulbasaur.AddMove(vineWhip);
+
+            var ash = new Trainer("Ash");
+            ash.AddPokemon(pikachu);
+            ash.AddPokemon(bulbasaur);
+
+            var brock = new Trainer("Brock");
+            var charizard = new Pokemon("Charizard", PokemonType.Fire, 10, 150, 70, 50);
+            brock.AddPokemon(charizard);
+
+            var battle = new Battle(ash, brock);
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => battle.SwitchPokemon(ash, bulbasaur));
+        }
+
+        [Fact]
+        public void TestSwitchPokemon_WithOnlyOnePokemon()
+        {
+            // Arrange
+            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 15, 100, 55, 40);
+            var charizard = new Pokemon("Charizard", PokemonType.Fire, 15, 100, 70, 50);
+
+            var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90000, 10);
+            pikachu.AddMove(thunderbolt);
+
+            var ash = new Trainer("Ash");
+            ash.AddPokemon(pikachu); // Only Pikachu available
+
+            var brock = new Trainer("Brock");
+            brock.AddPokemon(charizard);
+
+            var battle = new Battle(ash, brock);
+
+            // Act
+            // Perform an attack and make sure we handle the case where there's only one Pokémon
+            battle.PerformAttack(thunderbolt); 
+            var result = battle.DetermineBattleResult();
+
+            // Assert
+            Assert.Equal("Brock's Pokémon have all fainted. Ash wins!", result);
+        }
+
+
+        
     }
 }

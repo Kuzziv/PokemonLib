@@ -1,6 +1,6 @@
 ## Release Notes
 
-### Version beta.1.3.0
+### Version 8.0.0-alpha
 
 #### Overview
 

@@ -1,5 +1,7 @@
 using Xunit;
 using PokemonGameLib.Models;
+using System;
+using System.Linq;
 
 namespace PokemonGameLib.Tests
 {
@@ -8,14 +10,11 @@ namespace PokemonGameLib.Tests
         [Fact]
         public void TestTrainerInitialization()
         {
-            // Arrange
+            // Arrange & Act
             var trainer = new Trainer("Ash");
 
-            // Act
-            var name = trainer.Name;
-
             // Assert
-            Assert.Equal("Ash", name);
+            Assert.Equal("Ash", trainer.Name);
             Assert.Empty(trainer.Pokemons);
         }
 
@@ -82,6 +81,45 @@ namespace PokemonGameLib.Tests
 
             // Assert
             Assert.True(hasValidPokemons);
+        }
+
+        [Fact]
+        public void TestRemovePokemon_Success()
+        {
+            // Arrange
+            var trainer = new Trainer("Ash");
+            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+            trainer.AddPokemon(pikachu);
+
+            // Act
+            trainer.RemovePokemon(pikachu);
+
+            // Assert
+            Assert.Empty(trainer.Pokemons);
+        }
+
+        [Fact]
+        public void TestRemovePokemon_NullPokemon_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var trainer = new Trainer("Ash");
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => trainer.RemovePokemon(null));
+        }
+
+        [Fact]
+        public void TestRemovePokemon_PokemonNotInList_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            var trainer = new Trainer("Ash");
+            var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+            var charizard = new Pokemon("Charizard", PokemonType.Fire, 10, 100, 70, 50);
+
+            trainer.AddPokemon(pikachu);
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => trainer.RemovePokemon(charizard));
         }
     }
 }
