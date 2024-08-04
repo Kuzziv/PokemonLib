@@ -48,6 +48,7 @@ namespace PokemonGameLib.Tests
         {
             // Act
             var effectiveness = TypeEffectiveness.GetEffectiveness(attackType, defenseType);
+            
 
             // Assert
             Assert.Equal(expectedEffectiveness, effectiveness);
