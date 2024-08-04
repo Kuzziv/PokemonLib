@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute("A library for creating your own pokeman game, with custom pokemons, moves, and ma" +
     "p")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0-beta.1.3.0+1dc5104a3a2cb962ff9fe39d6eff8aea13a1d146")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0-beta.1.3.0+eb451978cedb8aec304f6d16815d49214e1907e8")]
 [assembly: System.Reflection.AssemblyProductAttribute("Custom pokemon game")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PokemonGameLib")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

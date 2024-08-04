@@ -98,16 +98,34 @@ namespace PokemonGameLib.Models
         }
 
         /// <summary>
-        /// Calculates the damage dealt by a move, incorporating factors like effectiveness, STAB, and critical hits.
+        /// Calculates the damage dealt by a move, incorporating factors like effectiveness, STAB (Same Type Attack Bonus), 
+        /// critical hits, and a random factor to simulate variability in battle outcomes.
         /// </summary>
-        /// <param name="movePower">The power of the move.</param>
-        /// <param name="attackerAttack">The attack stat of the attacker.</param>
-        /// <param name="defenderDefense">The defense stat of the defender.</param>
-        /// <param name="effectiveness">The effectiveness multiplier.</param>
-        /// <param name="moveType">The type of the move being used.</param>
-        /// <returns>The calculated damage.</returns>
+        /// <param name="movePower">The base power of the move being used, which determines the move's strength.</param>
+        /// <param name="attackerAttack">The attack stat of the attacking Pokémon, affecting the potency of physical attacks.</param>
+        /// <param name="defenderDefense">The defense stat of the defending Pokémon, reducing damage from incoming physical attacks.</param>
+        /// <param name="effectiveness">
+        /// A multiplier representing the effectiveness of the move against the defender's type. 
+        /// Values greater than 1.0 indicate super effectiveness, values less than 1.0 indicate reduced effectiveness, 
+        /// and a value of 0 means no effect.
+        /// </param>
+        /// <param name="moveType">The type of the move being used, which interacts with the defender's type to determine effectiveness.</param>
+        /// <returns>The total calculated damage to be dealt to the defender, after applying all modifiers.</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when either the attacker or the defender Pokémon is null, indicating a misconfiguration of the battle state.
+        /// </exception>
         private double CalculateDamage(int movePower, int attackerAttack, int defenderDefense, double effectiveness, PokemonType moveType)
         {
+            if (Attacker == null)
+            {
+                throw new InvalidOperationException("Attacker cannot be null.");
+            }
+
+            if (Defender == null)
+            {
+                throw new InvalidOperationException("Defender cannot be null.");
+            }
+            
             double randomFactor = new Random().Next(85, 101) / 100.0; // Random factor between 0.85 and 1.0
             double stab = Attacker.Type == moveType ? 1.5 : 1.0; // STAB
             double critical = new Random().NextDouble() < 0.0625 ? 2.0 : 1.0; // 6.25% chance for a critical hit
