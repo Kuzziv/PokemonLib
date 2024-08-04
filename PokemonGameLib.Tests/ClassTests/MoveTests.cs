@@ -1,5 +1,6 @@
 using Xunit;
 using System;
+using PokemonGameLib.Models;  // Ensure correct namespace
 
 namespace PokemonGameLib.Tests
 {

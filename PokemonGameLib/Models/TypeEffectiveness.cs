@@ -149,8 +149,6 @@ public static class TypeEffectiveness
         {(PokemonType.Steel, PokemonType.Water), 0.5},
         {(PokemonType.Steel, PokemonType.Electric), 0.5},
         {(PokemonType.Steel, PokemonType.Steel), 0.5},
-        {(PokemonType.Steel, PokemonType.Poison), 0.5},
-
     };
 
     /// <summary>

@@ -34,7 +34,7 @@ namespace PokemonGameLib.Tests
         }
 
         [Fact]
-        public void TestHasValidPokemons_WithValidPokemon()
+        public void TestHasValidPokemon_WithValidPokemon()
         {
             // Arrange
             var trainer = new Trainer("Ash");
@@ -43,44 +43,48 @@ namespace PokemonGameLib.Tests
             trainer.AddPokemon(pikachu);
 
             // Act
-            var hasValidPokemons = trainer.HasValidPokemons();
+            var hasValidPokemon = trainer.HasValidPokemon();
 
             // Assert
-            Assert.True(hasValidPokemons);
+            Assert.True(hasValidPokemon);
         }
 
         [Fact]
-        public void TestHasValidPokemons_WithFaintedPokemon()
+        public void TestHasValidPokemon_WithFaintedPokemon()
         {
             // Arrange
             var trainer = new Trainer("Ash");
-            var faintedPikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 0, 55, 40); // Fainted
+            var faintedPikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+
+            faintedPikachu.TakeDamage(100); // Simulate fainting
 
             trainer.AddPokemon(faintedPikachu);
 
             // Act
-            var hasValidPokemons = trainer.HasValidPokemons();
+            var hasValidPokemon = trainer.HasValidPokemon();
 
             // Assert
-            Assert.False(hasValidPokemons);
+            Assert.False(hasValidPokemon);
         }
 
         [Fact]
-        public void TestHasValidPokemons_WithMixedPokemons()
+        public void TestHasValidPokemon_WithMixedPokemon()
         {
             // Arrange
             var trainer = new Trainer("Ash");
             var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
-            var faintedCharizard = new Pokemon("Charizard", PokemonType.Fire, 10, 0, 70, 50); // Fainted
+            var faintedCharizard = new Pokemon("Charizard", PokemonType.Fire, 10, 100, 70, 50);
+
+            faintedCharizard.TakeDamage(100); // Simulate fainting
 
             trainer.AddPokemon(pikachu);
             trainer.AddPokemon(faintedCharizard);
 
             // Act
-            var hasValidPokemons = trainer.HasValidPokemons();
+            var hasValidPokemon = trainer.HasValidPokemon();
 
             // Assert
-            Assert.True(hasValidPokemons);
+            Assert.True(hasValidPokemon);
         }
 
         [Fact]
