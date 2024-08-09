@@ -1,11 +1,16 @@
+// Battle.cs
 using System;
 using System.Linq;
-using PokemonGameLib.Models; // Add this using directive to ensure access to Trainer and Pokemon
+using PokemonGameLib.Models.Trainers;
+using PokemonGameLib.Models.Pokemons;
+using PokemonGameLib.Models.Moves;
+using PokemonGameLib.Models.Items;
+using PokemonGameLib.Services;
 
-namespace PokemonGameLib.Models
+namespace PokemonGameLib.Models.Battles
 {
     /// <summary>
-    /// Represents a Pokémon battle between two trainers.
+    /// Represents a Pokémon battle between two trainers, handling battle mechanics and interactions.
     /// </summary>
     public class Battle
     {
@@ -68,19 +73,52 @@ namespace PokemonGameLib.Models
         /// <exception cref="InvalidOperationException">Thrown when the move is not valid for the attacker.</exception>
         public void PerformAttack(Move move)
         {
-            if (Attacker == null || !Attacker.Moves.Contains(move))
+            if (Attacker == null)
+                throw new InvalidOperationException("Attacker cannot be null.");
+
+            if (Attacker.IsFainted())
+                throw new InvalidOperationException($"{Attacker.Name} is fainted and cannot attack.");
+
+            if (!Attacker.Moves.Contains(move))
                 throw new InvalidOperationException("Invalid move for the current attacker");
 
             if (Defender == null)
                 throw new InvalidOperationException("Defender cannot be null");
 
-            double effectiveness = CalculateEffectiveness(move.Type, Defender.Type);
-            double damage = CalculateDamage(move.Power, Attacker.Attack, Defender.Defense, effectiveness, move.Type);
-            Defender.TakeDamage((int)damage);
+            // Ensure maxHits is correctly applied
+            int hits = move.MaxHits;
+            for (int i = 0; i < hits; i++)
+            {
+                double effectiveness = CalculateEffectiveness(move.Type, Defender.Type);
+                double damage = CalculateDamage(move.Power, Attacker.Attack, Defender.Defense, effectiveness, move.Type);
+                Defender.TakeDamage((int)damage);
 
-            Console.WriteLine($"{Attacker.Name} used {move.Name}!");
-            Console.WriteLine(EffectivenessMessage(effectiveness));
-            Console.WriteLine($"{Defender.Name} took {damage} damage!");
+                Console.WriteLine($"{Attacker.Name} used {move.Name}!");
+                Console.WriteLine(EffectivenessMessage(effectiveness));
+                Console.WriteLine($"{Defender.Name} took {damage} damage!");
+
+                if (Defender.IsFainted())
+                {
+                    Console.WriteLine($"{Defender.Name} has fainted!");
+                    break;
+                }
+            }
+
+            // Apply recoil damage if applicable
+            if (move.RecoilPercentage > 0)
+            {
+                int recoilDamage = (int)(move.Power * (move.RecoilPercentage / 100.0));
+                Attacker.TakeDamage(recoilDamage);
+                Console.WriteLine($"{Attacker.Name} took {recoilDamage} recoil damage!");
+            }
+
+            // Apply healing if applicable
+            if (move.HealingPercentage > 0)
+            {
+                int healingAmount = (int)(Attacker.MaxHP * (move.HealingPercentage / 100.0));
+                Attacker.Heal(healingAmount);
+                Console.WriteLine($"{Attacker.Name} healed {healingAmount} HP!");
+            }
 
             // Switch turns after the attack
             isFirstTrainerAttacking = !isFirstTrainerAttacking;
@@ -166,6 +204,12 @@ namespace PokemonGameLib.Models
         /// <exception cref="InvalidOperationException">Thrown when attempting to switch to a fainted Pokémon or a Pokémon not owned by the trainer.</exception>
         public void SwitchPokemon(Trainer trainer, Pokemon newPokemon)
         {
+            if (trainer == null)
+                throw new InvalidOperationException("Trainer cannot be null");
+
+            if (newPokemon == null)
+                throw new InvalidOperationException("Pokemon cannot be null");
+
             if (!trainer.Pokemons.Contains(newPokemon))
                 throw new InvalidOperationException("Cannot switch to a Pokémon not owned by the trainer");
 
@@ -174,6 +218,18 @@ namespace PokemonGameLib.Models
 
             trainer.CurrentPokemon = newPokemon;
             Console.WriteLine($"{trainer.Name} switched to {newPokemon.Name}!");
+        }
+
+
+        /// <summary>
+        /// Uses an item during the battle.
+        /// </summary>
+        /// <param name="item">The item to be used.</param>
+        /// <param name="trainer">The trainer using the item.</param>
+        /// <param name="target">The target Pokémon of the item.</param>
+        public void UseItem(Item item, Trainer trainer, Pokemon target)
+        {
+            item.Use(trainer, target);
         }
     }
 }

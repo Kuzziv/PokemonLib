@@ -1,11 +1,13 @@
+// Trainer.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PokemonGameLib.Models.Pokemons;
 
-namespace PokemonGameLib.Models
+namespace PokemonGameLib.Models.Trainers
 {
     /// <summary>
-    /// Represents a Trainer in the Pokémon game.
+    /// Represents a Trainer in the Pokémon game, managing a team of Pokémon and facilitating interactions during battles.
     /// </summary>
     public class Trainer
     {

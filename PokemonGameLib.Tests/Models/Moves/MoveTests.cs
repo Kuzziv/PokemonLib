@@ -1,8 +1,9 @@
 using Xunit;
 using System;
-using PokemonGameLib.Models;  // Ensure correct namespace
+using PokemonGameLib.Models.Moves;
+using PokemonGameLib.Models.Pokemons;
 
-namespace PokemonGameLib.Tests
+namespace PokemonGameLib.Tests.Moves
 {
     public class MoveTests
     {
@@ -85,6 +86,45 @@ namespace PokemonGameLib.Tests
 
             // Assert
             Assert.False(isCompatible);
+        }
+
+        [Fact]
+        public void TestMoveInitialization_WithRecoil()
+        {
+            // Arrange & Act
+            var move = new Move("Volt Tackle", PokemonType.Electric, 120, 10, recoilPercentage: 10);
+
+            // Assert
+            Assert.Equal("Volt Tackle", move.Name);
+            Assert.Equal(120, move.Power);
+            Assert.Equal(10, move.Level);
+            Assert.Equal(10, move.RecoilPercentage);
+        }
+
+        [Fact]
+        public void TestMoveInitialization_WithHealing()
+        {
+            // Arrange & Act
+            var move = new Move("Giga Drain", PokemonType.Grass, 75, 10, healingPercentage: 50);
+
+            // Assert
+            Assert.Equal("Giga Drain", move.Name);
+            Assert.Equal(75, move.Power);
+            Assert.Equal(10, move.Level);
+            Assert.Equal(50, move.HealingPercentage);
+        }
+
+        [Fact]
+        public void TestMoveInitialization_WithMultiHit()
+        {
+            // Arrange & Act
+            var move = new Move("Double Slap", PokemonType.Normal, 15, 10, maxHits: 5);
+
+            // Assert
+            Assert.Equal("Double Slap", move.Name);
+            Assert.Equal(15, move.Power);
+            Assert.Equal(10, move.Level);
+            Assert.Equal(5, move.MaxHits);
         }
     }
 }
