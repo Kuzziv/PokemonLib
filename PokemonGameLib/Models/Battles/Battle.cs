@@ -263,15 +263,5 @@ namespace PokemonGameLib.Models.Battles
             if (newPokemon.IsFainted())
                 throw new InvalidPokemonSwitchException("Cannot switch to a fainted Pokémon.");
         }
-
-        /// <summary>
-        /// Processes a turn in the battle.
-        /// </summary>
-        public void ProcessTurn()
-        {
-            AttackingTrainer.TakeTurn(this);
-            _logger.LogInfo("Turn processed. Switching attacking trainer.");
-            _isFirstTrainerAttacking = !_isFirstTrainerAttacking;
-        }
     }
 }

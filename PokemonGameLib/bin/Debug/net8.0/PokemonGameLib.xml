@@ -573,11 +573,6 @@
             <param name="newPokemon">The new Pokémon to switch to.</param>
             <exception cref="T:PokemonGameLib.Exceptions.InvalidPokemonSwitchException">Thrown if the switch is invalid.</exception>
         </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.ProcessTurn">
-            <summary>
-            Processes a turn in the battle.
-            </summary>
-        </member>
         <member name="T:PokemonGameLib.Models.Items.Item">
             <summary>
             Represents an item that can be used in battles to affect Pokémon or trainers.

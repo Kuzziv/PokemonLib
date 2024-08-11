@@ -93,7 +93,7 @@ namespace PokemonGameLib.Models.Trainers
         internal IPokemon? SelectBestPokemonToSwitchTo(IBattle battle)
         {
             var opponentPokemon = battle.DefendingTrainer.CurrentPokemon;
-            
+
             _logger.LogInfo($"Evaluating switch for {Name}. Opponent Pokémon: {opponentPokemon.Name} ({opponentPokemon.Type})");
 
             foreach (var pokemon in Pokemons)
@@ -102,9 +102,15 @@ namespace PokemonGameLib.Models.Trainers
                 {
                     double effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(pokemon.Type, opponentPokemon.Type);
                     _logger.LogInfo($"Effectiveness of {pokemon.Name} ({pokemon.Type}) against {opponentPokemon.Name} ({opponentPokemon.Type}): {effectiveness}");
+
+                    // Log if this Pokemon is considered for switching
+                    if (effectiveness > 1.0)
+                    {
+                        _logger.LogInfo($"{pokemon.Name} is considered for switching due to type advantage.");
+                    }
                 }
             }
-            
+
             var bestPokemon = Pokemons
                 .Where(p => !p.IsFainted() && TypeEffectivenessService.Instance.GetEffectiveness(p.Type, opponentPokemon.Type) > 1.0)
                 .OrderByDescending(p => p.Level)
@@ -122,12 +128,13 @@ namespace PokemonGameLib.Models.Trainers
             }
         }
 
+
         /// <summary>
         /// Selects the best move to use based on effectiveness and power.
         /// </summary>
         /// <param name="battle">The current battle instance.</param>
         /// <returns>The best move to use, or <c>null</c> if no move is suitable.</returns>
-        private IMove? SelectBestMove(IBattle battle)
+        internal IMove? SelectBestMove(IBattle battle)
         {
             var currentPokemon = CurrentPokemon;
             var opponentPokemon = battle.DefendingTrainer.CurrentPokemon;
