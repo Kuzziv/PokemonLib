@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1vTLiMo1iKgUW6ni7a1cGQkW2Fvt5GyHUOx/QSGCj412ZyVMxDi37Iu4P4wOhvUf3RPkYQCmHLljaEpbslTO6A==",
+  "dgSpecHash": "xHDyuvSmeNhtI61n8rBAMXaKg/Mv1zzzKmT+iNPzLlRNOcqitx4AlSe5UsGF40klOJ3IfVt03m7DSRw3EFBa+g==",
   "success": true,
   "projectFilePath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib.Tests/PokemonGameLib.Tests.csproj",
   "expectedPackageFiles": [
@@ -23,8 +23,7 @@
     "/Users/madsludvigsen/.nuget/packages/xunit.extensibility.core/2.9.0/xunit.extensibility.core.2.9.0.nupkg.sha512",
     "/Users/madsludvigsen/.nuget/packages/xunit.extensibility.execution/2.9.0/xunit.extensibility.execution.2.9.0.nupkg.sha512",
     "/Users/madsludvigsen/.nuget/packages/xunit.runner.visualstudio/2.8.2/xunit.runner.visualstudio.2.8.2.nupkg.sha512",
-    "/Users/madsludvigsen/.nuget/packages/yamldotnet/16.0.0/yamldotnet.16.0.0.nupkg.sha512",
-    "/Users/madsludvigsen/.nuget/packages/pokemongamelib/8.0.0-alpha/pokemongamelib.8.0.0-alpha.nupkg.sha512"
+    "/Users/madsludvigsen/.nuget/packages/yamldotnet/16.0.0/yamldotnet.16.0.0.nupkg.sha512"
   ],
   "logs": []
 }

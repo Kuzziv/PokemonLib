@@ -52,7 +52,7 @@
     "/Users/madsludvigsen/.nuget/packages/": {}
   },
   "project": {
-    "version": "8.0.0-alpha",
+    "version": "8.0.0-Release",
     "restore": {
       "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj",
       "projectName": "PokemonGameLib",
