@@ -1,61 +1,54 @@
-## Release Notes
+## PokemonGameLib
 
-### Version 8.0.0-alpha
+### Version 8.0.0-Relase
 
 #### Overview
 
-This release introduces a changes to, `Battle.cs`
+This release introduces significant enhancements and new features to the `PokemonGameLib`, including the addition of a comprehensive `Battle` class to manage Pokémon battles, improvements to the `Trainer`, `Pokemon`, and `Move` classes, and better handling of type effectiveness and damage calculation.
 
-#### Key Changes
+#### Key Updates
 
 1. **New `Battle` Class**
-   - **Description:** Manages the interaction between two Trainers in a Pokémon battle, including attack execution, damage calculation, and battle outcome determination.
-   - **Features:**
-     - `AttackingTrainer`: Gets the Trainer initiating the attack.
-     - `DefendingTrainer`: Gets the Trainer receiving the attack.
-     - `Attacker`: Gets the current Pokémon of the attacking Trainer.
-     - `Defender`: Gets the current Pokémon of the defending Trainer.
+   - **Purpose**: Manages the interaction between two Trainers in a Pokémon battle.
+   - **Features**:
+     - **Turn Management**: Tracks and manages which Trainer is currently attacking.
+     - **Attack Execution**: Facilitates the use of Pokémon moves to perform attacks during a battle.
+     - **Damage Calculation**: Determines the damage dealt during an attack based on move power, attacker and defender stats, and type effectiveness.
+     - **Battle Outcome**: Determines and displays the result of the battle, including fainted Pokémon and the winning Trainer.
 
-2. **Constructor Enhancements**
-   - Added validation to ensure that neither `attackingTrainer` nor `defendingTrainer` is null.
-   - Validates that both Trainers have valid Pokémon before initiating a battle.
+2. **`Trainer` Class Enhancements**
+   - **Pokemon Management**: Now includes methods to check if the Trainer has any valid (non-fainted) Pokémon.
+   - **Switching Pokémon**: Trainers can switch their current Pokémon during a battle, with validation to prevent switching to fainted Pokémon or Pokémon not owned by the Trainer.
 
-3. **`PerformAttack` Method**
-   - Executes an attack from the specified Trainer's Pokémon.
-   - Validates that the Pokémon performing the attack is not fainted and knows the move.
-   - Validates that the defending Pokémon is not fainted.
-   - Calculates and applies damage based on move effectiveness and Pokémon stats.
-   - Outputs detailed battle messages including attack effectiveness and damage taken.
+3. **`Pokemon` Class Enhancements**
+   - **Move Management**: Pokémon can learn up to 4 moves, with validations to ensure moves are compatible with the Pokémon's type and level.
+   - **Damage Handling**: Improved methods for applying damage and determining if a Pokémon has fainted.
+   - **Current vs. Max HP**: Clear distinction between a Pokémon's current HP and max HP, improving clarity in code.
 
-4. **Damage Calculation**
-   - **Method:** `CalculateDamage`
-   - **Description:** Computes the damage dealt during an attack based on move power, attacker and defender stats, and type effectiveness.
+4. **`Move` Class Enhancements**
+   - **Move Compatibility**: Includes checks to ensure moves are compatible with the Pokémon’s type and level.
+   - **Damage Calculation**: Integrated into the `Battle` class for more streamlined attack execution.
 
-5. **Effectiveness Text**
-   - **Method:** `GetEffectivenessText`
-   - **Description:** Returns a descriptive string indicating how effective the move was (e.g., super effective, not very effective).
+5. **Type Effectiveness**
+   - **`TypeEffectiveness` Class**: Provides a static method to determine the effectiveness of a move based on type matchups.
+   - **Effectiveness Multiplier**: Calculates how effective a move is against a specific Pokémon type, with modifiers for super effective, not very effective, and no effect scenarios.
 
-6. **Battle Result Determination**
-   - **Method:** `DetermineBattleResult`
-   - **Description:** Provides a string indicating the result of the battle, including which Trainer wins if a Pokémon has fainted.
+6. **Battle Flow**
+   - **Turn-Based System**: Battle class now manages which Trainer's Pokémon is attacking and switches turns after each move.
+   - **Effectiveness Feedback**: After each attack, the game provides feedback on how effective the move was, adding depth to battle strategy.
 
-7. **Supporting Classes**
-   - **`Trainer` Class:** Represents a Trainer with a list of Pokémon and methods to check if the Trainer has valid Pokémon.
-   - **`Pokemon` Class:** Represents a Pokémon with properties for health, stats, moves, and methods for taking damage and checking if it’s fainted.
-   - **`Move` Class:** Represents a Pokémon move with properties for name, power, and type.
-   - **`TypeEffectiveness` Class:** Provides a static method to determine the effectiveness of a move based on type.
+7. **Error Handling**
+   - **Null Checks**: Ensures that critical objects (e.g., Pokémon, moves) are not null before performing actions.
+   - **Invalid Actions**: Prevents invalid actions, such as using a move that the current Pokémon doesn’t know or switching to a fainted Pokémon.
 
-#### Error Handling
+#### Usage Updates
 
-- Throws `ArgumentNullException` if critical parameters (like moves) are null.
-- Throws `InvalidOperationException` if actions are attempted under invalid conditions (e.g., attacking with a fainted Pokémon).
+- **Expanded Usage Examples**: The README now includes detailed examples covering the creation of Trainers and Pokémon, managing Pokémon teams, adding moves, and performing battles.
+- **Switching Pokémon**: Emphasized the need to set the current Pokémon for each Trainer before initiating a battle.
+- **Damage Calculation**: Clarified the factors involved in damage calculation, including move power, Pokémon stats, type effectiveness, STAB (Same Type Attack Bonus), and random variability.
 
 #### Future Considerations
 
-- Enhance type effectiveness logic in `TypeEffectiveness`.
-- Expand error handling to cover more edge cases.
-- Add features for move effects and Pokémon abilities.
-
----
-
-This release note provides a clear overview of the new features and changes made in the `Battle` class, as well as the supporting classes that enable its functionality.
+- **Enhanced Battle Mechanics**: Explore additional features such as move effects, abilities, and multi-turn moves.
+- **Improved Type Effectiveness**: Further refine type matchups and consider dual-type Pokémon for more complex battle scenarios.
+- **AI Enhancements**: Implement smarter AI behavior for Trainer battles, including strategy-based move selection and Pokémon switching.

@@ -1,136 +1,148 @@
-```markdown
-# PokemonGameLib
+# Pokémon Game Library
 
-**PokemonGameLib** is a .NET library designed for creating and managing a Pokémon game. It provides essential classes and functionality for building a Pokémon game, including features for Pokémon, moves, trainers, and battles.
+Welcome to the **Pokémon Game Library**—a comprehensive C# library for building a Pokémon-style game. This library provides robust interfaces and classes to manage Pokémon, implement battle mechanics, and create trainers, items, and abilities. With built-in utilities for logging and AI, this library is designed to streamline your game development process.
+
+## Features
+
+- **Pokémon Management**: Easily create and manage Pokémon with various types, abilities, moves, and evolutions.
+- **Battle System**: Implement a full-featured Pokémon battle system, including turn-based mechanics, status effects, and type effectiveness.
+- **Items and Abilities**: Define and use items and abilities that influence battles, enhancing gameplay strategies.
+- **Trainer AI**: Includes an AI system for trainers, allowing for both human and AI-controlled opponents with smart decision-making.
+- **Logging**: Integrated logging service for tracking game events, errors, and debugging.
 
 ## Installation
 
-You can install the library via NuGet. Run the following command in your project directory:
+Install the library via NuGet:
 
 ```bash
 dotnet add package PokemonGameLib
 ```
 
-## Usage
+Or using the NuGet Package Manager Console:
 
-Here’s a quick example of how to use **PokemonGameLib** in your project:
-
-### 1. Create a Pokémon
-
-To create a Pokémon, instantiate the `Pokemon` class with its name, type, level, maximum HP, attack, and defense stats.
-
-```csharp
-using PokemonGameLib.Models;
-
-var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+```bash
+Install-Package PokemonGameLib
 ```
 
-### 2. Access Pokémon Properties
+## Getting Started
 
-You can access the properties of a Pokémon object to retrieve information such as its name, type, current HP, attack, and defense stats.
+### Setting Up a Pokémon
+
+Begin by creating a Pokémon with specified attributes:
 
 ```csharp
-Console.WriteLine($"Name: {pikachu.Name}");
-Console.WriteLine($"Type: {pikachu.Type}");
-Console.WriteLine($"Level: {pikachu.Level}");
-Console.WriteLine($"Max HP: {pikachu.MaxHP}");
-Console.WriteLine($"Current HP: {pikachu.CurrentHP}");
-Console.WriteLine($"Attack: {pikachu.Attack}");
-Console.WriteLine($"Defense: {pikachu.Defense}");
+using PokemonGameLib.Models.Pokemons;
+using PokemonGameLib.Models.Pokemons.Moves;
+using PokemonGameLib.Models.Pokemons.Abilities;
+
+var pikachu = new Pokemon(
+    name: "Pikachu",
+    type: PokemonType.Electric,
+    level: 5,
+    maxHp: 35,
+    attack: 55,
+    defense: 40,
+    abilities: new List<IAbility> { new Ability("Static", "May cause paralysis if touched.") }
+);
 ```
 
-### 3. Add Moves to Pokémon
+### Adding Moves
 
-To add moves to a Pokémon, create a `Move` object and add it to the Pokémon's move list using the `AddMove` method.
+Add moves to your Pokémon to enhance its battle capabilities:
 
 ```csharp
-var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
-pikachu.AddMove(thunderbolt);
+var thunderShock = new Move("ThunderShock", PokemonType.Electric, power: 40, level: 1);
+pikachu.AddMove(thunderShock);
 ```
 
-### 4. Create Trainers
+### Creating a Trainer
 
-Create trainer objects to manage teams of Pokémon. Each trainer can have multiple Pokémon.
+Create a trainer and assign Pokémon to them:
 
 ```csharp
-var ash = new Trainer("Ash");
-ash.AddPokemon(pikachu);
+using PokemonGameLib.Models.Trainers;
 
-var charizard = new Pokemon("Charizard", PokemonType.Fire, 10, 150, 70, 50);
-var brock = new Trainer("Brock");
-brock.AddPokemon(charizard);
+var trainerAsh = new PlayerTrainer("Ash");
+trainerAsh.AddPokemon(pikachu);
+trainerAsh.CurrentPokemon = pikachu;
 ```
 
-### 5. Setup a Battle
+### Starting a Battle
 
-Initialize a battle between two trainers using the `Battle` class and perform attacks using their Pokémon's moves.
+Initiate a battle between two trainers:
 
 ```csharp
-var battle = new Battle(ash, brock);
+var trainerMisty = new AITrainer("Misty");
 
-// Ensure the attacking Pokémon is set
-ash.SwitchPokemon(pikachu);
-brock.SwitchPokemon(charizard);
-
-// Perform attack
-battle.PerformAttack(thunderbolt);
+var battle = new Battle(trainerAsh, trainerMisty);
+battle.PerformAttack(thunderShock);
 ```
 
-### 6. Determine Battle Result
+### Logging
 
-After performing attacks, determine the result of the battle using the `DetermineBattleResult` method.
+Configure logging to monitor and debug game events:
 
 ```csharp
-var result = battle.DetermineBattleResult();
-Console.WriteLine(result);
+using PokemonGameLib.Utilities;
+
+LoggingService.Configure(); // Optional: Specify a custom log file path.
 ```
 
-## Trainer Class
+## Exception Handling
 
-The `Trainer` class represents a Pokémon trainer and manages their Pokémon team. Here's how you can use it:
+The library includes custom exceptions to handle various invalid operations, ensuring robust error management:
 
-### Create a Trainer
+- **InvalidMoveException**: Thrown when an invalid move is attempted.
+- **InvalidPokemonSwitchException**: Thrown when an invalid Pokémon switch is attempted.
+- **ItemNotFoundException**: Thrown when an item is not found in the trainer's inventory.
+- **PokemonFaintedException**: Thrown when attempting to use a fainted Pokémon in battle.
 
-Instantiate the `Trainer` class to create a new trainer.
+## Advanced Features
+
+### Trainer AI
+
+The library includes a built-in AI system that allows trainers to make smart decisions during battles. The AI considers factors like type advantages, move effectiveness, and Pokémon health when choosing actions.
 
 ```csharp
-var trainer = new Trainer("TrainerName");
+var aiTrainer = new AITrainer("AI Opponent");
+aiTrainer.TakeTurn(battle);
 ```
 
-### Add Pokémon to Trainer
+### Status Effects and Abilities
 
-Add Pokémon to a trainer's team using the `AddPokemon` method.
+Incorporate abilities and status effects into your game to add depth and strategy:
 
 ```csharp
-var pokemon = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
-trainer.AddPokemon(pokemon);
+pikachu.InflictStatus(StatusCondition.Paralysis);
+pikachu.ApplyStatusEffects();
 ```
 
-### Access Pokémon of a Trainer
+### Type Effectiveness
 
-Access the list of a trainer's Pokémon using the `Pokemons` property.
+The library provides a comprehensive type effectiveness system to ensure battles are true to the Pokémon style:
 
 ```csharp
-var trainerPokemons = trainer.Pokemons;
+var effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(PokemonType.Fire, PokemonType.Grass);
 ```
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+We welcome contributions! If you’d like to contribute, please fork the repository and submit a pull request on our [GitHub repository](https://github.com/kuzziv/pokemonLib).
 
-## Contact
+## License
 
-For any inquiries or feedback, please contact:
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-- **Name**: Mads Ludvigsen
-- **Email**: [Mads72q2@edu.zealand.dk](mailto:Mads72q2@edu.zealand.dk)
-```
+## Support
 
-### Key Updates:
+If you encounter any issues or have feature requests, please open an issue on the [GitHub repository](https://github.com/kuzziv/pokemonLib).
 
-- **Corrected Property Names**: Changed `HP` to `CurrentHP` and `MaxHP` for clarity and accuracy.
-- **Switching Pokémon**: Added the step to ensure Pokémon are switched in trainers before battles, as `SwitchPokemon` must be called to set the current Pokémon.
-- **Usage Example**: Expanded code examples to include all steps necessary to use the library effectively.
-- **Contact Information**: Included an email link for easy communication.
+## Acknowledgments
 
-This README now provides a more comprehensive guide to using the `PokemonGameLib` library and ensures that the examples are correct and useful. Let me know if there are any other details you would like to include!
+This library is inspired by the Pokémon series, developed by Game Freak and published by Nintendo. This project is an independent creation and is not affiliated with or endorsed by Nintendo, Game Freak, or The Pokémon Company.
+
+---
+
+Start building your Pokémon adventure today with the **Pokémon Game Library**! 
+
+[GitHub Repository](https://github.com/kuzziv/pokemonLib)
