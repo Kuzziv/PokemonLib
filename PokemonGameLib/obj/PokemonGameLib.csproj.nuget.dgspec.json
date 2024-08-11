@@ -5,7 +5,7 @@
   },
   "projects": {
     "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj": {
-      "version": "1.0.0-beta.1.2.1",
+      "version": "8.0.0-Release",
       "restore": {
         "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj",
         "projectName": "PokemonGameLib",
@@ -37,6 +37,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "YamlDotNet": {
+              "target": "Package",
+              "version": "[16.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

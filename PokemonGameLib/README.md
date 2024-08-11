@@ -1,137 +1,148 @@
-# PokemonGameLib
+# Pokémon Game Library
 
-**PokemonGameLib** is a .NET library designed for creating and managing a Pokémon game. It provides essential classes and functionality for building a Pokémon game, including features for Pokémon, moves, Trainers, and battles.
+Welcome to the **Pokémon Game Library**—a comprehensive C# library for building a Pokémon-style game. This library provides robust interfaces and classes to manage Pokémon, implement battle mechanics, and create trainers, items, and abilities. With built-in utilities for logging and AI, this library is designed to streamline your game development process.
+
+## Features
+
+- **Pokémon Management**: Easily create and manage Pokémon with various types, abilities, moves, and evolutions.
+- **Battle System**: Implement a full-featured Pokémon battle system, including turn-based mechanics, status effects, and type effectiveness.
+- **Items and Abilities**: Define and use items and abilities that influence battles, enhancing gameplay strategies.
+- **Trainer AI**: Includes an AI system for trainers, allowing for both human and AI-controlled opponents with smart decision-making.
+- **Logging**: Integrated logging service for tracking game events, errors, and debugging.
 
 ## Installation
 
-You can install the library via NuGet. Run the following command in your project directory:
+Install the library via NuGet:
 
 ```bash
 dotnet add package PokemonGameLib
 ```
 
-## Usage
+Or using the NuGet Package Manager Console:
 
-Here’s a quick example of how to use **PokemonGameLib** in your project:
-
-### 1. Create a Pokémon
-
-```csharp
-using PokemonGameLib.Models;
-
-var pikachu = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
+```bash
+Install-Package PokemonGameLib
 ```
 
-### 2. Access Pokémon Properties
+## Getting Started
+
+### Setting Up a Pokémon
+
+Begin by creating a Pokémon with specified attributes:
 
 ```csharp
-Console.WriteLine($"Name: {pikachu.Name}");
-Console.WriteLine($"Type: {pikachu.Type}");
-Console.WriteLine($"HP: {pikachu.HP}");
-Console.WriteLine($"Attack: {pikachu.Attack}");
-Console.WriteLine($"Defense: {pikachu.Defense}");
+using PokemonGameLib.Models.Pokemons;
+using PokemonGameLib.Models.Pokemons.Moves;
+using PokemonGameLib.Models.Pokemons.Abilities;
+
+var pikachu = new Pokemon(
+    name: "Pikachu",
+    type: PokemonType.Electric,
+    level: 5,
+    maxHp: 35,
+    attack: 55,
+    defense: 40,
+    abilities: new List<IAbility> { new Ability("Static", "May cause paralysis if touched.") }
+);
 ```
 
-### 3. Add Moves to Pokémon
+### Adding Moves
+
+Add moves to your Pokémon to enhance its battle capabilities:
 
 ```csharp
-var thunderbolt = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
-pikachu.AddMove(thunderbolt);
+var thunderShock = new Move("ThunderShock", PokemonType.Electric, power: 40, level: 1);
+pikachu.AddMove(thunderShock);
 ```
 
-### 4. Create Trainers
+### Creating a Trainer
+
+Create a trainer and assign Pokémon to them:
 
 ```csharp
-var ash = new Trainer("Ash");
-ash.AddPokemon(pikachu);
+using PokemonGameLib.Models.Trainers;
 
-var charizard = new Pokemon("Charizard", PokemonType.Fire, 10, 150, 70, 50);
-var brock = new Trainer("Brock");
-brock.AddPokemon(charizard);
+var trainerAsh = new PlayerTrainer("Ash");
+trainerAsh.AddPokemon(pikachu);
+trainerAsh.CurrentPokemon = pikachu;
 ```
 
-### 5. Setup a Battle
+### Starting a Battle
+
+Initiate a battle between two trainers:
 
 ```csharp
-var battle = new Battle(ash, brock);
-battle.PerformAttack(ash, thunderbolt);
+var trainerMisty = new AITrainer("Misty");
+
+var battle = new Battle(trainerAsh, trainerMisty);
+battle.PerformAttack(thunderShock);
 ```
 
-### 6. Determine Battle Result
+### Logging
+
+Configure logging to monitor and debug game events:
 
 ```csharp
-var result = battle.DetermineBattleResult();
-Console.WriteLine(result);
+using PokemonGameLib.Utilities;
+
+LoggingService.Configure(); // Optional: Specify a custom log file path.
 ```
 
-## Trainer Class
+## Exception Handling
 
-The `Trainer` class represents a Pokémon Trainer and manages their Pokémon team. Here's how you can use it:
+The library includes custom exceptions to handle various invalid operations, ensuring robust error management:
 
-### Create a Trainer
+- **InvalidMoveException**: Thrown when an invalid move is attempted.
+- **InvalidPokemonSwitchException**: Thrown when an invalid Pokémon switch is attempted.
+- **ItemNotFoundException**: Thrown when an item is not found in the trainer's inventory.
+- **PokemonFaintedException**: Thrown when attempting to use a fainted Pokémon in battle.
+
+## Advanced Features
+
+### Trainer AI
+
+The library includes a built-in AI system that allows trainers to make smart decisions during battles. The AI considers factors like type advantages, move effectiveness, and Pokémon health when choosing actions.
 
 ```csharp
-var trainer = new Trainer("TrainerName");
+var aiTrainer = new AITrainer("AI Opponent");
+aiTrainer.TakeTurn(battle);
 ```
 
-### Add Pokémon to Trainer
+### Status Effects and Abilities
+
+Incorporate abilities and status effects into your game to add depth and strategy:
 
 ```csharp
-var pokemon = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
-trainer.AddPokemon(pokemon);
+pikachu.InflictStatus(StatusCondition.Paralysis);
+pikachu.ApplyStatusEffects();
 ```
 
-### Access Pokémon of a Trainer
+### Type Effectiveness
+
+The library provides a comprehensive type effectiveness system to ensure battles are true to the Pokémon style:
 
 ```csharp
-var trainerPokemons = trainer.Pokemons;
+var effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(PokemonType.Fire, PokemonType.Grass);
 ```
-
-## Release Notes
-
-### Version 1.0.0-beta.1.2
-
-#### New Features
-- **Enhanced `Battle` Class Functionality:**
-  - Added the ability to specify which Trainer's Pokémon is performing the attack. This allows greater flexibility in simulating battles.
-  - Introduced a new public method `PerformAttack(Trainer attackingTrainer, Move move)` in the `Battle` class. This method allows attacks to be executed by a specified Trainer's Pokémon against the opponent's Pokémon.
-
-- **Trainer Class:**
-  - Introduced the `Trainer` class to manage Pokémon teams. Trainers can now add Pokémon, and the class provides a way to manage and interact with a Trainer's Pokémon.
-
-#### Bug Fixes
-- **Fixed Possible Null Reference Warnings:**
-  - Addressed warnings related to possible null references in the `Battle` class. Updated code to ensure proper handling of null values and prevent runtime exceptions.
-
-#### Internal Visibility
-- **Internal Method Exposure:**
-  - Added `InternalsVisibleTo("PokemonGameLib.Tests")` in the `AssemblyInfo.cs` file. This change allows the test project to access internal methods for improved testing coverage.
-
-#### Tests
-- **Updated Test Cases:**
-  - Modified existing test cases to accommodate new functionality, such as specifying the Trainer in the `PerformAttack` method.
-  - Added tests to ensure the correct behavior of the new features and verify that the bug fixes are effective.
-
-## Documentation
-
-For more information on how to use the library, please refer to the [API Documentation](https://www.nuget.org/packages/PokemonGameLib).
 
 ## Contributing
 
-Contributions to **PokemonGameLib** are welcome! If you’d like to contribute:
-
-1. **Fork the Repository**: Create a fork of the repository on GitHub.
-2. **Create a Branch**: Create a new branch for your changes.
-3. **Make Changes**: Implement your changes and add tests if applicable.
-4. **Submit a Pull Request**: Submit a pull request with a description of your changes.
+We welcome contributions! If you’d like to contribute, please fork the repository and submit a pull request on our [GitHub repository](https://github.com/kuzziv/pokemonLib).
 
 ## License
 
-**PokemonGameLib** is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Contact
+## Support
 
-For any questions or support, please contact the author:
+If you encounter any issues or have feature requests, please open an issue on the [GitHub repository](https://github.com/kuzziv/pokemonLib).
 
-- **Name**: Mads Ludvigsen
-- **Email**: [Mads72q2@edu.zealand.dk]
+## Acknowledgments
+
+This library is inspired by the Pokémon series, developed by Game Freak and published by Nintendo. This project is an independent creation and is not affiliated with or endorsed by Nintendo, Game Freak, or The Pokémon Company.
+
+---
+
+Start building your Pokémon adventure today with the **Pokémon Game Library**! 
+
+[GitHub Repository](https://github.com/kuzziv/pokemonLib)

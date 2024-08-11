@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "M8i4dlzHPFojDIcxCsSRe9TDJijuhhn5smtpKB+8leIILkw7kR/OU1q3Hre1guU8GPbtVdCsFASNu5X7bwlFqQ==",
+  "dgSpecHash": "737REYPFMPXrsMRKqCvuAgwrn1B661dFTTY5dRi8+IrGoDY5TBu73Id+VuxIowUDYSLbiU860hqe+DOm/Hf0eg==",
   "success": true,
   "projectFilePath": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/madsludvigsen/.nuget/packages/yamldotnet/16.0.0/yamldotnet.16.0.0.nupkg.sha512"
+  ],
   "logs": []
 }

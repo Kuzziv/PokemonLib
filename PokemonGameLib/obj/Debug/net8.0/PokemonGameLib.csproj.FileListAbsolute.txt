@@ -10,9 +10,11 @@
 /Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Debug/net8.0/PokemonGameLib.pdb
 /Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Debug/net8.0/ref/PokemonGameLib.dll
 /Users/madsludvigsen/Quest/PokemonGameLib/PokemonGameLib/obj/Debug/net8.0/PokemonGameLib.sourcelink.json
+/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/bin/Debug/net8.0/PokemonGameLib.xml
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/bin/Debug/net8.0/PokemonGameLib.deps.json
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/bin/Debug/net8.0/PokemonGameLib.dll
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/bin/Debug/net8.0/PokemonGameLib.pdb
+/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/obj/Debug/net8.0/PokemonGameLib.csproj.AssemblyReference.cache
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/obj/Debug/net8.0/PokemonGameLib.GeneratedMSBuildEditorConfig.editorconfig
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/obj/Debug/net8.0/PokemonGameLib.AssemblyInfoInputs.cache
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/obj/Debug/net8.0/PokemonGameLib.AssemblyInfo.cs
@@ -22,4 +24,3 @@
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/obj/Debug/net8.0/refint/PokemonGameLib.dll
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/obj/Debug/net8.0/PokemonGameLib.pdb
 /Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/obj/Debug/net8.0/ref/PokemonGameLib.dll
-/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/bin/Debug/net8.0/PokemonGameLib.xml

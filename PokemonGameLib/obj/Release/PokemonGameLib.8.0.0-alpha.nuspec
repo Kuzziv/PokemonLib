@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>PokemonGameLib</id>
+    <version>8.0.0-alpha</version>
+    <authors>Mads72</authors>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/Kuzziv/PokemonLib</projectUrl>
+    <description>A library for creating your own Pokémon game, with custom Pokémon, moves, and map</description>
+    <tags>pokemon library gaming development</tags>
+    <repository type="git" url="https://github.com/Kuzziv/PokemonLib.git" commit="67d9c74107b22c0dcdfc32f7ea04b00910cbc6f5" />
+    <dependencies>
+      <group targetFramework="net8.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/bin/Release/net8.0/PokemonGameLib.dll" target="lib/net8.0/PokemonGameLib.dll" />
+    <file src="/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/bin/Release/net8.0/PokemonGameLib.xml" target="lib/net8.0/PokemonGameLib.xml" />
+    <file src="/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/README.md" target="README.md" />
+    <file src="/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/RELEASE_NOTES.md" target="RELEASE_NOTES.md" />
+  </files>
+</package>
