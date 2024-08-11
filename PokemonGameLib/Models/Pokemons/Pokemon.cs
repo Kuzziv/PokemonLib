@@ -1,17 +1,17 @@
-// Pokemon.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PokemonGameLib.Models.Abilities;
-using PokemonGameLib.Models.Moves;
-using PokemonGameLib.Models.Evolutions;
+using PokemonGameLib.Interfaces;
+using PokemonGameLib.Models.Pokemons.Abilities;
+using PokemonGameLib.Models.Pokemons.Moves;
+using PokemonGameLib.Models.Pokemons.Evolutions;
 
 namespace PokemonGameLib.Models.Pokemons
 {
     /// <summary>
     /// Represents a Pokémon with properties for name, type, level, stats, abilities, and methods to manage its state.
     /// </summary>
-    public class Pokemon
+    public class Pokemon : IPokemon
     {
         /// <summary>
         /// Gets the name of the Pokémon.
@@ -51,38 +51,29 @@ namespace PokemonGameLib.Models.Pokemons
         /// <summary>
         /// Gets the list of moves the Pokémon knows.
         /// </summary>
-        public List<Move> Moves { get; private set; }
+        public IList<IMove> Moves { get; private set; }
 
         /// <summary>
         /// Gets the list of abilities the Pokémon has.
         /// </summary>
-        public List<Ability> Abilities { get; }
+        public IList<IAbility> Abilities { get; private set; }
 
         /// <summary>
-        /// Gets the status condition of the Pokémon.
+        /// Gets the current status condition of the Pokémon.
         /// </summary>
         public StatusCondition Status { get; private set; }
 
         /// <summary>
         /// Gets the list of possible evolutions for the Pokémon.
         /// </summary>
-        public List<Evolution> Evolutions { get; }
+        public IList<IEvolution> Evolutions { get; private set; }
 
-        // Private field to manage sleep duration
         private int sleepCounter = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pokemon"/> class.
         /// </summary>
-        /// <param name="name">The name of the Pokémon.</param>
-        /// <param name="type">The type of the Pokémon.</param>
-        /// <param name="level">The level of the Pokémon.</param>
-        /// <param name="maxHp">The maximum HP of the Pokémon.</param>
-        /// <param name="attack">The attack stat of the Pokémon.</param>
-        /// <param name="defense">The defense stat of the Pokémon.</param>
-        /// <param name="abilities">The list of abilities the Pokémon has.</param>
-        /// <param name="evolutions">The list of possible evolutions for the Pokémon.</param>
-        public Pokemon(string name, PokemonType type, int level, int maxHp, int attack, int defense, List<Ability> abilities = null, List<Evolution> evolutions = null)
+        public Pokemon(string name, PokemonType type, int level, int maxHp, int attack, int defense, List<IAbility>? abilities = null, List<IEvolution>? evolutions = null)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name), "Pokemon name cannot be null or whitespace.");
@@ -101,12 +92,12 @@ namespace PokemonGameLib.Models.Pokemons
             Type = type;
             Level = level;
             MaxHP = maxHp;
-            CurrentHP = maxHp; // Initialize Current HP to Max HP
+            CurrentHP = maxHp;
             Attack = attack;
             Defense = defense;
-            Moves = new List<Move>();
-            Abilities = abilities ?? new List<Ability>();
-            Evolutions = evolutions ?? new List<Evolution>();
+            Moves = new List<IMove>();
+            Abilities = abilities ?? new List<IAbility>();
+            Evolutions = evolutions ?? new List<IEvolution>();
             Status = StatusCondition.None;
         }
 
@@ -116,20 +107,15 @@ namespace PokemonGameLib.Models.Pokemons
         public void LevelUp()
         {
             Level++;
-
-            // Simple stat increase logic
-            MaxHP += 10; // Increase MaxHP by a fixed amount
-            Attack += 5; // Increase Attack by a fixed amount
-            Defense += 5; // Increase Defense by a fixed amount
-
-            // Ensure CurrentHP does not exceed MaxHP
+            MaxHP += 10;
+            Attack += 5;
+            Defense += 5;
             CurrentHP = Math.Min(CurrentHP + 10, MaxHP);
-
             Console.WriteLine($"{Name} has leveled up to level {Level}!");
         }
 
         /// <summary>
-        /// Applies damage to the Pokémon.
+        /// Applies damage to the Pokémon, reducing its current HP.
         /// </summary>
         /// <param name="damage">The amount of damage to apply.</param>
         public void TakeDamage(int damage)
@@ -142,7 +128,7 @@ namespace PokemonGameLib.Models.Pokemons
         }
 
         /// <summary>
-        /// Heals the Pokémon by a specified amount.
+        /// Heals the Pokémon by the specified amount.
         /// </summary>
         /// <param name="amount">The amount to heal.</param>
         public void Heal(int amount)
@@ -152,9 +138,9 @@ namespace PokemonGameLib.Models.Pokemons
         }
 
         /// <summary>
-        /// Lowers a specific stat of the Pokémon by a specified amount.
+        /// Lowers the specified stat of the Pokémon by the given amount.
         /// </summary>
-        /// <param name="stat">The stat to lower (e.g., "Attack" or "Defense").</param>
+        /// <param name="stat">The stat to lower (e.g., "Attack", "Defense").</param>
         /// <param name="amount">The amount to lower the stat by.</param>
         public void LowerStat(string stat, int amount)
         {
@@ -165,17 +151,17 @@ namespace PokemonGameLib.Models.Pokemons
         /// <summary>
         /// Determines whether the Pokémon has fainted.
         /// </summary>
-        /// <returns><c>true</c> if the Pokémon's HP is less than or equal to 0; otherwise, <c>false</c>.</returns>
+        /// <returns><c>true</c> if the Pokémon has fainted; otherwise, <c>false</c>.</returns>
         public bool IsFainted() => CurrentHP <= 0;
 
         /// <summary>
         /// Adds a move to the Pokémon's move list.
         /// </summary>
-        /// <param name="move">The move to add to the Pokémon's move list.</param>
+        /// <param name="move">The move to add.</param>
         /// <exception cref="ArgumentNullException">Thrown if the move is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the Pokémon already knows the maximum number of moves.</exception>
-        /// <exception cref="ArgumentException">Thrown if the move is already known by the Pokémon, is not compatible with the Pokémon's type, or is not compatible with the Pokémon's level.</exception>
-        public void AddMove(Move move)
+        /// <exception cref="InvalidOperationException">Thrown if the Pokémon already knows 4 moves.</exception>
+        /// <exception cref="ArgumentException">Thrown if the Pokémon already knows the move, or if the move is not compatible with the Pokémon's type or level.</exception>
+        public void AddMove(IMove move)
         {
             if (move == null)
                 throw new ArgumentNullException(nameof(move), "Move cannot be null.");
@@ -197,29 +183,23 @@ namespace PokemonGameLib.Models.Pokemons
         /// <param name="status">The status condition to inflict.</param>
         public void InflictStatus(StatusCondition status)
         {
-            // Only apply the status if the Pokémon is not already affected by another condition
             if (Status == StatusCondition.None)
             {
                 Status = status;
-
                 switch (status)
                 {
                     case StatusCondition.Paralysis:
                         Console.WriteLine($"{Name} is paralyzed and may not be able to move!");
                         break;
-                        
                     case StatusCondition.Burn:
                         Console.WriteLine($"{Name} is burned and will take damage each turn!");
                         break;
-                        
                     case StatusCondition.Poison:
                         Console.WriteLine($"{Name} is poisoned and will take damage each turn!");
                         break;
-                        
                     case StatusCondition.Sleep:
                         Console.WriteLine($"{Name} has fallen asleep and can't move!");
                         break;
-                        
                     case StatusCondition.Freeze:
                         Console.WriteLine($"{Name} is frozen solid and can't move!");
                         break;
@@ -229,37 +209,28 @@ namespace PokemonGameLib.Models.Pokemons
 
         /// <summary>
         /// Applies the effects of the current status condition on the Pokémon.
-        /// This method should be called at the end of each turn to process ongoing status effects.
         /// </summary>
         public void ApplyStatusEffects()
         {
             switch (Status)
             {
                 case StatusCondition.Burn:
-                    // Burn deals damage equal to 1/16 of MaxHP each turn
                     int burnDamage = MaxHP / 16;
                     TakeDamage(burnDamage);
                     Console.WriteLine($"{Name} is hurt by its burn and takes {burnDamage} damage!");
                     break;
-
                 case StatusCondition.Poison:
-                    // Poison deals damage equal to 1/8 of MaxHP each turn
                     int poisonDamage = MaxHP / 8;
                     TakeDamage(poisonDamage);
                     Console.WriteLine($"{Name} is hurt by poison and takes {poisonDamage} damage!");
                     break;
-
                 case StatusCondition.Paralysis:
-                    // 25% chance to be unable to move due to paralysis
                     if (new Random().NextDouble() < 0.25)
                     {
                         Console.WriteLine($"{Name} is paralyzed and can't move!");
-                        // You can add logic here to skip the attack or action
                     }
                     break;
-
                 case StatusCondition.Sleep:
-                    // Sleep prevents action for a set number of turns, decrement the sleep counter
                     if (sleepCounter > 0)
                     {
                         sleepCounter--;
@@ -268,12 +239,10 @@ namespace PokemonGameLib.Models.Pokemons
                     else
                     {
                         Console.WriteLine($"{Name} woke up!");
-                        CureStatus(); // Cure sleep once the counter hits zero
+                        CureStatus();
                     }
                     break;
-
                 case StatusCondition.Freeze:
-                    // 20% chance to thaw each turn
                     if (new Random().NextDouble() < 0.20)
                     {
                         Console.WriteLine($"{Name} thawed out!");
@@ -282,14 +251,13 @@ namespace PokemonGameLib.Models.Pokemons
                     else
                     {
                         Console.WriteLine($"{Name} is frozen solid and can't move!");
-                        // Logic to skip attack or action goes here
                     }
                     break;
             }
         }
 
         /// <summary>
-        /// Cures the Pokémon of any status condition.
+        /// Cures the Pokémon of its current status condition.
         /// </summary>
         public void CureStatus()
         {
@@ -298,7 +266,7 @@ namespace PokemonGameLib.Models.Pokemons
         }
 
         /// <summary>
-        /// Sets the sleep duration when the Pokémon falls asleep.
+        /// Sets the duration of sleep for the Pokémon.
         /// </summary>
         /// <param name="duration">The number of turns the Pokémon will remain asleep.</param>
         public void SetSleepDuration(int duration)
@@ -312,14 +280,7 @@ namespace PokemonGameLib.Models.Pokemons
         /// <returns><c>true</c> if the Pokémon can evolve; otherwise, <c>false</c>.</returns>
         public bool CanEvolve()
         {
-            foreach (var evolution in Evolutions)
-            {
-                if (evolution.CanEvolve(this))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return Evolutions.Any(evolution => evolution.CanEvolve(this));
         }
 
         /// <summary>
@@ -333,12 +294,12 @@ namespace PokemonGameLib.Models.Pokemons
                 {
                     Console.WriteLine($"{Name} evolved into {evolution.EvolvedFormName}!");
                     Name = evolution.EvolvedFormName;
-                    Level++; // Example stat increase
-                    MaxHP += 20; // Increase Max HP upon evolution
-                    Attack += 10; // Increase Attack upon evolution
-                    Defense += 10; // Increase Defense upon evolution
-                    CurrentHP = MaxHP; // Heal to full HP upon evolution
-                    break; // Add break to prevent multiple evolutions
+                    Level++;
+                    MaxHP += 20;
+                    Attack += 10;
+                    Defense += 10;
+                    CurrentHP = MaxHP;
+                    break;
                 }
             }
         }

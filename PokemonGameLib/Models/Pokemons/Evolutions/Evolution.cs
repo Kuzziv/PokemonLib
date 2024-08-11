@@ -1,13 +1,13 @@
 using System;
-using System.Collections.Generic;
 using PokemonGameLib.Models.Pokemons;
+using PokemonGameLib.Interfaces;
 
-namespace PokemonGameLib.Models.Evolutions
+namespace PokemonGameLib.Models.Pokemons.Evolutions
 {
     /// <summary>
     /// Represents a Pokémon evolution condition, determining when a Pokémon can evolve.
     /// </summary>
-    public class Evolution
+    public class Evolution : IEvolution
     {
         /// <summary>
         /// Gets the name of the evolved form.
@@ -47,7 +47,7 @@ namespace PokemonGameLib.Models.Evolutions
         /// <param name="pokemon">The Pokémon to check.</param>
         /// <returns><c>true</c> if the Pokémon can evolve; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Pokémon is null.</exception>
-        public bool CanEvolve(Pokemon pokemon)
+        public bool CanEvolve(IPokemon pokemon)
         {
             if (pokemon == null)
             {

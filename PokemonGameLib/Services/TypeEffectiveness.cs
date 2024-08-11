@@ -1,19 +1,27 @@
 using System;
 using System.Collections.Generic;
 using PokemonGameLib.Models.Pokemons;
+using PokemonGameLib.Interfaces;
 
-namespace PokemonGameLib.Services 
+namespace PokemonGameLib.Services
 {
-
     /// <summary>
     /// Provides methods to determine type effectiveness in Pokémon battles.
     /// </summary>
-    public static class TypeEffectiveness
+    public class TypeEffectivenessService : ITypeEffectivenessService
     {
+        private static readonly Lazy<TypeEffectivenessService> _instance =
+            new Lazy<TypeEffectivenessService>(() => new TypeEffectivenessService());
+
+        /// <summary>
+        /// Gets the singleton instance of the TypeEffectivenessService.
+        /// </summary>
+        public static TypeEffectivenessService Instance => _instance.Value;
+
         /// <summary>
         /// A dictionary that maps a tuple of attacking and defending Pokémon types to their effectiveness multiplier.
         /// </summary>
-        private static readonly Dictionary<(PokemonType, PokemonType), double> effectiveness = new Dictionary<(PokemonType, PokemonType), double>
+        private readonly Dictionary<(PokemonType, PokemonType), double> _effectiveness = new Dictionary<(PokemonType, PokemonType), double>
         {
             // Fire type effectiveness
             {(PokemonType.Fire, PokemonType.Grass), 2.0},
@@ -156,14 +164,19 @@ namespace PokemonGameLib.Services
         };
 
         /// <summary>
+        /// Private constructor to prevent external instantiation.
+        /// </summary>
+        private TypeEffectivenessService() { }
+
+        /// <summary>
         /// Gets the effectiveness of an attacking Pokémon's move type against a defending Pokémon's type.
         /// </summary>
         /// <param name="attackType">The type of the attacking move.</param>
         /// <param name="defenseType">The type of the defending Pokémon.</param>
         /// <returns>A multiplier representing the effectiveness of the attack.</returns>
-        public static double GetEffectiveness(PokemonType attackType, PokemonType defenseType)
+        public double GetEffectiveness(PokemonType attackType, PokemonType defenseType)
         {
-            if (effectiveness.TryGetValue((attackType, defenseType), out var value))
+            if (_effectiveness.TryGetValue((attackType, defenseType), out var value))
             {
                 return value;
             }
@@ -173,9 +186,9 @@ namespace PokemonGameLib.Services
         /// <summary>
         /// Gets the type effectiveness dictionary.
         /// </summary>
-        public static IReadOnlyDictionary<(PokemonType, PokemonType), double> GetEffectivenessDictionary()
+        public IReadOnlyDictionary<(PokemonType, PokemonType), double> GetEffectivenessDictionary()
         {
-            return effectiveness;
+            return _effectiveness;
         }
     }
 }

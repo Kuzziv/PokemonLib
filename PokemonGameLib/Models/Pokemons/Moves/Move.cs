@@ -1,13 +1,13 @@
-// Move.cs
 using System;
+using PokemonGameLib.Interfaces;
 using PokemonGameLib.Models.Pokemons;
 
-namespace PokemonGameLib.Models.Moves
+namespace PokemonGameLib.Models.Pokemons.Moves
 {
     /// <summary>
     /// Represents a move that a Pokémon can use in battle, defining its properties and special effects.
     /// </summary>
-    public class Move
+    public class Move : IMove
     {
         /// <summary>
         /// Gets the name of the move.
