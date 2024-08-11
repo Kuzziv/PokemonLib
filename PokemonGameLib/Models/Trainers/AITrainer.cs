@@ -80,7 +80,7 @@ namespace PokemonGameLib.Models.Trainers
         /// Selects the best Pokémon to switch to based on type advantage and health.
         /// </summary>
         /// <returns>The best Pokémon to switch to, or <c>null</c> if no switch is needed.</returns>
-        private IPokemon SelectBestPokemonToSwitchTo()
+        internal IPokemon SelectBestPokemonToSwitchTo()
         {
             var opponentPokemon = CurrentPokemon;
             var bestPokemon = Pokemons

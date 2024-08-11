@@ -129,6 +129,21 @@ namespace PokemonGameLib.Models.Trainers
             }
         }
 
+
+        /// <summary>
+        /// Adds an item to the Trainer's inventory.
+        /// </summary>
+        /// <param name="item">The item to add.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the item is null.</exception>
+        public void AddItem(IItem item)
+        {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item), "Item cannot be null.");
+
+            Items.Add(item);
+            _logger.LogInfo($"{Name} added {item.Name} to their inventory.");
+        }
+
         /// <summary>
         /// Represents the action that the Trainer takes during a battle.
         /// </summary>

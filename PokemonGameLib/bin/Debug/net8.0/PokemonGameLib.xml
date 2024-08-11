@@ -1152,6 +1152,13 @@
             <param name="target">The target Pokémon to use the item on.</param>
             <exception cref="T:System.ArgumentNullException">Thrown if the item or target is null.</exception>
         </member>
+        <member name="M:PokemonGameLib.Models.Trainers.Trainer.AddItem(PokemonGameLib.Interfaces.IItem)">
+            <summary>
+            Adds an item to the Trainer's inventory.
+            </summary>
+            <param name="item">The item to add.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the item is null.</exception>
+        </member>
         <member name="M:PokemonGameLib.Models.Trainers.Trainer.TakeTurn(PokemonGameLib.Interfaces.IBattle)">
             <summary>
             Represents the action that the Trainer takes during a battle.
