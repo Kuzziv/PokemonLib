@@ -2,9 +2,9 @@ using Xunit;
 using System;
 using System.Collections.Generic;
 using PokemonGameLib.Models.Pokemons;
-using PokemonGameLib.Models.Moves;
-using PokemonGameLib.Models.Abilities;
-using PokemonGameLib.Models.Evolutions;
+using PokemonGameLib.Models.Pokemons.Moves;
+using PokemonGameLib.Models.Pokemons.Abilities;
+using PokemonGameLib.Models.Pokemons.Evolutions;
 
 namespace PokemonGameLib.Tests.Models.Pokemons
 {

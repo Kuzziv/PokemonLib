@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PokemonGameLib.Interfaces;
+using PokemonGameLib.Utilities;
+using PokemonGameLib.Services;
 
 namespace PokemonGameLib.Models.Trainers
 {
@@ -11,11 +13,12 @@ namespace PokemonGameLib.Models.Trainers
     public abstract class Trainer : ITrainer
     {
         private readonly List<IPokemon> _pokemons;
+        protected readonly Logger _logger;
 
         /// <summary>
         /// Gets the name of the Trainer.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
         /// Gets or sets the current Pokémon that the Trainer is using in battle.
@@ -42,6 +45,7 @@ namespace PokemonGameLib.Models.Trainers
             Name = name ?? throw new ArgumentNullException(nameof(name), "Trainer name cannot be null.");
             _pokemons = new List<IPokemon>();
             Items = new List<IItem>();
+            _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
         }
 
         /// <summary>
@@ -55,6 +59,7 @@ namespace PokemonGameLib.Models.Trainers
                 throw new ArgumentNullException(nameof(pokemon), "Pokemon cannot be null.");
 
             _pokemons.Add(pokemon);
+            _logger.LogInfo($"{Name} added {pokemon.Name} to their collection.");
         }
 
         /// <summary>
@@ -72,6 +77,7 @@ namespace PokemonGameLib.Models.Trainers
                 throw new InvalidOperationException("The Pokémon to remove is not in the Trainer's list.");
 
             _pokemons.Remove(pokemon);
+            _logger.LogInfo($"{Name} removed {pokemon.Name} from their collection.");
         }
 
         /// <summary>
@@ -92,6 +98,7 @@ namespace PokemonGameLib.Models.Trainers
                 throw new InvalidOperationException("Cannot switch to a fainted Pokémon.");
 
             CurrentPokemon = newPokemon;
+            _logger.LogInfo($"{Name} switched to {newPokemon.Name}!");
             Console.WriteLine($"{Name} switched to {newPokemon.Name}!");
         }
 
@@ -113,10 +120,12 @@ namespace PokemonGameLib.Models.Trainers
             {
                 item.Use(this, target);
                 Items.Remove(item);
+                _logger.LogInfo($"{Name} used {item.Name} on {target.Name}.");
             }
             else
             {
                 Console.WriteLine("Item not available in inventory.");
+                _logger.LogWarning($"{Name} attempted to use an item not available in inventory.");
             }
         }
 

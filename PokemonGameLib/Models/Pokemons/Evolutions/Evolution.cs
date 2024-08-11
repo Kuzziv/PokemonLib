@@ -1,6 +1,7 @@
 using System;
 using PokemonGameLib.Models.Pokemons;
 using PokemonGameLib.Interfaces;
+using PokemonGameLib.Utilities;
 
 namespace PokemonGameLib.Models.Pokemons.Evolutions
 {
@@ -18,6 +19,8 @@ namespace PokemonGameLib.Models.Pokemons.Evolutions
         /// Gets the level required for the evolution to occur.
         /// </summary>
         public int RequiredLevel { get; }
+
+        private readonly Logger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Evolution"/> class.
@@ -39,6 +42,7 @@ namespace PokemonGameLib.Models.Pokemons.Evolutions
 
             EvolvedFormName = evolvedFormName;
             RequiredLevel = requiredLevel;
+            _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
         }
 
         /// <summary>
@@ -54,7 +58,11 @@ namespace PokemonGameLib.Models.Pokemons.Evolutions
                 throw new ArgumentNullException(nameof(pokemon), "Pokemon cannot be null.");
             }
 
-            return pokemon.Level >= RequiredLevel;
+            bool canEvolve = pokemon.Level >= RequiredLevel;
+
+            _logger.LogInfo($"{pokemon.Name} can{(canEvolve ? "" : "not")} evolve into {EvolvedFormName}.");
+
+            return canEvolve;
         }
     }
 }

@@ -1,7 +1,6 @@
 using System;
-using PokemonGameLib.Models.Pokemons;
-using PokemonGameLib.Models.Trainers;
 using PokemonGameLib.Interfaces;
+using PokemonGameLib.Utilities;
 
 namespace PokemonGameLib.Models.Items
 {
@@ -10,18 +9,6 @@ namespace PokemonGameLib.Models.Items
     /// </summary>
     public class Potion : Item
     {
-
-        /// <summary>
-        /// Gets the name of the potion.
-        /// </summary>
-        public string Name { get; }
-
-        /// <summary>
-        /// Gets the description of the potion.
-        /// </summary>
-        /// <value>The description of the potion.</value>
-        public string Description { get; }
-
         /// <summary>
         /// Gets the healing amount provided by the potion.
         /// </summary>
@@ -33,22 +20,14 @@ namespace PokemonGameLib.Models.Items
         /// <param name="name">The name of the potion.</param>
         /// <param name="description">The description of the potion.</param>
         /// <param name="healingAmount">The healing amount provided by the potion.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the healing amount is less than or equal to 0.</exception>
         public Potion(string name, string description, int healingAmount)
             : base(name, description)
         {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentException("Potion name cannot be null or empty.", nameof(name));
-            }
-            if (string.IsNullOrEmpty(description))
-            {
-                throw new ArgumentException("Potion description cannot be null or empty.", nameof(description));
-            }
-            
             if (healingAmount <= 0)
-            {
-                throw new ArgumentException("Healing amount must be greater than 0.", nameof(healingAmount));
-            }
+                throw new ArgumentOutOfRangeException(nameof(healingAmount), "Healing amount must be greater than 0.");
+
+            HealingAmount = healingAmount;
         }
 
         /// <summary>
@@ -59,6 +38,7 @@ namespace PokemonGameLib.Models.Items
         public override void Use(ITrainer trainer, IPokemon target)
         {
             target.Heal(HealingAmount);
+            _logger.LogInfo($"{target.Name} was healed by {HealingAmount} HP using {Name}.");
             Console.WriteLine($"{target.Name} was healed by {HealingAmount} HP!");
         }
     }

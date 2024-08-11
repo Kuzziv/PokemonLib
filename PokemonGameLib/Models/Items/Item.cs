@@ -1,7 +1,6 @@
 using System;
-using PokemonGameLib.Models.Trainers;
-using PokemonGameLib.Models.Pokemons;
 using PokemonGameLib.Interfaces;
+using PokemonGameLib.Utilities;
 
 namespace PokemonGameLib.Models.Items
 {
@@ -20,15 +19,24 @@ namespace PokemonGameLib.Models.Items
         /// </summary>
         public string Description { get; }
 
+        protected readonly Logger _logger;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Item"/> class.
         /// </summary>
         /// <param name="name">The name of the item.</param>
         /// <param name="description">The description of the item.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the name or description is null or empty.</exception>
         public Item(string name, string description)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentNullException(nameof(name), "Item name cannot be null or empty.");
+            if (string.IsNullOrEmpty(description))
+                throw new ArgumentNullException(nameof(description), "Item description cannot be null or empty.");
+
             Name = name;
             Description = description;
+            _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
         }
 
         /// <summary>
@@ -38,7 +46,7 @@ namespace PokemonGameLib.Models.Items
         /// <param name="target">The target Pokémon.</param>
         public virtual void Use(ITrainer trainer, IPokemon target)
         {
-            // Default implementation does nothing
+            _logger.LogInfo($"{trainer.Name} used {Name} on {target.Name}.");
         }
     }
 }

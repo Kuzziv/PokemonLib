@@ -9,6 +9,9 @@ namespace PokemonGameLib.Utilities
     {
         private readonly Random _random;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RandomNumberGenerator"/> class.
+        /// </summary>
         public RandomNumberGenerator()
         {
             _random = new Random();
@@ -22,6 +25,7 @@ namespace PokemonGameLib.Utilities
         /// <returns>A double precision floating point number between minValue and maxValue.</returns>
         public double Generate(double minValue, double maxValue)
         {
+            if (minValue > maxValue) throw new ArgumentOutOfRangeException(nameof(minValue), "Min value must be less than or equal to max value.");
             return _random.NextDouble() * (maxValue - minValue) + minValue;
         }
 
@@ -33,6 +37,7 @@ namespace PokemonGameLib.Utilities
         /// <returns>An integer between minValue and maxValue.</returns>
         public int Generate(int minValue, int maxValue)
         {
+            if (minValue > maxValue) throw new ArgumentOutOfRangeException(nameof(minValue), "Min value must be less than or equal to max value.");
             return _random.Next(minValue, maxValue + 1);
         }
     }

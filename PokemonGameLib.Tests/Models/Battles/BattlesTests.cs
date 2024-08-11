@@ -2,7 +2,7 @@ using Xunit;
 using System;
 using PokemonGameLib.Models.Battles;
 using PokemonGameLib.Models.Pokemons;
-using PokemonGameLib.Models.Moves;
+using PokemonGameLib.Models.Pokemons.Moves;
 using PokemonGameLib.Models.Trainers;
 
 

@@ -1,5 +1,7 @@
 using System;
 using PokemonGameLib.Interfaces;
+using PokemonGameLib.Utilities;
+using PokemonGameLib.Services;
 
 namespace PokemonGameLib.Models.Trainers
 {
@@ -8,11 +10,16 @@ namespace PokemonGameLib.Models.Trainers
     /// </summary>
     public class PlayerTrainer : Trainer
     {
+        private readonly Logger _logger;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerTrainer"/> class with the specified name.
         /// </summary>
         /// <param name="name">The name of the player trainer.</param>
-        public PlayerTrainer(string name) : base(name) { }
+        public PlayerTrainer(string name) : base(name)
+        {
+            _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
+        }
 
         /// <summary>
         /// Takes the player's turn during a battle.
@@ -36,7 +43,7 @@ namespace PokemonGameLib.Models.Trainers
                         PerformAttack(battle);
                         return;
                     case "2":
-                        SwitchPokemon();
+                        SwitchPokemon(battle);
                         return;
                     case "3":
                         UseItem();
@@ -48,6 +55,10 @@ namespace PokemonGameLib.Models.Trainers
             }
         }
 
+        /// <summary>
+        /// Handles the player's choice to perform an attack.
+        /// </summary>
+        /// <param name="battle">The current battle instance.</param>
         private void PerformAttack(IBattle battle)
         {
             Console.WriteLine("Choose a move:");
@@ -60,14 +71,20 @@ namespace PokemonGameLib.Models.Trainers
             {
                 IMove selectedMove = CurrentPokemon.Moves[moveIndex - 1];
                 battle.PerformAttack(selectedMove);
+                _logger.LogInfo($"{Name} used {selectedMove.Name}.");
             }
             else
             {
                 Console.WriteLine("Invalid move. Turn skipped.");
+                _logger.LogWarning($"{Name} attempted to use an invalid move. Turn skipped.");
             }
         }
 
-        private void SwitchPokemon()
+        /// <summary>
+        /// Handles the player's choice to switch Pokémon.
+        /// </summary>
+        /// <param name="battle">The current battle instance.</param>
+        private void SwitchPokemon(IBattle battle)
         {
             Console.WriteLine("Choose a Pokémon to switch to:");
             for (int i = 0; i < Pokemons.Count; i++)
@@ -81,18 +98,24 @@ namespace PokemonGameLib.Models.Trainers
                 if (selectedPokemon.IsFainted())
                 {
                     Console.WriteLine("Cannot switch to a fainted Pokémon. Turn skipped.");
+                    _logger.LogWarning($"{Name} attempted to switch to a fainted Pokémon. Turn skipped.");
                 }
                 else
                 {
-                    SwitchPokemon(selectedPokemon);
+                    battle.SwitchPokemon(this, selectedPokemon);
+                    _logger.LogInfo($"{Name} switched to {selectedPokemon.Name}.");
                 }
             }
             else
             {
                 Console.WriteLine("Invalid choice. Turn skipped.");
+                _logger.LogWarning($"{Name} attempted to switch to an invalid Pokémon. Turn skipped.");
             }
         }
 
+        /// <summary>
+        /// Handles the player's choice to use an item.
+        /// </summary>
         private void UseItem()
         {
             Console.WriteLine("Choose an item to use:");
@@ -105,10 +128,12 @@ namespace PokemonGameLib.Models.Trainers
             {
                 IItem selectedItem = Items[itemIndex - 1];
                 UseItem(selectedItem, CurrentPokemon);
+                _logger.LogInfo($"{Name} used {selectedItem.Name}.");
             }
             else
             {
                 Console.WriteLine("Invalid item. Turn skipped.");
+                _logger.LogWarning($"{Name} attempted to use an invalid item. Turn skipped.");
             }
         }
     }

@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PokemonGameLib.Interfaces;
-using PokemonGameLib.Models.Pokemons.Abilities;
-using PokemonGameLib.Models.Pokemons.Moves;
-using PokemonGameLib.Models.Pokemons.Evolutions;
+using PokemonGameLib.Utilities;
 
 namespace PokemonGameLib.Models.Pokemons
 {
@@ -68,12 +66,32 @@ namespace PokemonGameLib.Models.Pokemons
         /// </summary>
         public IList<IEvolution> Evolutions { get; private set; }
 
-        private int sleepCounter = 0;
+        private readonly Logger _logger;
+        private int _sleepCounter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pokemon"/> class.
         /// </summary>
-        public Pokemon(string name, PokemonType type, int level, int maxHp, int attack, int defense, List<IAbility>? abilities = null, List<IEvolution>? evolutions = null)
+        /// <param name="name">The name of the Pokémon.</param>
+        /// <param name="type">The type of the Pokémon.</param>
+        /// <param name="level">The level of the Pokémon.</param>
+        /// <param name="maxHp">The maximum HP of the Pokémon.</param>
+        /// <param name="attack">The attack stat of the Pokémon.</param>
+        /// <param name="defense">The defense stat of the Pokémon.</param>
+        /// <param name="abilities">A list of abilities the Pokémon has. Default is an empty list.</param>
+        /// <param name="evolutions">A list of possible evolutions for the Pokémon. Default is an empty list.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the name is null or whitespace.</exception>
+        /// <exception cref="ArgumentException">Thrown if the type is invalid.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if level, maxHp, attack, or defense are out of valid range.</exception>
+        public Pokemon(
+            string name,
+            PokemonType type,
+            int level,
+            int maxHp,
+            int attack,
+            int defense,
+            List<IAbility>? abilities = null,
+            List<IEvolution>? evolutions = null)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name), "Pokemon name cannot be null or whitespace.");
@@ -99,6 +117,7 @@ namespace PokemonGameLib.Models.Pokemons
             Abilities = abilities ?? new List<IAbility>();
             Evolutions = evolutions ?? new List<IEvolution>();
             Status = StatusCondition.None;
+            _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
         }
 
         /// <summary>
@@ -111,7 +130,8 @@ namespace PokemonGameLib.Models.Pokemons
             Attack += 5;
             Defense += 5;
             CurrentHP = Math.Min(CurrentHP + 10, MaxHP);
-            Console.WriteLine($"{Name} has leveled up to level {Level}!");
+            _logger.LogInfo($"{Name} leveled up to level {Level}!");
+            Console.WriteLine($"{Name} leveled up to level {Level}!");
         }
 
         /// <summary>
@@ -124,6 +144,7 @@ namespace PokemonGameLib.Models.Pokemons
             {
                 CurrentHP -= damage;
                 if (CurrentHP < 0) CurrentHP = 0;
+                _logger.LogInfo($"{Name} took {damage} damage. Current HP: {CurrentHP}/{MaxHP}");
             }
         }
 
@@ -135,6 +156,7 @@ namespace PokemonGameLib.Models.Pokemons
         {
             CurrentHP += amount;
             if (CurrentHP > MaxHP) CurrentHP = MaxHP;
+            _logger.LogInfo($"{Name} healed by {amount} HP. Current HP: {CurrentHP}/{MaxHP}");
         }
 
         /// <summary>
@@ -146,12 +168,13 @@ namespace PokemonGameLib.Models.Pokemons
         {
             if (stat == "Attack") Attack -= amount;
             if (stat == "Defense") Defense -= amount;
+            _logger.LogInfo($"{Name}'s {stat} lowered by {amount}. Current {stat}: {(stat == "Attack" ? Attack : Defense)}");
         }
 
         /// <summary>
         /// Determines whether the Pokémon has fainted.
         /// </summary>
-        /// <returns><c>true</c> if the Pokémon has fainted; otherwise, <c>false</c>.</returns>
+        /// <returns><c>true</c> if the Pokémon's current HP is 0 or less; otherwise, <c>false</c>.</returns>
         public bool IsFainted() => CurrentHP <= 0;
 
         /// <summary>
@@ -175,6 +198,7 @@ namespace PokemonGameLib.Models.Pokemons
                 throw new ArgumentException("Move is not compatible with the Pokémon's level.", nameof(move));
 
             Moves.Add(move);
+            _logger.LogInfo($"{Name} learned the move {move.Name}.");
         }
 
         /// <summary>
@@ -186,24 +210,8 @@ namespace PokemonGameLib.Models.Pokemons
             if (Status == StatusCondition.None)
             {
                 Status = status;
-                switch (status)
-                {
-                    case StatusCondition.Paralysis:
-                        Console.WriteLine($"{Name} is paralyzed and may not be able to move!");
-                        break;
-                    case StatusCondition.Burn:
-                        Console.WriteLine($"{Name} is burned and will take damage each turn!");
-                        break;
-                    case StatusCondition.Poison:
-                        Console.WriteLine($"{Name} is poisoned and will take damage each turn!");
-                        break;
-                    case StatusCondition.Sleep:
-                        Console.WriteLine($"{Name} has fallen asleep and can't move!");
-                        break;
-                    case StatusCondition.Freeze:
-                        Console.WriteLine($"{Name} is frozen solid and can't move!");
-                        break;
-                }
+                _logger.LogInfo($"{Name} was inflicted with {status}.");
+                Console.WriteLine($"{Name} is now {status}!");
             }
         }
 
@@ -217,27 +225,30 @@ namespace PokemonGameLib.Models.Pokemons
                 case StatusCondition.Burn:
                     int burnDamage = MaxHP / 16;
                     TakeDamage(burnDamage);
-                    Console.WriteLine($"{Name} is hurt by its burn and takes {burnDamage} damage!");
+                    _logger.LogInfo($"{Name} is hurt by its burn and takes {burnDamage} damage.");
                     break;
                 case StatusCondition.Poison:
                     int poisonDamage = MaxHP / 8;
                     TakeDamage(poisonDamage);
-                    Console.WriteLine($"{Name} is hurt by poison and takes {poisonDamage} damage!");
+                    _logger.LogInfo($"{Name} is hurt by poison and takes {poisonDamage} damage.");
                     break;
                 case StatusCondition.Paralysis:
                     if (new Random().NextDouble() < 0.25)
                     {
+                        _logger.LogInfo($"{Name} is paralyzed and can't move.");
                         Console.WriteLine($"{Name} is paralyzed and can't move!");
                     }
                     break;
                 case StatusCondition.Sleep:
-                    if (sleepCounter > 0)
+                    if (_sleepCounter > 0)
                     {
-                        sleepCounter--;
+                        _sleepCounter--;
+                        _logger.LogInfo($"{Name} is fast asleep.");
                         Console.WriteLine($"{Name} is fast asleep.");
                     }
                     else
                     {
+                        _logger.LogInfo($"{Name} woke up!");
                         Console.WriteLine($"{Name} woke up!");
                         CureStatus();
                     }
@@ -245,11 +256,13 @@ namespace PokemonGameLib.Models.Pokemons
                 case StatusCondition.Freeze:
                     if (new Random().NextDouble() < 0.20)
                     {
+                        _logger.LogInfo($"{Name} thawed out!");
                         Console.WriteLine($"{Name} thawed out!");
                         CureStatus();
                     }
                     else
                     {
+                        _logger.LogInfo($"{Name} is frozen solid and can't move.");
                         Console.WriteLine($"{Name} is frozen solid and can't move!");
                     }
                     break;
@@ -261,8 +274,8 @@ namespace PokemonGameLib.Models.Pokemons
         /// </summary>
         public void CureStatus()
         {
+            _logger.LogInfo($"{Name} is cured of its status condition.");
             Status = StatusCondition.None;
-            Console.WriteLine($"{Name} is cured of its status condition!");
         }
 
         /// <summary>
@@ -271,7 +284,8 @@ namespace PokemonGameLib.Models.Pokemons
         /// <param name="duration">The number of turns the Pokémon will remain asleep.</param>
         public void SetSleepDuration(int duration)
         {
-            sleepCounter = duration;
+            _sleepCounter = duration;
+            _logger.LogInfo($"{Name} will be asleep for {duration} turns.");
         }
 
         /// <summary>
@@ -292,6 +306,7 @@ namespace PokemonGameLib.Models.Pokemons
             {
                 if (evolution.CanEvolve(this))
                 {
+                    _logger.LogInfo($"{Name} is evolving into {evolution.EvolvedFormName}!");
                     Console.WriteLine($"{Name} evolved into {evolution.EvolvedFormName}!");
                     Name = evolution.EvolvedFormName;
                     Level++;
