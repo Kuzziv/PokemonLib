@@ -10,7 +10,7 @@ namespace PokemonGameLib.Models.Trainers
     /// </summary>
     public class PlayerTrainer : Trainer
     {
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerTrainer"/> class with the specified name.

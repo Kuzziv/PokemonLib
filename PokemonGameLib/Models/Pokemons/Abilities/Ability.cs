@@ -20,7 +20,7 @@ namespace PokemonGameLib.Models.Pokemons.Abilities
         /// </summary>
         public string Description { get; }
 
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Ability"/> class.

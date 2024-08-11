@@ -19,7 +19,7 @@ namespace PokemonGameLib.Models.Items
         /// </summary>
         public string Description { get; }
 
-        protected readonly Logger _logger;
+        protected readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Item"/> class.

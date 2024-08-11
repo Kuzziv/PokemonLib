@@ -29,7 +29,7 @@ namespace PokemonGameLib.Tests.Services
         public void TestSuperEffective(PokemonType attackType, PokemonType defenseType, double expectedEffectiveness)
         {
             // Act
-            var effectiveness = TypeEffectiveness.GetEffectiveness(attackType, defenseType);
+            var effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(attackType, defenseType);
 
             // Assert
             Assert.Equal(expectedEffectiveness, effectiveness);
@@ -56,7 +56,7 @@ namespace PokemonGameLib.Tests.Services
         public void TestNotVeryEffective(PokemonType attackType, PokemonType defenseType, double expectedEffectiveness)
         {
             // Act
-            var effectiveness = TypeEffectiveness.GetEffectiveness(attackType, defenseType);
+            var effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(attackType, defenseType);
 
             // Assert
             Assert.Equal(expectedEffectiveness, effectiveness);
@@ -71,7 +71,7 @@ namespace PokemonGameLib.Tests.Services
         public void TestNoEffect(PokemonType attackType, PokemonType defenseType, double expectedEffectiveness)
         {
             // Act
-            var effectiveness = TypeEffectiveness.GetEffectiveness(attackType, defenseType);
+            var effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(attackType, defenseType);
             
             // Assert
             Assert.Equal(expectedEffectiveness, effectiveness);
@@ -89,7 +89,7 @@ namespace PokemonGameLib.Tests.Services
         public void TestNeutralEffectiveness(PokemonType attackType, PokemonType defenseType, double expectedEffectiveness)
         {
             // Act
-            var effectiveness = TypeEffectiveness.GetEffectiveness(attackType, defenseType);
+            var effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(attackType, defenseType);
 
             // Assert
             Assert.Equal(expectedEffectiveness, effectiveness);
@@ -103,7 +103,7 @@ namespace PokemonGameLib.Tests.Services
             var totalCombinations = types.Count() * types.Count();
 
             // Act
-            var definedCombinations = TypeEffectiveness.GetEffectivenessDictionary().Count;
+            var definedCombinations = TypeEffectivenessService.Instance.GetEffectivenessDictionary().Count;
 
             // Assert
             Assert.True(definedCombinations < totalCombinations, "The dictionary should not define all possible combinations explicitly.");

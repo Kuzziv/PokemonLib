@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using PokemonGameLib.Utilities;
@@ -9,117 +8,106 @@ namespace PokemonGameLib.Tests.Utilities
 {
     public class LoggerTests : IDisposable
     {
-        private readonly string _testLogFilePath;
+        private readonly string _logDirectory;
+        private readonly string _logFilePath;
 
         public LoggerTests()
         {
-            // Set up a unique log file path for each test to avoid conflicts.
-            _testLogFilePath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.log");
-        }
+            // Set up the log file path to the specific Logs.yml file
+            _logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "tmp_logs");
+            _logFilePath = Path.Combine(_logDirectory, "Logs.yml");
 
+            if (!Directory.Exists(_logDirectory))
+            {
+                Directory.CreateDirectory(_logDirectory);
+            }
+
+            // Reset the logger configuration for each test
+            LoggingService.ResetConfiguration();
+
+            // Configure the LoggingService to always use Logs.yml
+            LoggingService.Configure(_logFilePath);
+
+            Console.WriteLine($"Log file path: {_logFilePath}"); // Debug statement to confirm file path
+        }
+        
         public void Dispose()
         {
-            // Clean up after each test
-            if (File.Exists(_testLogFilePath))
-            {
-                File.Delete(_testLogFilePath);
-            }
+            // Clean up after each test - Decide if you want to clear the log file or leave it
+            // if (File.Exists(_logFilePath))
+            // {
+            //     File.Delete(_logFilePath);
+            // }
         }
+
 
         [Fact]
         public void Logger_ShouldLogInfoMessage()
         {
-            // Arrange
-            var logger = new Logger(_testLogFilePath);
-
             // Act
+            var logger = LoggingService.GetLogger();
             logger.LogInfo("This is an info message.");
 
             // Assert
-            var logContents = File.ReadAllText(_testLogFilePath);
-            Assert.Contains("[INFO] This is an info message.", logContents);
+            var logContents = File.ReadAllText(_logFilePath);
+            Assert.Contains("Severity: INFO", logContents);
+            Assert.Contains("Message: This is an info message.", logContents);
         }
 
         [Fact]
         public void Logger_ShouldLogWarningMessage()
         {
-            // Arrange
-            var logger = new Logger(_testLogFilePath);
-
             // Act
+            var logger = LoggingService.GetLogger();
             logger.LogWarning("This is a warning message.");
 
             // Assert
-            var logContents = File.ReadAllText(_testLogFilePath);
-            Assert.Contains("[WARNING] This is a warning message.", logContents);
+            var logContents = File.ReadAllText(_logFilePath);
+            Assert.Contains("Severity: WARNING", logContents);
+            Assert.Contains("Message: This is a warning message.", logContents);
         }
 
         [Fact]
         public void Logger_ShouldLogErrorMessage()
         {
-            // Arrange
-            var logger = new Logger(_testLogFilePath);
-
             // Act
+            var logger = LoggingService.GetLogger();
             logger.LogError("This is an error message.");
 
             // Assert
-            var logContents = File.ReadAllText(_testLogFilePath);
-            Assert.Contains("[ERROR] This is an error message.", logContents);
+            var logContents = File.ReadAllText(_logFilePath);
+            Assert.Contains("Severity: ERROR", logContents);
+            Assert.Contains("Message: This is an error message.", logContents);
         }
 
         [Fact]
         public void Logger_ShouldCreateLogFileIfNotExists()
         {
-            // Arrange
-            var logger = new Logger(_testLogFilePath);
-
             // Act
+            var logger = LoggingService.GetLogger();
             logger.LogInfo("Creating log file.");
 
             // Assert
-            Assert.True(File.Exists(_testLogFilePath));
-        }
-
-        [Fact]
-        public void Logger_ShouldRotateLogFileWhenMaxSizeExceeded()
-        {
-            // Arrange
-            int maxFileSizeInMB = 1; // Small size for test
-            var logger = new Logger(_testLogFilePath, maxFileSizeInMB);
-
-            // Act
-            for (int i = 0; i < 10000; i++) // Generate a large number of log entries
-            {
-                logger.LogInfo("This is a log message.");
-            }
-
-            // Assert
-            // Check if rotation happened by verifying if a rotated log file exists
-            var logDirectory = Path.GetDirectoryName(_testLogFilePath);
-            var logFiles = Directory.GetFiles(logDirectory, "*.log").Where(f => f.Contains(Path.GetFileNameWithoutExtension(_testLogFilePath))).ToList();
-
-            Assert.True(logFiles.Count > 1, "Log file rotation did not occur as expected.");
+            Assert.True(File.Exists(_logFilePath));
         }
 
         [Fact]
         public void Logger_ShouldBeThreadSafe()
         {
-            // Arrange
-            var logger = new Logger(_testLogFilePath);
+            // Act
+            var logger = LoggingService.GetLogger();
             int threadCount = 10;
 
-            // Act
             Parallel.For(0, threadCount, i =>
             {
                 logger.LogInfo($"Log entry from thread {i}");
             });
 
             // Assert
-            var logContents = File.ReadAllText(_testLogFilePath);
+            var logContents = File.ReadAllText(_logFilePath);
             for (int i = 0; i < threadCount; i++)
             {
-                Assert.Contains($"Log entry from thread {i}", logContents);
+                Assert.Contains($"Message: Log entry from thread {i}", logContents);
             }
         }
     }

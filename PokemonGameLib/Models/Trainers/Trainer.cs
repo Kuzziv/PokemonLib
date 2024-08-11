@@ -13,7 +13,7 @@ namespace PokemonGameLib.Models.Trainers
     public abstract class Trainer : ITrainer
     {
         private readonly List<IPokemon> _pokemons;
-        protected readonly Logger _logger;
+        protected readonly ILogger _logger;
 
         /// <summary>
         /// Gets the name of the Trainer.

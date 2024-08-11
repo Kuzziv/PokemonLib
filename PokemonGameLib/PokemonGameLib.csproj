@@ -54,6 +54,10 @@
     <!--<PackageReference Include="SomeDependency" Version="1.0.0" />-->
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="YamlDotNet" Version="16.0.0" />
+  </ItemGroup>
+
 </Project>
 
 

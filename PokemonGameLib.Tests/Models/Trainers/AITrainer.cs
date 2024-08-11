@@ -24,6 +24,7 @@ namespace PokemonGameLib.Tests.Models.Trainers
             _mockBattle = new Mock<IBattle>();
             _mockCurrentPokemon = new Mock<IPokemon>();
             _mockOpponentPokemon = new Mock<IPokemon>();
+            _mockTypeEffectivenessService = new Mock<ITypeEffectivenessService>();
         }
 
         [Fact]
@@ -67,8 +68,9 @@ namespace PokemonGameLib.Tests.Models.Trainers
             _aiTrainer.AddPokemon(effectivePokemon.Object);
             _aiTrainer.SwitchPokemon(_mockCurrentPokemon.Object);
 
-            _mockBattle.Setup(b => b.DefendingTrainer).Returns(new Mock<ITrainer> { Object = new Mock<ITrainer>().Object });
-            _mockBattle.Setup(b => b.DefendingTrainer.CurrentPokemon).Returns(_mockOpponentPokemon.Object);
+            var mockDefendingTrainer = new Mock<ITrainer>();
+            mockDefendingTrainer.Setup(t => t.CurrentPokemon).Returns(_mockOpponentPokemon.Object);
+            _mockBattle.Setup(b => b.DefendingTrainer).Returns(mockDefendingTrainer.Object);
 
             // Act
             _aiTrainer.TakeTurn(_mockBattle.Object);
@@ -77,6 +79,7 @@ namespace PokemonGameLib.Tests.Models.Trainers
             _mockBattle.Verify(b => b.SwitchPokemon(_aiTrainer, effectivePokemon.Object), Times.Once);
             _mockBattle.Verify(b => b.PerformAttack(It.IsAny<IMove>()), Times.Never);
         }
+
 
         [Fact]
         public void TakeTurn_ShouldSelectBestMove()
@@ -93,7 +96,9 @@ namespace PokemonGameLib.Tests.Models.Trainers
             _mockTypeEffectivenessService.Setup(s => s.GetEffectiveness(PokemonType.Electric, PokemonType.Water)).Returns(2.0);
 
             _aiTrainer.SwitchPokemon(_mockCurrentPokemon.Object);
-            _mockBattle.Setup(b => b.DefendingTrainer.CurrentPokemon).Returns(_mockOpponentPokemon.Object);
+            var mockDefendingTrainer = new Mock<ITrainer>();
+            mockDefendingTrainer.Setup(t => t.CurrentPokemon).Returns(_mockOpponentPokemon.Object);
+            _mockBattle.Setup(b => b.DefendingTrainer).Returns(mockDefendingTrainer.Object);
 
             // Act
             _aiTrainer.TakeTurn(_mockBattle.Object);

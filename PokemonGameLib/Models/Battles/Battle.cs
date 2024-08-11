@@ -14,7 +14,7 @@ namespace PokemonGameLib.Models.Battles
     {
         private readonly ITypeEffectivenessService _typeEffectivenessService;
         private readonly RandomNumberGenerator _randomNumberGenerator;
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
         private bool _isFirstTrainerAttacking;
 
         /// <summary>
@@ -95,6 +95,15 @@ namespace PokemonGameLib.Models.Battles
         /// <exception cref="InvalidMoveException">Thrown if the move is invalid for the current battle state.</exception>
         public void PerformAttack(IMove move)
         {
+            // Apply status effects before attacking (e.g., Paralysis might prevent the move)
+            Attacker.ApplyStatusEffects();
+
+            if (Attacker.IsFainted())
+            {
+                _logger.LogInfo($"{Attacker.Name} is fainted and cannot attack.");
+                return;
+            }
+
             ValidateAttackConditions(move);
 
             for (int i = 0; i < move.MaxHits; i++)
@@ -107,11 +116,21 @@ namespace PokemonGameLib.Models.Battles
                     Console.WriteLine($"{Defender.Name} has fainted!");
                     break;
                 }
+
+                // Apply status effects after the attack (e.g., Poison might deal damage)
+                Defender.ApplyStatusEffects();
+
+                if (Defender.IsFainted())
+                {
+                    _logger.LogInfo($"{Defender.Name} fainted from status effects.");
+                    break;
+                }
             }
 
             ApplyRecoilAndHealing(move);
             _isFirstTrainerAttacking = !_isFirstTrainerAttacking;
         }
+
 
         /// <summary>
         /// Validates that the current attack conditions are valid.

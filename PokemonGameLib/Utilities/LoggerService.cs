@@ -1,24 +1,20 @@
 using System;
+using System.IO;
+using PokemonGameLib.Interfaces;
 
 namespace PokemonGameLib.Utilities
 {
-    /// <summary>
-    /// A service for configuring and accessing a logger.
-    /// This service ensures that the logger is configured only once and provides thread-safe access.
-    /// </summary>
     public static class LoggingService
     {
         private static readonly object _lock = new();
-        private static Logger _logger;
+        private static ILogger _logger;
         private static bool _isConfigured = false;
 
         /// <summary>
-        /// Configures the logger with a specified log file path and optional maximum file size.
+        /// Configures the logger with a specified log file path.
         /// This method is thread-safe and ensures the logger is configured only once.
         /// </summary>
-        /// <param name="logFilePath">The path to the log file.</param>
-        /// <param name="maxFileSizeInMB">The maximum size of the log file before it rotates (in MB).</param>
-        public static void Configure(string logFilePath, int maxFileSizeInMB = 10)
+        public static void Configure(string logFilePath = null)
         {
             lock (_lock)
             {
@@ -27,7 +23,17 @@ namespace PokemonGameLib.Utilities
                     throw new InvalidOperationException("Logger has already been configured. Reconfiguration is not allowed.");
                 }
 
-                _logger = new Logger(logFilePath, maxFileSizeInMB);
+                if (string.IsNullOrEmpty(logFilePath))
+                {
+                    var logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "tmp_logs");
+                    if (!Directory.Exists(logDirectory))
+                    {
+                        Directory.CreateDirectory(logDirectory);
+                    }
+                    logFilePath = Path.Combine(logDirectory, "Logs.yml");
+                }
+
+                _logger = new Logger(logFilePath); // ILogger is assigned with Logger instance
                 _isConfigured = true;
             }
         }
@@ -38,7 +44,7 @@ namespace PokemonGameLib.Utilities
         /// </summary>
         /// <returns>The configured logger instance.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the logger is not configured.</exception>
-        public static Logger GetLogger()
+        public static ILogger GetLogger()  // Return ILogger instead of Logger
         {
             lock (_lock)
             {
@@ -48,6 +54,19 @@ namespace PokemonGameLib.Utilities
                 }
 
                 return _logger;
+            }
+        }
+
+        /// <summary>
+        /// Resets the logger configuration, allowing the logger to be reconfigured.
+        /// This method is thread-safe.
+        /// </summary>
+        public static void ResetConfiguration()
+        {
+            lock (_lock)
+            {
+                _logger = null;
+                _isConfigured = false;
             }
         }
     }

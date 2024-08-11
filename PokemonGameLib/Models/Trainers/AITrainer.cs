@@ -12,7 +12,7 @@ namespace PokemonGameLib.Models.Trainers
     /// </summary>
     public class AITrainer : Trainer
     {
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AITrainer"/> class with the specified name.
@@ -58,7 +58,7 @@ namespace PokemonGameLib.Models.Trainers
         /// </summary>
         /// <param name="battle">The current battle instance.</param>
         /// <returns><c>true</c> if the AI should switch Pokémon; otherwise, <c>false</c>.</returns>
-        private bool ShouldSwitchPokemon(IBattle battle)
+        internal bool ShouldSwitchPokemon(IBattle battle)
         {
             var currentPokemon = CurrentPokemon;
             var opponentPokemon = battle.DefendingTrainer.CurrentPokemon;
