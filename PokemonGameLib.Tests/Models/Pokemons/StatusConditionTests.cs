@@ -6,6 +6,7 @@ using PokemonGameLib.Models.Pokemons;
 
 namespace PokemonGameLib.Tests.Models.Pokemons
 {
+    [Collection("Test Collection")]
     public class StatusConditionTests
     {
         [Fact]

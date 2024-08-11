@@ -489,16 +489,14 @@
             Gets the current defending Pokémon.
             </summary>
         </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.#ctor(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.ITypeEffectivenessService,PokemonGameLib.Utilities.RandomNumberGenerator)">
+        <member name="M:PokemonGameLib.Models.Battles.Battle.#ctor(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.ITrainer)">
             <summary>
             Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Battles.Battle"/> class.
             </summary>
             <param name="firstTrainer">The first trainer in the battle.</param>
             <param name="secondTrainer">The second trainer in the battle.</param>
-            <param name="typeEffectivenessService">Service for calculating type effectiveness.</param>
-            <param name="randomNumberGenerator">Service for generating random numbers.</param>
             <exception cref="T:System.ArgumentNullException">
-            Thrown when any of the required dependencies (trainers, services) are null.
+            Thrown when any of the required dependencies (trainers) are null.
             </exception>
         </member>
         <member name="M:PokemonGameLib.Models.Battles.Battle.ValidateTrainers">
@@ -574,6 +572,11 @@
             <param name="trainer">The trainer switching Pokémon.</param>
             <param name="newPokemon">The new Pokémon to switch to.</param>
             <exception cref="T:PokemonGameLib.Exceptions.InvalidPokemonSwitchException">Thrown if the switch is invalid.</exception>
+        </member>
+        <member name="M:PokemonGameLib.Models.Battles.Battle.ProcessTurn">
+            <summary>
+            Processes a turn in the battle.
+            </summary>
         </member>
         <member name="T:PokemonGameLib.Models.Items.Item">
             <summary>
@@ -1080,23 +1083,26 @@
             <param name="battle">The current battle instance.</param>
             <returns><c>true</c> if the AI should switch Pokémon; otherwise, <c>false</c>.</returns>
         </member>
-        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.SelectBestPokemonToSwitchTo">
+        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.SelectBestPokemonToSwitchTo(PokemonGameLib.Interfaces.IBattle)">
             <summary>
             Selects the best Pokémon to switch to based on type advantage and health.
             </summary>
+            <param name="battle">The current battle instance.</param>
             <returns>The best Pokémon to switch to, or <c>null</c> if no switch is needed.</returns>
         </member>
-        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.SelectBestMove">
+        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.SelectBestMove(PokemonGameLib.Interfaces.IBattle)">
             <summary>
             Selects the best move to use based on effectiveness and power.
             </summary>
+            <param name="battle">The current battle instance.</param>
             <returns>The best move to use, or <c>null</c> if no move is suitable.</returns>
         </member>
-        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.ShouldUseItem(PokemonGameLib.Interfaces.IItem@)">
+        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.ShouldUseItem(PokemonGameLib.Interfaces.IItem@,PokemonGameLib.Interfaces.IBattle)">
             <summary>
-            Determines whether the AI should use an item based on the current Pokémon's health.
+            Determines whether the AI should use an item based on the current Pokémon's health and battle context.
             </summary>
             <param name="itemToUse">The item to use, if any.</param>
+            <param name="battle">The current battle instance.</param>
             <returns><c>true</c> if an item should be used; otherwise, <c>false</c>.</returns>
         </member>
         <member name="T:PokemonGameLib.Models.Trainers.PlayerTrainer">

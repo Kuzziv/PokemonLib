@@ -10,6 +10,7 @@ using Xunit;
 
 namespace PokemonGameLib.Tests.Models.Pokemons
 {
+    [Collection("Test Collection")]
     public class PokemonTests
     {
         private readonly Mock<Logger> _loggerMock;
@@ -160,19 +161,27 @@ namespace PokemonGameLib.Tests.Models.Pokemons
         [Fact]
         public void ApplyStatusEffects_HandlesStatusConditions()
         {
+            // Apply Burn status and check the HP after applying effects
             _pokemon.InflictStatus(StatusCondition.Burn);
             _pokemon.ApplyStatusEffects();
-            Assert.Equal(33, _pokemon.CurrentHP);
-
+            Assert.Equal(33, _pokemon.CurrentHP); // Ensure burn damage is correctly applied
+            
+            // Cure the Burn status before inflicting Sleep
+            _pokemon.CureStatus();
+            Assert.Equal(StatusCondition.None, _pokemon.Status); // Ensure the status is reset
+            
+            // Apply Sleep status and check that it takes effect
             _pokemon.InflictStatus(StatusCondition.Sleep);
             _pokemon.SetSleepDuration(1);
             _pokemon.ApplyStatusEffects();
-            Assert.Equal(StatusCondition.Sleep, _pokemon.Status);
-
+            Assert.Equal(StatusCondition.Sleep, _pokemon.Status); // Check that Sleep status is correctly applied
+            
+            // Advance the sleep counter and ensure the status changes back to None
             _pokemon.SetSleepDuration(0);
             _pokemon.ApplyStatusEffects();
-            Assert.Equal(StatusCondition.None, _pokemon.Status);
+            Assert.Equal(StatusCondition.None, _pokemon.Status); // Ensure the Pokémon wakes up
         }
+
 
         [Fact]
         public void CureStatus_ResetsStatusCondition()

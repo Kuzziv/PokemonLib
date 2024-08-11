@@ -33,7 +33,7 @@ namespace PokemonGameLib.Models.Trainers
         /// <summary>
         /// Gets the list of items that the Trainer possesses.
         /// </summary>
-        protected List<IItem> Items { get; }
+        internal List<IItem> Items { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Trainer"/> class with the specified name.

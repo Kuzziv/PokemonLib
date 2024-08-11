@@ -4,6 +4,7 @@ using PokemonGameLib.Interfaces;
 using PokemonGameLib.Exceptions;
 using PokemonGameLib.Utilities;
 using PokemonGameLib.Models.Pokemons;
+using PokemonGameLib.Services;
 
 namespace PokemonGameLib.Models.Battles
 {
@@ -12,8 +13,6 @@ namespace PokemonGameLib.Models.Battles
     /// </summary>
     public class Battle : IBattle
     {
-        private readonly ITypeEffectivenessService _typeEffectivenessService;
-        private readonly RandomNumberGenerator _randomNumberGenerator;
         private readonly ILogger _logger;
         private bool _isFirstTrainerAttacking;
 
@@ -52,21 +51,13 @@ namespace PokemonGameLib.Models.Battles
         /// </summary>
         /// <param name="firstTrainer">The first trainer in the battle.</param>
         /// <param name="secondTrainer">The second trainer in the battle.</param>
-        /// <param name="typeEffectivenessService">Service for calculating type effectiveness.</param>
-        /// <param name="randomNumberGenerator">Service for generating random numbers.</param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown when any of the required dependencies (trainers, services) are null.
+        /// Thrown when any of the required dependencies (trainers) are null.
         /// </exception>
-        public Battle(
-            ITrainer firstTrainer,
-            ITrainer secondTrainer,
-            ITypeEffectivenessService typeEffectivenessService,
-            RandomNumberGenerator randomNumberGenerator)
+        public Battle(ITrainer firstTrainer, ITrainer secondTrainer)
         {
             FirstTrainer = firstTrainer ?? throw new ArgumentNullException(nameof(firstTrainer));
             SecondTrainer = secondTrainer ?? throw new ArgumentNullException(nameof(secondTrainer));
-            _typeEffectivenessService = typeEffectivenessService ?? throw new ArgumentNullException(nameof(typeEffectivenessService));
-            _randomNumberGenerator = randomNumberGenerator ?? throw new ArgumentNullException(nameof(randomNumberGenerator));
             _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
 
             ValidateTrainers();
@@ -131,7 +122,6 @@ namespace PokemonGameLib.Models.Battles
             _isFirstTrainerAttacking = !_isFirstTrainerAttacking;
         }
 
-
         /// <summary>
         /// Validates that the current attack conditions are valid.
         /// </summary>
@@ -152,7 +142,7 @@ namespace PokemonGameLib.Models.Battles
         /// <param name="move">The move to be executed.</param>
         private void ExecuteAttack(IMove move)
         {
-            double effectiveness = _typeEffectivenessService.GetEffectiveness(move.Type, Defender.Type);
+            double effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(move.Type, Defender.Type);
             double damage = CalculateDamage(move.Power, Attacker.Attack, Defender.Defense, effectiveness, move.Type);
             Defender.TakeDamage((int)damage);
 
@@ -197,9 +187,9 @@ namespace PokemonGameLib.Models.Battles
         /// <returns>The total calculated damage.</returns>
         private double CalculateDamage(int movePower, int attackerAttack, int defenderDefense, double effectiveness, PokemonType moveType)
         {
-            double randomFactor = _randomNumberGenerator.Generate(0.85, 1.0);
+            double randomFactor = RandomNumberGenerator.Instance.Generate(0.85, 1.0);
             double stab = Attacker.Type == moveType ? 1.5 : 1.0;
-            double critical = _randomNumberGenerator.Generate(0.0, 1.0) < 0.0625 ? 2.0 : 1.0;
+            double critical = RandomNumberGenerator.Instance.Generate(0.0, 1.0) < 0.0625 ? 2.0 : 1.0;
 
             return (((2 * Attacker.Level / 5.0 + 2) * movePower * (attackerAttack / (double)defenderDefense) / 50.0) + 2)
                    * effectiveness * stab * critical * randomFactor;
@@ -226,15 +216,15 @@ namespace PokemonGameLib.Models.Battles
         /// <returns>A string describing the result of the battle.</returns>
         public string DetermineBattleResult()
         {
-            if (Attacker != null && Attacker.IsFainted())
+            if (FirstTrainer.Pokemons.All(p => p.IsFainted()))
             {
-                _logger.LogInfo($"{AttackingTrainer.Name}'s {Attacker.Name} has fainted. {DefendingTrainer.Name} wins!");
-                return $"{AttackingTrainer.Name}'s {Attacker.Name} has fainted. {DefendingTrainer.Name} wins!";
+                _logger.LogInfo($"{FirstTrainer.Name} has no remaining Pokémon. {SecondTrainer.Name} wins!");
+                return $"{FirstTrainer.Name} has no remaining Pokémon. {SecondTrainer.Name} wins!";
             }
-            if (Defender != null && Defender.IsFainted())
+            if (SecondTrainer.Pokemons.All(p => p.IsFainted()))
             {
-                _logger.LogInfo($"{DefendingTrainer.Name}'s {Defender.Name} has fainted. {AttackingTrainer.Name} wins!");
-                return $"{DefendingTrainer.Name}'s {Defender.Name} has fainted. {AttackingTrainer.Name} wins!";
+                _logger.LogInfo($"{SecondTrainer.Name} has no remaining Pokémon. {FirstTrainer.Name} wins!");
+                return $"{SecondTrainer.Name} has no remaining Pokémon. {FirstTrainer.Name} wins!";
             }
             return "The battle is ongoing.";
         }
@@ -272,6 +262,16 @@ namespace PokemonGameLib.Models.Battles
 
             if (newPokemon.IsFainted())
                 throw new InvalidPokemonSwitchException("Cannot switch to a fainted Pokémon.");
+        }
+
+        /// <summary>
+        /// Processes a turn in the battle.
+        /// </summary>
+        public void ProcessTurn()
+        {
+            AttackingTrainer.TakeTurn(this);
+            _logger.LogInfo("Turn processed. Switching attacking trainer.");
+            _isFirstTrainerAttacking = !_isFirstTrainerAttacking;
         }
     }
 }

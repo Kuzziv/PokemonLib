@@ -7,6 +7,7 @@ namespace PokemonGameLib.Utilities
     /// </summary>
     public class RandomNumberGenerator
     {
+        private static readonly Lazy<RandomNumberGenerator> _instance = new(() => new RandomNumberGenerator());
         private readonly Random _random;
 
         /// <summary>
@@ -16,6 +17,8 @@ namespace PokemonGameLib.Utilities
         {
             _random = new Random();
         }
+
+        public static RandomNumberGenerator Instance => _instance.Value;
 
         /// <summary>
         /// Generates a random number between the specified minimum and maximum values.

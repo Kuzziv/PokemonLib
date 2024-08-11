@@ -28,6 +28,8 @@ namespace PokemonGameLib.Models.Trainers
         /// <param name="battle">The current battle instance.</param>
         public override void TakeTurn(IBattle battle)
         {
+            int invalidAttempts = 0;
+            const int maxInvalidAttempts = 3;
             while (true)
             {
                 Console.WriteLine("Choose an action:");
@@ -50,6 +52,12 @@ namespace PokemonGameLib.Models.Trainers
                         return;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
+                        invalidAttempts++;
+                        if (invalidAttempts >= maxInvalidAttempts)
+                        {
+                            Console.WriteLine("Too many invalid attempts. Turn skipped.");
+                            return;
+                        }
                         break;
                 }
             }

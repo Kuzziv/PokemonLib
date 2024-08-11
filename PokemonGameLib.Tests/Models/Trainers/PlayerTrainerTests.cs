@@ -9,6 +9,7 @@ using PokemonGameLib.Utilities;
 
 namespace PokemonGameLib.Tests.Models.Trainers
 {
+    [Collection("Test Collection")]
     public class PlayerTrainerTests
     {
         private readonly PlayerTrainer _playerTrainer;
@@ -29,16 +30,15 @@ namespace PokemonGameLib.Tests.Models.Trainers
             move.Setup(m => m.Name).Returns("Thunderbolt");
             pokemon.Setup(p => p.Moves).Returns(new List<IMove> { move.Object });
             _playerTrainer.AddPokemon(pokemon.Object);
-            _playerTrainer.SwitchPokemon(pokemon.Object);
+            _playerTrainer.SwitchPokemon(pokemon.Object); // Ensure CurrentPokemon is set
 
             // Simulate user input for performing attack
-            var input = "1\n"; // Choose attack
+            var input = "1\n1\n"; // Choose attack
             using (var sw = new StringWriter())
             {
                 Console.SetIn(new StringReader(input));
                 _playerTrainer.TakeTurn(_mockBattle.Object);
                 _mockBattle.Verify(b => b.PerformAttack(move.Object), Times.Once);
-                // Logger related verifications removed
             }
         }
 
@@ -54,7 +54,7 @@ namespace PokemonGameLib.Tests.Models.Trainers
             pokemon2.Setup(p => p.IsFainted()).Returns(false);
             _playerTrainer.AddPokemon(pokemon1.Object);
             _playerTrainer.AddPokemon(pokemon2.Object);
-            _playerTrainer.SwitchPokemon(pokemon1.Object);
+            _playerTrainer.SwitchPokemon(pokemon1.Object); // Ensure starting with Pikachu
 
             // Simulate user input for switching Pokémon
             var input = "2\n2\n"; // Choose switch Pokémon
@@ -63,7 +63,6 @@ namespace PokemonGameLib.Tests.Models.Trainers
                 Console.SetIn(new StringReader(input));
                 _playerTrainer.TakeTurn(_mockBattle.Object);
                 _mockBattle.Verify(b => b.SwitchPokemon(_playerTrainer, pokemon2.Object), Times.Once);
-                // Logger related verifications removed
             }
         }
 
@@ -77,6 +76,7 @@ namespace PokemonGameLib.Tests.Models.Trainers
             var pokemon = new Mock<IPokemon>();
             _playerTrainer.AddItem(item.Object);
             _playerTrainer.AddPokemon(pokemon.Object);
+            _playerTrainer.SwitchPokemon(pokemon.Object); // Ensure CurrentPokemon is set
 
             // Simulate user input for using item
             var input = "3\n1\n"; // Choose use item
@@ -84,27 +84,30 @@ namespace PokemonGameLib.Tests.Models.Trainers
             {
                 Console.SetIn(new StringReader(input));
                 _playerTrainer.TakeTurn(_mockBattle.Object);
-                // Logger related verifications removed
+                // Verify the item was used, skipping the logger check
+                item.Verify(i => i.Use(_playerTrainer, pokemon.Object), Times.Once);
             }
         }
 
         [Fact]
-        public void TakeTurn_InvalidChoice_LogsWarning()
+        public void TakeTurn_InvalidChoice_DoesNothing()
         {
             // Arrange
-            var input = "4\n"; // Invalid choice
+            var input = "4\n4\n4\n"; // Invalid choices
 
             // Simulate user input for invalid choice
             using (var sw = new StringWriter())
             {
                 Console.SetIn(new StringReader(input));
                 _playerTrainer.TakeTurn(_mockBattle.Object);
-                // No logger verifications since logger is not used
+                // Verify that no actions were taken
+                _mockBattle.Verify(b => b.PerformAttack(It.IsAny<IMove>()), Times.Never);
+                _mockBattle.Verify(b => b.SwitchPokemon(It.IsAny<Trainer>(), It.IsAny<IPokemon>()), Times.Never);
             }
         }
 
         [Fact]
-        public void TakeTurn_EmptyPokemonList_LogsWarning()
+        public void TakeTurn_EmptyPokemonList_DoesNothing()
         {
             // Arrange
             var input = "2\n1\n"; // Choose switch Pokémon
@@ -117,7 +120,8 @@ namespace PokemonGameLib.Tests.Models.Trainers
             {
                 Console.SetIn(new StringReader(input));
                 _playerTrainer.TakeTurn(_mockBattle.Object);
-                // No logger verifications since logger is not used
+                // Verify that no Pokémon was switched
+                _mockBattle.Verify(b => b.SwitchPokemon(It.IsAny<Trainer>(), It.IsAny<IPokemon>()), Times.Never);
             }
         }
     }
