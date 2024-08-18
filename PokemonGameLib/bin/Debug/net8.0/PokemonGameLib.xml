@@ -4,6 +4,31 @@
         <name>PokemonGameLib</name>
     </assembly>
     <members>
+        <member name="T:PokemonGameLib.Commands.AttackCommand">
+            <summary>
+            Represents an attack command in a Pokémon battle.
+            </summary>
+        </member>
+        <member name="T:PokemonGameLib.Commands.BattleCommand">
+            <summary>
+            Represents a command in a Pokémon battle.
+            </summary>
+        </member>
+        <member name="M:PokemonGameLib.Commands.BattleCommand.Execute">
+            <summary>
+            Executes the command.
+            </summary>
+        </member>
+        <member name="T:PokemonGameLib.Commands.SwitchCommand">
+            <summary>
+            Represents a switch Pokémon command in a Pokémon battle.
+            </summary>
+        </member>
+        <member name="T:PokemonGameLib.Commands.UseItemCommand">
+            <summary>
+            Represents a use item command in a Pokémon battle.
+            </summary>
+        </member>
         <member name="T:PokemonGameLib.Exceptions.InvalidMoveException">
             <summary>
             Exception thrown when an invalid move is attempted in a Pokémon battle.
@@ -967,42 +992,6 @@
             </summary>
             <param name="battle">The current battle instance.</param>
         </member>
-        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.HandleFaintedPokemon(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Handles the situation when the AI's current Pokémon has fainted.
-            Forces the AI to switch to another available Pokémon.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.ShouldSwitchPokemon(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Determines whether the AI should switch Pokémon based on the battle situation.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-            <returns><c>true</c> if the AI should switch Pokémon; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.SelectBestPokemonToSwitchTo(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Selects the best Pokémon to switch to based on type advantage and health.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-            <returns>The best Pokémon to switch to, or <c>null</c> if no switch is needed.</returns>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.SelectBestMove(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Selects the best move to use based on effectiveness and power.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-            <returns>The best move to use, or <c>null</c> if no move is suitable.</returns>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.ShouldUseItem(PokemonGameLib.Interfaces.IItem@,PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Determines whether the AI should use an item based on the current Pokémon's health and battle context.
-            </summary>
-            <param name="itemToUse">The item to use, if any.</param>
-            <param name="battle">The current battle instance.</param>
-            <returns><c>true</c> if an item should be used; otherwise, <c>false</c>.</returns>
-        </member>
         <member name="T:PokemonGameLib.Models.Trainers.PlayerTrainer">
             <summary>
             Represents a human player trainer in the Pokémon game.
@@ -1091,6 +1080,20 @@
             <param name="pokemon">The Pokémon to remove.</param>
             <exception cref="T:System.ArgumentNullException">Thrown if the Pokémon is null.</exception>
             <exception cref="T:System.InvalidOperationException">Thrown if the Pokémon is not in the Trainer's collection.</exception>
+        </member>
+        <member name="M:PokemonGameLib.Models.Trainers.Trainer.AddItem(PokemonGameLib.Interfaces.IItem)">
+            <summary>
+            Adds an item to the Trainer's inventory.
+            </summary>
+            <param name="item">The item to add.</param>
+        </member>
+        <member name="M:PokemonGameLib.Models.Trainers.Trainer.RemoveItem(PokemonGameLib.Interfaces.IItem)">
+            <summary>
+            Removes an item from the Trainer's inventory.
+            </summary>
+            <param name="item">The item to remove.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the item is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown if the item is not in the Trainer's inventory.</exception>
         </member>
         <member name="M:PokemonGameLib.Models.Trainers.Trainer.ForceSwitchPokemon(PokemonGameLib.Interfaces.IBattle)">
             <summary>
@@ -1185,97 +1188,10 @@
             Gets the type effectiveness dictionary.
             </summary>
         </member>
-        <member name="T:PokemonGameLib.Utilities.Logger">
-            <summary>
-            Provides methods for logging messages and errors to a specified log file with thread-safety.
-            Logs are formatted as YAML objects.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.Logger.#ctor(System.String,System.Text.Encoding)">
-            <summary>
-            Initializes a new instance of the <see cref="T:PokemonGameLib.Utilities.Logger"/> class with the specified log file path and encoding.
-            </summary>
-            <param name="logFilePath">The file path where logs will be written.</param>
-            <param name="encoding">The encoding to use for the log file. Default is UTF-8.</param>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.Logger.LogInfo(System.String)">
-            <summary>
-            Logs an informational message to the log file.
-            </summary>
-            <param name="message">The message to log.</param>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.Logger.LogWarning(System.String)">
-            <summary>
-            Logs a warning message to the log file.
-            </summary>
-            <param name="message">The message to log.</param>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.Logger.LogError(System.String)">
-            <summary>
-            Logs an error message to the log file.
-            </summary>
-            <param name="message">The message to log.</param>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.Logger.Log(System.String,System.String)">
-            <summary>
-            Logs a message with a specified severity to the log file, with thread-safety.
-            </summary>
-            <param name="severity">The severity of the log message.</param>
-            <param name="message">The message to log.</param>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.Logger.FormatLogEntry(System.String,System.String)">
-            <summary>
-            Formats a log entry as a YAML string with a timestamp, severity, and message.
-            </summary>
-            <param name="severity">The severity of the log message.</param>
-            <param name="message">The message to log.</param>
-            <returns>A YAML-formatted log entry string.</returns>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.LoggingService.Configure(System.String)">
-            <summary>
-            Configures the logger with a specified log file path.
-            This method is thread-safe and ensures the logger is configured only once.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.LoggingService.GetLogger">
-            <summary>
-            Gets the configured logger. Throws an exception if the logger has not been configured.
-            This method is thread-safe.
-            </summary>
-            <returns>The configured logger instance.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown if the logger is not configured.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.LoggingService.ResetConfiguration">
-            <summary>
-            Resets the logger configuration, allowing the logger to be reconfigured.
-            This method is thread-safe.
-            </summary>
-        </member>
         <member name="T:PokemonGameLib.Utilities.RandomNumberGenerator">
             <summary>
             Provides methods for generating random numbers.
             </summary>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.RandomNumberGenerator.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:PokemonGameLib.Utilities.RandomNumberGenerator"/> class.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.RandomNumberGenerator.Generate(System.Double,System.Double)">
-            <summary>
-            Generates a random number between the specified minimum and maximum values.
-            </summary>
-            <param name="minValue">The inclusive lower bound of the random number returned.</param>
-            <param name="maxValue">The inclusive upper bound of the random number returned.</param>
-            <returns>A double precision floating point number between minValue and maxValue.</returns>
-        </member>
-        <member name="M:PokemonGameLib.Utilities.RandomNumberGenerator.Generate(System.Int32,System.Int32)">
-            <summary>
-            Generates a random integer between the specified minimum and maximum values.
-            </summary>
-            <param name="minValue">The inclusive lower bound of the random number returned.</param>
-            <param name="maxValue">The inclusive upper bound of the random number returned.</param>
-            <returns>An integer between minValue and maxValue.</returns>
         </member>
         <member name="T:PokemonGameLib.Utilities.ValidationUtility">
             <summary>
@@ -1295,7 +1211,7 @@
             <summary>
             Ensures that a move is valid for a Pokémon.
             </summary>
-            <param name="pokemon">The Pokémon to validate the move against.</param>
+            <param name="attacker">The Pokémon to validate the move against.</param>
             <param name="move">The move to validate.</param>
             <exception cref="T:PokemonGameLib.Exceptions.InvalidMoveException">Thrown if the move is invalid for the Pokémon.</exception>
         </member>

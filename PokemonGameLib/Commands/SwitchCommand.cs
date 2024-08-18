@@ -1,22 +1,25 @@
 using PokemonGameLib.Interfaces;
+using PokemonGameLib.Models.Trainers;
 
 namespace PokemonGameLib.Commands
 {
-    public class SwitchCommand : ICommand
+    /// <summary>
+    /// Represents a switch Pokémon command in a Pokémon battle.
+    /// </summary>
+    public class SwitchCommand : BattleCommand
     {
-        private readonly IBattle _battle;
-        private readonly ITrainer _trainer;
+        private readonly Trainer _trainer;
         private readonly IPokemon _newPokemon;
 
-        public SwitchCommand(IBattle battle, ITrainer trainer, IPokemon newPokemon)
+        public SwitchCommand(IBattle battle, Trainer trainer, IPokemon newPokemon) : base(battle)
         {
-            _battle = battle;
             _trainer = trainer;
             _newPokemon = newPokemon;
         }
 
-        public void Execute()
+        public override void Execute()
         {
+            _trainer.CurrentPokemon = _newPokemon;
             _battle.SwitchPokemon(_trainer, _newPokemon);
         }
     }

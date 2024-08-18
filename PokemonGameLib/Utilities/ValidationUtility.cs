@@ -28,16 +28,19 @@ namespace PokemonGameLib.Utilities
         /// <summary>
         /// Ensures that a move is valid for a Pokémon.
         /// </summary>
-        /// <param name="pokemon">The Pokémon to validate the move against.</param>
+        /// <param name="attacker">The Pokémon to validate the move against.</param>
         /// <param name="move">The move to validate.</param>
         /// <exception cref="InvalidMoveException">Thrown if the move is invalid for the Pokémon.</exception>
-        public static void ValidateMove(IPokemon pokemon, IMove move)
+        public static void ValidateMove(IPokemon attacker, IMove move)
         {
-            if (pokemon == null) throw new ArgumentNullException(nameof(pokemon));
+            if (attacker == null) throw new ArgumentNullException(nameof(attacker));
             if (move == null) throw new ArgumentNullException(nameof(move));
 
-            if (!pokemon.Moves.Contains(move))
-                throw new InvalidMoveException($"{pokemon.Name} cannot use the move {move.Name}.");
+            if (!attacker.Moves.Contains(move))
+                throw new InvalidMoveException($"{attacker.Name} cannot use {move.Name}.");
         }
+
+        
+
     }
 }

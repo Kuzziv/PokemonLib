@@ -1,5 +1,5 @@
-using System;
 using PokemonGameLib.Interfaces;
+using PokemonGameLib.Commands;
 using PokemonGameLib.Utilities;
 
 namespace PokemonGameLib.Models.Trainers
@@ -9,15 +9,13 @@ namespace PokemonGameLib.Models.Trainers
     /// </summary>
     public class PlayerTrainer : Trainer
     {
-        private readonly ILogger _logger;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerTrainer"/> class with the specified name.
         /// </summary>
         /// <param name="name">The name of the player trainer.</param>
         public PlayerTrainer(string name) : base(name)
         {
-            _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
+            // Additional initialization logic if needed
         }
 
         /// <summary>
@@ -50,7 +48,6 @@ namespace PokemonGameLib.Models.Trainers
                         return;
                     case "3":
                         UseItem(battle);
-                        // After using an item, return to the action selection instead of ending the turn
                         continue;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
@@ -137,7 +134,6 @@ namespace PokemonGameLib.Models.Trainers
             }
         }
 
-
         /// <summary>
         /// Handles the player's choice to use an item.
         /// </summary>
@@ -166,6 +162,5 @@ namespace PokemonGameLib.Models.Trainers
                 _logger.LogWarning($"{Name} attempted to use an invalid item. Turn skipped.");
             }
         }
-
     }
 }

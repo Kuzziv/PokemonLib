@@ -10,10 +10,6 @@ namespace PokemonGameLib.Utilities
         private static ILogger _logger;
         private static bool _isConfigured = false;
 
-        /// <summary>
-        /// Configures the logger with a specified log file path.
-        /// This method is thread-safe and ensures the logger is configured only once.
-        /// </summary>
         public static void Configure(string logFilePath = null)
         {
             lock (_lock)
@@ -33,18 +29,12 @@ namespace PokemonGameLib.Utilities
                     logFilePath = Path.Combine(logDirectory, "Logs.yml");
                 }
 
-                _logger = new Logger(logFilePath); // ILogger is assigned with Logger instance
+                _logger = new Logger(logFilePath);
                 _isConfigured = true;
             }
         }
 
-        /// <summary>
-        /// Gets the configured logger. Throws an exception if the logger has not been configured.
-        /// This method is thread-safe.
-        /// </summary>
-        /// <returns>The configured logger instance.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the logger is not configured.</exception>
-        public static ILogger GetLogger()  // Return ILogger instead of Logger
+        public static ILogger GetLogger()
         {
             lock (_lock)
             {
@@ -57,10 +47,6 @@ namespace PokemonGameLib.Utilities
             }
         }
 
-        /// <summary>
-        /// Resets the logger configuration, allowing the logger to be reconfigured.
-        /// This method is thread-safe.
-        /// </summary>
         public static void ResetConfiguration()
         {
             lock (_lock)

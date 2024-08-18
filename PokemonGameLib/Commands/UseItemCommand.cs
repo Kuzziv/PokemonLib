@@ -1,25 +1,28 @@
 using PokemonGameLib.Interfaces;
+using PokemonGameLib.Models.Trainers;
 
 namespace PokemonGameLib.Commands
 {
-    public class UseItemCommand : ICommand
+    /// <summary>
+    /// Represents a use item command in a Pokémon battle.
+    /// </summary>
+    public class UseItemCommand : BattleCommand
     {
-        private readonly IBattle _battle;
-        private readonly ITrainer _trainer;
+        private readonly Trainer _trainer;
         private readonly IItem _item;
-        private readonly IPokemon _target;
+        private readonly IPokemon _targetPokemon;
 
-        public UseItemCommand(IBattle battle, ITrainer trainer, IItem item, IPokemon target)
+        public UseItemCommand(IBattle battle, Trainer trainer, IItem item, IPokemon targetPokemon) : base(battle)
         {
-            _battle = battle;
             _trainer = trainer;
             _item = item;
-            _target = target;
+            _targetPokemon = targetPokemon;
         }
 
-        public void Execute()
+        public override void Execute()
         {
-            _battle.UseItem(_trainer, _item, _target);
+            _item.Use(_trainer, _targetPokemon);  // Pass both the trainer and the target Pokemon
+            _trainer.RemoveItem(_item); // Assuming item is consumed upon use
         }
     }
 }

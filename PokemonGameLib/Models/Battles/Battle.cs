@@ -1,17 +1,14 @@
 using System;
-using System.Linq;
 using PokemonGameLib.Interfaces;
-using PokemonGameLib.Exceptions;
 using PokemonGameLib.Utilities;
-using PokemonGameLib.Models.Pokemons;
-using PokemonGameLib.Services;
+using PokemonGameLib.Exceptions;
 using PokemonGameLib.Events;
+using PokemonGameLib.Services;
 
 namespace PokemonGameLib.Models.Battles
 {
-    public class Battle : IBattle
+    public class Battle : Loggable, IBattle
     {
-        private readonly ILogger _logger;
         private readonly BattleCalculator _battleCalculator;
         private bool _isFirstTrainerAttacking;
 
@@ -28,8 +25,7 @@ namespace PokemonGameLib.Models.Battles
         {
             FirstTrainer = firstTrainer ?? throw new ArgumentNullException(nameof(firstTrainer));
             SecondTrainer = secondTrainer ?? throw new ArgumentNullException(nameof(secondTrainer));
-            _logger = LoggingService.GetLogger();
-            _battleCalculator = new BattleCalculator(); // Initialize the BattleCalculator
+            _battleCalculator = new BattleCalculator();
 
             ValidateTrainers();
 
@@ -47,7 +43,7 @@ namespace PokemonGameLib.Models.Battles
 
         private void LogBattleStart()
         {
-            _logger.LogInfo($"{FirstTrainer.Name} vs. {SecondTrainer.Name}");
+            LogInfo($"{FirstTrainer.Name} vs. {SecondTrainer.Name}");
             Console.WriteLine($"{FirstTrainer.Name} has {FirstTrainer.Pokemons.Count} Pokémon.");
             Console.WriteLine($"{SecondTrainer.Name} has {SecondTrainer.Pokemons.Count} Pokémon.");
         }
@@ -59,32 +55,24 @@ namespace PokemonGameLib.Models.Battles
             var attacker = AttackingTrainer.CurrentPokemon;
             var defender = DefendingTrainer.CurrentPokemon;
 
-            if (attacker == null || defender == null) throw new InvalidOperationException("Current Pokémon cannot be null.");
+            if (attacker == null || defender == null)
+                throw new InvalidOperationException("Current Pokémon cannot be null.");
 
             attacker.ApplyStatusEffects();
 
             if (attacker.IsFainted())
             {
-                _logger.LogInfo($"{attacker.Name} is fainted and cannot attack.");
+                LogInfo($"{attacker.Name} is fainted and cannot attack.");
                 return;
             }
 
-            ValidateAttackConditions(attacker, defender, move);
+            BattleValidator.ValidateMove(attacker, move);
 
             ExecuteMultipleHits(attacker, defender, move);
 
             ApplyRecoilAndHealing(attacker, move);
 
             ToggleAttackingTrainer();
-        }
-
-        private void ValidateAttackConditions(IPokemon attacker, IPokemon defender, IMove move)
-        {
-            if (!attacker.Moves.Contains(move))
-                throw new InvalidMoveException("Invalid move for the current attacker.");
-
-            if (defender.IsFainted())
-                throw new InvalidMoveException($"{defender.Name} is fainted and cannot be attacked.");
         }
 
         private void ExecuteMultipleHits(IPokemon attacker, IPokemon defender, IMove move)
@@ -117,7 +105,7 @@ namespace PokemonGameLib.Models.Battles
             string effectivenessMessage = _battleCalculator.GetEffectivenessMessage(
                 TypeEffectivenessService.Instance.GetEffectiveness(move.Type, defender.Type));
 
-            _logger.LogInfo($"{attacker.Name} used {move.Name}! {defender.Name} took {damage} damage.");
+            LogInfo($"{attacker.Name} used {move.Name}! {defender.Name} took {damage} damage.");
             Console.WriteLine($"{attacker.Name} used {move.Name}!");
             Console.WriteLine(effectivenessMessage);
             Console.WriteLine($"{defender.Name} took {damage} damage!");
@@ -127,7 +115,7 @@ namespace PokemonGameLib.Models.Battles
 
         private void HandleDefenderFainting(IPokemon defender)
         {
-            _logger.LogInfo($"{defender.Name} has fainted!");
+            LogInfo($"{defender.Name} has fainted!");
             Console.WriteLine($"{defender.Name} has fainted!");
             OnPokemonFainted(new PokemonEventArgs { FaintedPokemon = defender });
         }
@@ -138,27 +126,15 @@ namespace PokemonGameLib.Models.Battles
             {
                 int recoilDamage = _battleCalculator.CalculateRecoilDamage(attacker, move);
                 attacker.TakeDamage(recoilDamage);
-                LogRecoilDamage(attacker, recoilDamage);
+                LogInfo($"{attacker.Name} took {recoilDamage} recoil damage!");
             }
 
             if (move.HealingPercentage > 0)
             {
                 int healingAmount = _battleCalculator.CalculateHealingAmount(attacker, move);
                 attacker.Heal(healingAmount);
-                LogHealing(attacker, healingAmount);
+                LogInfo($"{attacker.Name} healed {healingAmount} HP!");
             }
-        }
-
-        private void LogRecoilDamage(IPokemon attacker, int recoilDamage)
-        {
-            _logger.LogInfo($"{attacker.Name} took {recoilDamage} recoil damage!");
-            Console.WriteLine($"{attacker.Name} took {recoilDamage} recoil damage!");
-        }
-
-        private void LogHealing(IPokemon attacker, int healingAmount)
-        {
-            _logger.LogInfo($"{attacker.Name} healed {healingAmount} HP!");
-            Console.WriteLine($"{attacker.Name} healed {healingAmount} HP!");
         }
 
         private void ToggleAttackingTrainer()
@@ -181,28 +157,16 @@ namespace PokemonGameLib.Models.Battles
 
         private string LogBattleResult(string result)
         {
-            _logger.LogInfo(result);
+            LogInfo(result);
             return result;
         }
 
         public void SwitchPokemon(ITrainer trainer, IPokemon newPokemon)
         {
-            ValidateSwitchConditions(trainer, newPokemon);
+            BattleValidator.ValidatePokemonSwitch(trainer, newPokemon);
             trainer.CurrentPokemon = newPokemon;
-            _logger.LogInfo($"{trainer.Name} switched to {newPokemon.Name}!");
+            LogInfo($"{trainer.Name} switched to {newPokemon.Name}!");
             Console.WriteLine($"{trainer.Name} switched to {newPokemon.Name}!");
-        }
-
-        private static void ValidateSwitchConditions(ITrainer trainer, IPokemon newPokemon)
-        {
-            if (!trainer.Pokemons.Contains(newPokemon))
-                throw new InvalidPokemonSwitchException("Trainer does not own the specified Pokémon.");
-
-            if (trainer.CurrentPokemon == newPokemon)
-                throw new InvalidPokemonSwitchException("Trainer is already using the specified Pokémon.");
-
-            if (newPokemon.IsFainted())
-                throw new InvalidPokemonSwitchException("Cannot switch to a fainted Pokémon.");
         }
 
         private void PrintCurrentHP()
@@ -214,7 +178,7 @@ namespace PokemonGameLib.Models.Battles
         public void UseItem(ITrainer trainer, IItem item, IPokemon target)
         {
             item.Use(trainer, target);
-            _logger.LogInfo($"{trainer.Name} used {item.Name} on {target.Name}.");
+            LogInfo($"{trainer.Name} used {item.Name} on {target.Name}.");
         }
 
         protected virtual void OnPokemonFainted(PokemonEventArgs e)

@@ -59,18 +59,12 @@ namespace PokemonGameLib.Models.Trainers
             }
         }
 
-        /// <summary>
-        /// Handles the situation when the AI's current Pokémon has fainted.
-        /// Forces the AI to switch to another available Pokémon.
-        /// </summary>
-        /// <param name="battle">The current battle instance.</param>
         private void HandleFaintedPokemon(IBattle battle)
         {
             if (CurrentPokemon.IsFainted())
             {
                 _logger.LogInfo($"{Name}'s {CurrentPokemon.Name} has fainted.");
 
-                // Check if there are any Pokémon left that have not fainted
                 var newPokemon = Pokemons.FirstOrDefault(p => !p.IsFainted());
 
                 if (newPokemon != null)
@@ -81,22 +75,12 @@ namespace PokemonGameLib.Models.Trainers
                 }
                 else
                 {
-                    // No Pokémon left to switch to, AI trainer has lost the battle
                     _logger.LogError($"{Name} has no Pokémon left to switch to!");
                     Console.WriteLine($"{Name} has no Pokémon left!");
-                    // End the battle for the AI trainer
-                    // Optionally, you could throw an exception or handle the end of the battle in another way
-                    // For now, just return control to indicate the battle should stop
                 }
             }
         }
 
-
-        /// <summary>
-        /// Determines whether the AI should switch Pokémon based on the battle situation.
-        /// </summary>
-        /// <param name="battle">The current battle instance.</param>
-        /// <returns><c>true</c> if the AI should switch Pokémon; otherwise, <c>false</c>.</returns>
         internal bool ShouldSwitchPokemon(IBattle battle)
         {
             var currentPokemon = CurrentPokemon;
@@ -106,7 +90,7 @@ namespace PokemonGameLib.Models.Trainers
 
             double effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(opponentPokemon.Type, currentPokemon.Type);
 
-            var shouldSwitch = effectiveness > 1.5 || currentPokemon.CurrentHP < currentPokemon.MaxHP / 4;
+            bool shouldSwitch = effectiveness > 1.5 || currentPokemon.CurrentHP < currentPokemon.MaxHP / 4;
 
             if (!shouldSwitch && currentPokemon.Moves.All(m => TypeEffectivenessService.Instance.GetEffectiveness(m.Type, opponentPokemon.Type) < 1.0))
             {
@@ -116,19 +100,9 @@ namespace PokemonGameLib.Models.Trainers
 
             _logger.LogInfo($"Effectiveness of {opponentPokemon.Name} against {currentPokemon.Name} is {effectiveness}. Should switch: {shouldSwitch}");
 
-            if (shouldSwitch)
-            {
-                _logger.LogInfo($"{Name} decides to switch Pokémon.");
-            }
-
             return shouldSwitch;
         }
 
-        /// <summary>
-        /// Selects the best Pokémon to switch to based on type advantage and health.
-        /// </summary>
-        /// <param name="battle">The current battle instance.</param>
-        /// <returns>The best Pokémon to switch to, or <c>null</c> if no switch is needed.</returns>
         internal IPokemon? SelectBestPokemonToSwitchTo(IBattle battle)
         {
             var opponentPokemon = battle.DefendingTrainer.CurrentPokemon;
@@ -142,7 +116,6 @@ namespace PokemonGameLib.Models.Trainers
                     double effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(pokemon.Type, opponentPokemon.Type);
                     _logger.LogInfo($"Effectiveness of {pokemon.Name} ({pokemon.Type}) against {opponentPokemon.Name} ({opponentPokemon.Type}): {effectiveness}");
 
-                    // Log if this Pokemon is considered for switching
                     if (effectiveness > 1.0)
                     {
                         _logger.LogInfo($"{pokemon.Name} is considered for switching due to type advantage.");
@@ -167,12 +140,6 @@ namespace PokemonGameLib.Models.Trainers
             }
         }
 
-
-        /// <summary>
-        /// Selects the best move to use based on effectiveness and power.
-        /// </summary>
-        /// <param name="battle">The current battle instance.</param>
-        /// <returns>The best move to use, or <c>null</c> if no move is suitable.</returns>
         internal IMove? SelectBestMove(IBattle battle)
         {
             var currentPokemon = CurrentPokemon;
@@ -194,12 +161,6 @@ namespace PokemonGameLib.Models.Trainers
             return bestMove;
         }
 
-        /// <summary>
-        /// Determines whether the AI should use an item based on the current Pokémon's health and battle context.
-        /// </summary>
-        /// <param name="itemToUse">The item to use, if any.</param>
-        /// <param name="battle">The current battle instance.</param>
-        /// <returns><c>true</c> if an item should be used; otherwise, <c>false</c>.</returns>
         internal bool ShouldUseItem(out IItem? itemToUse, IBattle battle)
         {
             var currentPokemon = CurrentPokemon;
@@ -207,7 +168,6 @@ namespace PokemonGameLib.Models.Trainers
 
             if (currentPokemon != null && currentPokemon.CurrentHP < currentPokemon.MaxHP / 2)
             {
-                // Consider if opponent's next move can KO the Pokémon
                 var opponentMove = battle.DefendingTrainer.CurrentPokemon.Moves
                     .OrderByDescending(m => TypeEffectivenessService.Instance.GetEffectiveness(m.Type, currentPokemon.Type) * m.Power)
                     .FirstOrDefault();

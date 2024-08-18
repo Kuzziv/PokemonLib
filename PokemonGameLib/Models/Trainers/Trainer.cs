@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using PokemonGameLib.Interfaces;
 using PokemonGameLib.Utilities;
-using PokemonGameLib.Services;
 using PokemonGameLib.Commands;
 
 namespace PokemonGameLib.Models.Trainers
@@ -10,7 +9,7 @@ namespace PokemonGameLib.Models.Trainers
     /// <summary>
     /// Represents a trainer in the Pokémon game, managing a team of Pokémon and facilitating interactions during battles.
     /// </summary>
-    public abstract class Trainer : ITrainer
+    public abstract class Trainer : Loggable, ITrainer
     {
         private readonly List<IPokemon> _pokemons;
         protected readonly ILogger _logger;
@@ -45,7 +44,7 @@ namespace PokemonGameLib.Models.Trainers
             Name = name ?? throw new ArgumentNullException(nameof(name), "Trainer name cannot be null.");
             _pokemons = new List<IPokemon>();
             Items = new List<IItem>();
-            _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
+            _logger = LoggingService.GetLogger();
         }
 
         /// <summary>
@@ -102,10 +101,32 @@ namespace PokemonGameLib.Models.Trainers
             _logger.LogInfo($"{Name} removed {pokemon.Name} from their collection.");
         }
 
+        /// <summary>
+        /// Adds an item to the Trainer's inventory.
+        /// </summary>
+        /// <param name="item">The item to add.</param>
         public void AddItem(IItem item)
         {
             Items.Add(item);
             _logger.LogInfo($"{Name} added {item.Name} to their inventory.");
+        }
+
+        /// <summary>
+        /// Removes an item from the Trainer's inventory.
+        /// </summary>
+        /// <param name="item">The item to remove.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the item is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the item is not in the Trainer's inventory.</exception>
+        public void RemoveItem(IItem item)
+        {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item), "Item cannot be null.");
+
+            if (!Items.Contains(item))
+                throw new InvalidOperationException("The item to remove is not in the Trainer's inventory.");
+
+            Items.Remove(item);
+            _logger.LogInfo($"{Name} removed {item.Name} from their inventory.");
         }
 
         /// <summary>
