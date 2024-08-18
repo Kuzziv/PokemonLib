@@ -15,7 +15,6 @@ namespace PokemonGameLib.Models.Trainers
         /// Initializes a new instance of the <see cref="PlayerTrainer"/> class with the specified name.
         /// </summary>
         /// <param name="name">The name of the player trainer.</param>
-        /// <param name="logger">The logger to use for logging actions.</param>
         public PlayerTrainer(string name) : base(name)
         {
             _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
@@ -49,7 +48,8 @@ namespace PokemonGameLib.Models.Trainers
                         return;
                     case "3":
                         UseItem(battle);
-                        return;
+                        // After using an item, return to the action selection instead of ending the turn
+                        continue;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
                         invalidAttempts++;
@@ -78,9 +78,18 @@ namespace PokemonGameLib.Models.Trainers
             if (int.TryParse(Console.ReadLine(), out int moveIndex) && moveIndex >= 1 && moveIndex <= CurrentPokemon.Moves.Count)
             {
                 IMove selectedMove = CurrentPokemon.Moves[moveIndex - 1];
-                var attackCommand = CreateAttackCommand(battle, selectedMove);
-                attackCommand.Execute();
-                _logger.LogInfo($"{Name} used {selectedMove.Name}.");
+
+                if (CurrentPokemon.Moves.Contains(selectedMove)) // Validate that the move is still valid
+                {
+                    var attackCommand = CreateAttackCommand(battle, selectedMove);
+                    attackCommand.Execute();
+                    _logger.LogInfo($"{Name} used {selectedMove.Name}.");
+                }
+                else
+                {
+                    Console.WriteLine("Selected move is no longer valid. Turn skipped.");
+                    _logger.LogWarning($"{Name} attempted to use an invalid move. Turn skipped.");
+                }
             }
             else
             {
@@ -114,6 +123,9 @@ namespace PokemonGameLib.Models.Trainers
                     var switchCommand = CreateSwitchCommand(battle, selectedPokemon);
                     switchCommand.Execute();
                     _logger.LogInfo($"{Name} switched to {selectedPokemon.Name}.");
+                    
+                    // Ensure that a move from the new Pokémon is selected next turn
+                    PerformAttack(battle); // After switching, immediately allow the player to select a move for the new Pokémon
                 }
             }
             else
@@ -122,6 +134,7 @@ namespace PokemonGameLib.Models.Trainers
                 _logger.LogWarning($"{Name} attempted to switch to an invalid Pokémon. Turn skipped.");
             }
         }
+
 
         /// <summary>
         /// Handles the player's choice to use an item.
@@ -141,6 +154,9 @@ namespace PokemonGameLib.Models.Trainers
                 var useItemCommand = CreateUseItemCommand(battle, selectedItem, CurrentPokemon);
                 useItemCommand.Execute();
                 _logger.LogInfo($"{Name} used {selectedItem.Name}.");
+                Console.WriteLine($"{CurrentPokemon.Name} was healed by {selectedItem.Description}!");
+
+                // After using an item, revalidate or prompt for another action
             }
             else
             {

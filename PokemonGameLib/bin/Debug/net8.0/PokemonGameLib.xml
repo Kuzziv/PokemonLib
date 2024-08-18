@@ -1007,7 +1007,6 @@
             Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Trainers.PlayerTrainer"/> class with the specified name.
             </summary>
             <param name="name">The name of the player trainer.</param>
-            <param name="logger">The logger to use for logging actions.</param>
         </member>
         <member name="M:PokemonGameLib.Models.Trainers.PlayerTrainer.TakeTurn(PokemonGameLib.Interfaces.IBattle)">
             <summary>

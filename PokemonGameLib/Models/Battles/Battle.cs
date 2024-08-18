@@ -33,12 +33,18 @@ namespace PokemonGameLib.Models.Battles
 
             FirstTrainer.ValidateTrainer(); // Validate the first trainer
             SecondTrainer.ValidateTrainer(); // Validate the second trainer
-            
-            _isFirstTrainerAttacking = true;            
+
+            _isFirstTrainerAttacking = true;
+
+            System.Console.WriteLine($"{FirstTrainer.Name} vs. {SecondTrainer.Name}");
+
+            PrintCurrentHP();            
         }
 
         public void PerformAttack(IMove move)
         {
+            PrintCurrentHP();
+
             var attacker = AttackingTrainer.CurrentPokemon;
             var defender = DefendingTrainer.CurrentPokemon;
 
@@ -159,6 +165,12 @@ namespace PokemonGameLib.Models.Battles
 
             if (newPokemon.IsFainted())
                 throw new InvalidPokemonSwitchException("Cannot switch to a fainted Pokémon.");
+        }
+
+        private void PrintCurrentHP()
+        {
+            Console.WriteLine($"{AttackingTrainer.CurrentPokemon.Name}'s HP: {AttackingTrainer.CurrentPokemon.CurrentHP}/{AttackingTrainer.CurrentPokemon.MaxHP}");
+            Console.WriteLine($"{DefendingTrainer.CurrentPokemon.Name}'s HP: {DefendingTrainer.CurrentPokemon.CurrentHP}/{DefendingTrainer.CurrentPokemon.MaxHP}");
         }
 
         public void UseItem(ITrainer trainer, IItem item, IPokemon target)
