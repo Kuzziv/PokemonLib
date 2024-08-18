@@ -52,11 +52,6 @@ namespace PokemonGameLib.Models.Pokemons
         public IList<IMove> Moves { get; private set; }
 
         /// <summary>
-        /// Gets the list of abilities the Pokémon has.
-        /// </summary>
-        public IList<IAbility> Abilities { get; private set; }
-
-        /// <summary>
         /// Gets the current status condition of the Pokémon.
         /// </summary>
         public StatusCondition Status { get; private set; }
@@ -92,7 +87,6 @@ namespace PokemonGameLib.Models.Pokemons
             int maxHp,
             int attack,
             int defense,
-            List<IAbility>? abilities = null,
             List<IEvolution>? evolutions = null)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -116,7 +110,6 @@ namespace PokemonGameLib.Models.Pokemons
             Attack = attack;
             Defense = defense;
             Moves = new List<IMove>();
-            Abilities = abilities ?? new List<IAbility>();
             Evolutions = evolutions ?? new List<IEvolution>();
             Status = StatusCondition.None;
             _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
@@ -218,42 +211,6 @@ namespace PokemonGameLib.Models.Pokemons
                 _logger.LogInfo($"{Name} forgot the move {move.Name}.");
             }
         }
-
-        /// <summary>
-        /// Adds the specified ability to the Pokémon's ability list.
-        /// </summary>
-        /// <param name="ability">The ability to be added.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="ability"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentException">Thrown when the Pokémon already has the specified ability.</exception>
-        public void AddAbility(IAbility ability)
-        {
-            if (ability == null)
-                throw new ArgumentNullException(nameof(ability), "Ability cannot be null.");
-            
-            if (Abilities.Contains(ability))
-                throw new ArgumentException("Pokémon already has this ability.", nameof(ability));
-
-            Abilities.Add(ability);
-            _logger.LogInfo($"{Name} gained the ability {ability.Name}.");
-        }
-
-        /// <summary>
-        /// Removes the specified ability from the Pokémon's ability list.
-        /// </summary>
-        /// <param name="ability">The ability to be removed.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="ability"/> is <c>null</c>.</exception>
-        public void RemoveAbility(IAbility ability)
-        {
-            if (ability == null)
-                throw new ArgumentNullException(nameof(ability), "Ability cannot be null.");
-            
-            if (Abilities.Contains(ability))
-            {
-                Abilities.Remove(ability);
-                _logger.LogInfo($"{Name} lost the ability {ability.Name}.");
-            }
-        }
-
 
         /// <summary>
         /// Inflicts a status condition on the Pokémon.

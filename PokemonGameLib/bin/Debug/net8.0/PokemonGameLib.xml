@@ -101,29 +101,6 @@
             <param name="message">The message that describes the error.</param>
             <param name="innerException">The exception that is the cause of the current exception.</param>
         </member>
-        <member name="T:PokemonGameLib.Interfaces.IAbility">
-            <summary>
-            Represents an ability that a Pokémon can have, providing special effects or benefits in battle.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Interfaces.IAbility.Name">
-            <summary>
-            Gets the name of the ability.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Interfaces.IAbility.Description">
-            <summary>
-            Gets the description of the ability.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Interfaces.IAbility.ApplyEffect(PokemonGameLib.Interfaces.IBattle,PokemonGameLib.Interfaces.IPokemon,PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Applies the ability effect during a battle.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-            <param name="user">The Pokémon using the ability.</param>
-            <param name="target">The target Pokémon of the ability.</param>
-        </member>
         <member name="T:PokemonGameLib.Interfaces.IBattle">
             <summary>
             Represents a battle between two trainers in the Pokémon game.
@@ -351,11 +328,6 @@
             Gets the list of moves the Pokémon knows.
             </summary>
         </member>
-        <member name="P:PokemonGameLib.Interfaces.IPokemon.Abilities">
-            <summary>
-            Gets the list of abilities the Pokémon has.
-            </summary>
-        </member>
         <member name="P:PokemonGameLib.Interfaces.IPokemon.Status">
             <summary>
             Gets the status condition of the Pokémon.
@@ -509,37 +481,31 @@
             <param name="trainer">The trainer using the potion.</param>
             <param name="target">The target Pokémon to heal.</param>
         </member>
-        <member name="T:PokemonGameLib.Models.Pokemons.Abilities.Ability">
+        <member name="T:PokemonGameLib.Models.Items.Revive">
             <summary>
-            Represents an ability that a Pokémon can have, providing special effects or benefits in battle.
+            Represents a revive item that restores a fainted Pokémon to partial HP.
             </summary>
         </member>
-        <member name="P:PokemonGameLib.Models.Pokemons.Abilities.Ability.Name">
+        <member name="P:PokemonGameLib.Models.Items.Revive.RestorePercentage">
             <summary>
-            Gets the name of the ability.
+            Gets the percentage of HP that the revive restores.
             </summary>
         </member>
-        <member name="P:PokemonGameLib.Models.Pokemons.Abilities.Ability.Description">
+        <member name="M:PokemonGameLib.Models.Items.Revive.#ctor(System.String,System.String,System.Int32)">
             <summary>
-            Gets the description of the ability.
+            Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Items.Revive"/> class.
             </summary>
+            <param name="name">The name of the revive item.</param>
+            <param name="description">The description of the revive item.</param>
+            <param name="restorePercentage">The percentage of HP to restore.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if the restore percentage is less than or equal to 0 or greater than 100.</exception>
         </member>
-        <member name="M:PokemonGameLib.Models.Pokemons.Abilities.Ability.#ctor(System.String,System.String)">
+        <member name="M:PokemonGameLib.Models.Items.Revive.Use(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.IPokemon)">
             <summary>
-            Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Pokemons.Abilities.Ability"/> class.
+            Uses the revive item to restore a fainted Pokémon's HP.
             </summary>
-            <param name="name">The name of the ability.</param>
-            <param name="description">The description of the ability.</param>
-            <exception cref="T:System.ArgumentException">Thrown if the name or description is null or empty.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Pokemons.Abilities.Ability.ApplyEffect(PokemonGameLib.Interfaces.IBattle,PokemonGameLib.Interfaces.IPokemon,PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Applies the ability effect during a battle.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-            <param name="user">The Pokémon using the ability.</param>
-            <param name="target">The target Pokémon of the ability.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if the user is null.</exception>
+            <param name="trainer">The trainer using the revive.</param>
+            <param name="target">The fainted Pokémon to restore.</param>
         </member>
         <member name="T:PokemonGameLib.Models.Pokemons.Evolutions.Evolution">
             <summary>
@@ -677,11 +643,6 @@
             Gets the list of moves the Pokémon knows.
             </summary>
         </member>
-        <member name="P:PokemonGameLib.Models.Pokemons.Pokemon.Abilities">
-            <summary>
-            Gets the list of abilities the Pokémon has.
-            </summary>
-        </member>
         <member name="P:PokemonGameLib.Models.Pokemons.Pokemon.Status">
             <summary>
             Gets the current status condition of the Pokémon.
@@ -692,7 +653,7 @@
             Gets the list of possible evolutions for the Pokémon.
             </summary>
         </member>
-        <member name="M:PokemonGameLib.Models.Pokemons.Pokemon.#ctor(System.String,PokemonGameLib.Models.Pokemons.PokemonType,System.Int32,System.Int32,System.Int32,System.Int32,System.Collections.Generic.List{PokemonGameLib.Interfaces.IAbility},System.Collections.Generic.List{PokemonGameLib.Interfaces.IEvolution})">
+        <member name="M:PokemonGameLib.Models.Pokemons.Pokemon.#ctor(System.String,PokemonGameLib.Models.Pokemons.PokemonType,System.Int32,System.Int32,System.Int32,System.Int32,System.Collections.Generic.List{PokemonGameLib.Interfaces.IEvolution})">
             <summary>
             Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Pokemons.Pokemon"/> class.
             </summary>
@@ -753,21 +714,6 @@
             </summary>
             <param name="move">The move to be removed.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="move"/> is <c>null</c>.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Pokemons.Pokemon.AddAbility(PokemonGameLib.Interfaces.IAbility)">
-            <summary>
-            Adds the specified ability to the Pokémon's ability list.
-            </summary>
-            <param name="ability">The ability to be added.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="ability"/> is <c>null</c>.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when the Pokémon already has the specified ability.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Pokemons.Pokemon.RemoveAbility(PokemonGameLib.Interfaces.IAbility)">
-            <summary>
-            Removes the specified ability from the Pokémon's ability list.
-            </summary>
-            <param name="ability">The ability to be removed.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="ability"/> is <c>null</c>.</exception>
         </member>
         <member name="M:PokemonGameLib.Models.Pokemons.Pokemon.InflictStatus(PokemonGameLib.Models.Pokemons.StatusCondition)">
             <summary>

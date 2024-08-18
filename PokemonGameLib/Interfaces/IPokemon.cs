@@ -49,11 +49,6 @@ namespace PokemonGameLib.Interfaces
         IList<IMove> Moves { get; }
 
         /// <summary>
-        /// Gets the list of abilities the Pokémon has.
-        /// </summary>
-        IList<IAbility> Abilities { get; }
-
-        /// <summary>
         /// Gets the status condition of the Pokémon.
         /// </summary>
         StatusCondition Status { get; }
