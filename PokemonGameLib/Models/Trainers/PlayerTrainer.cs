@@ -103,7 +103,7 @@ namespace PokemonGameLib.Models.Trainers
                         }
                         else
                         {
-                            battle.PerformSwitch(selectedPokemon);
+                            battle.PerformSwitch(this, selectedPokemon);
                             return true;  // Return after switching Pokémon
                         }
                     }
@@ -152,6 +152,7 @@ namespace PokemonGameLib.Models.Trainers
                             {
                                 IPokemon targetPokemon = Pokemons[pokemonIndex - 1];
                                 battle.PerformUseItem(selectedItem, targetPokemon);
+                                Items.Remove(selectedItem);
                                 return true;  // Return after using an item
                             }
                             else
@@ -167,5 +168,42 @@ namespace PokemonGameLib.Models.Trainers
                 }
             }
         }
+
+        public override void HandleFaintedPokemon(IBattle battle)
+        {
+            Console.WriteLine($"{CurrentPokemon.Name} has fainted!");
+
+            while (true)
+            {
+                Console.WriteLine("Choose a Pokémon to switch to:");
+                for (int i = 0; i < Pokemons.Count; i++)
+                {
+                    if (!Pokemons[i].IsFainted())
+                    {
+                        Console.WriteLine($"{i + 1}. {Pokemons[i].Name} (HP: {Pokemons[i].CurrentHP}/{Pokemons[i].MaxHP})");
+                    }
+                }
+
+                if (int.TryParse(Console.ReadLine(), out int pokemonIndex) && pokemonIndex >= 1 && pokemonIndex <= Pokemons.Count)
+                {
+                    IPokemon selectedPokemon = Pokemons[pokemonIndex - 1];
+                    if (selectedPokemon.IsFainted())
+                    {
+                        Console.WriteLine("Cannot switch to a fainted Pokémon. Please choose again.");
+                    }
+                    else
+                    {
+                        CurrentPokemon = selectedPokemon;
+                        battle.PerformSwitch(this, selectedPokemon);
+                        return;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid choice. Please try again.");
+                }
+            }
+        }
+
     }
 }

@@ -21,7 +21,7 @@ namespace PokemonGameLib.Utilities
             if (newPokemon == null) throw new ArgumentNullException(nameof(newPokemon));
 
             if (!trainer.Pokemons.Contains(newPokemon))
-                throw new InvalidPokemonSwitchException($"Trainer does not own {newPokemon.Name}.");
+                throw new InvalidPokemonSwitchException($"{trainer.Name} does not own {newPokemon.Name}.");
 
             if (newPokemon.IsFainted())
                 throw new InvalidPokemonSwitchException($"Cannot switch to a fainted Pokémon: {newPokemon.Name}.");

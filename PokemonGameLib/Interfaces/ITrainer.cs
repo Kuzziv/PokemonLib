@@ -20,6 +20,7 @@ namespace PokemonGameLib.Interfaces
         void RemovePokemon(IPokemon pokemon);
         void ValidateTrainer();
         void TakeTurn(IBattle battle);
+        void HandleFaintedPokemon(IBattle battle);
 
     }
 }

@@ -1,4 +1,4 @@
-using System;
+/* using System;
 using System.Collections.Generic;
 using Xunit;
 using PokemonGameLib.Models.Trainers;
@@ -198,5 +198,15 @@ namespace PokemonGameLib.Tests.Models.Trainers
         {
             // Implementation for test purposes
         }
+
+        public override void HandleFaintedPokemon(IBattle battle)
+        {
+            // Implementation for test purposes
+        }
+
+        public void UseItem(IItem item, IPokemon pokemon)
+        {
+        }
     }
 }
+ */

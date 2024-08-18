@@ -73,5 +73,7 @@ namespace PokemonGameLib.Models.Trainers
         }
 
         public abstract void TakeTurn(IBattle battle);
+
+        public abstract void HandleFaintedPokemon(IBattle battle);
     }
 }

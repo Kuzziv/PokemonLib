@@ -32,7 +32,8 @@ namespace PokemonGameLib.Interfaces
         /// Switches the current Pokémon with the specified new Pokémon.
         /// </summary>
         /// <param name="newPokemon">The new Pokémon to switch to.</param>
-        void PerformSwitch(IPokemon newPokemon);
+        /// <param name="trainer">The trainer who is switching Pokémon.</param>
+        void PerformSwitch(ITrainer trainer, IPokemon newPokemon);
 
         /// <summary>
         /// Uses the specified item on the target Pokémon.
@@ -40,12 +41,6 @@ namespace PokemonGameLib.Interfaces
         /// <param name="item">The item to be used.</param>
         /// <param name="targetPokemon">The target Pokémon to use the item on.</param>
         void PerformUseItem(IItem item, IPokemon targetPokemon);
-
-        /// <summary>
-        /// Handles the fainting of a Pokémon, forcing the trainer to switch to another Pokémon.
-        /// </summary>
-        /// <param name="trainer">The trainer whose Pokémon has fainted.</param>
-        void HandleFaintedPokemon(ITrainer trainer);
 
         /// <summary>
         /// Switches the turn to the other trainer.

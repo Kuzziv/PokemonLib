@@ -66,19 +66,20 @@ namespace PokemonGameLib.Models.Battles
 
             if (defender.CurrentHP <= 0)
             {
-                HandleFaintedPokemon(OpponentTrainer);
+                LogInfo($"{defender.Name} fainted!");
+                OpponentTrainer.HandleFaintedPokemon(this);
             }
         }
 
-        public void PerformSwitch(IPokemon newPokemon)
+        public void PerformSwitch(ITrainer trainer,IPokemon newPokemon)
         {
-            string action = $"{CurrentTrainer.Name} switched {CurrentTrainer.CurrentPokemon.Name} out for {newPokemon.Name}.";
+            string action = $"{trainer.Name} switched {trainer.CurrentPokemon.Name} out for {newPokemon.Name}.";
             AddToLastTwoActions(action);
 
             LogInfo(action);
 
-            BattleValidator.ValidatePokemonSwitch(CurrentTrainer, newPokemon);
-            CurrentTrainer.CurrentPokemon = newPokemon;
+            BattleValidator.ValidatePokemonSwitch(trainer, newPokemon);
+            trainer.CurrentPokemon = newPokemon;
         }
 
         public void PerformUseItem(IItem item, IPokemon targetPokemon)
@@ -89,31 +90,6 @@ namespace PokemonGameLib.Models.Battles
             LogInfo(action);
 
             item.Use(CurrentTrainer, targetPokemon);
-        }
-
-        public void HandleFaintedPokemon(ITrainer trainer)
-        {
-            string faintedAction = $"{trainer.CurrentPokemon.Name} has fainted!";
-            AddToLastTwoActions(faintedAction);
-
-            LogInfo(faintedAction);
-            Console.WriteLine($"{trainer.CurrentPokemon.Name} has fainted!\n");
-
-            var newPokemon = trainer.Pokemons.FirstOrDefault(p => !p.IsFainted());
-            if (newPokemon != null)
-            {
-                trainer.CurrentPokemon = newPokemon;
-                string newPokemonAction = $"{trainer.Name} sent out {newPokemon.Name}!";
-                AddToLastTwoActions(newPokemonAction);
-
-                LogInfo(newPokemonAction);
-                Console.WriteLine($"{trainer.Name} sent out {newPokemon.Name}!\n");
-            }
-            else
-            {
-                LogError($"{trainer.Name} has no Pokémon left!");
-                Console.WriteLine($"{trainer.Name} has no Pokémon left!\n");
-            }
         }
 
         public void SwitchTurns()

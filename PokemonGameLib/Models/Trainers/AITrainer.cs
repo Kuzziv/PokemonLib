@@ -22,6 +22,7 @@ namespace PokemonGameLib.Models.Trainers
             if (ShouldUseItem(out IItem? itemToUse, battle))
             {
                 battle.PerformUseItem(itemToUse, CurrentPokemon);
+                Items.Remove(itemToUse);
                 return;
             }
 
@@ -30,7 +31,7 @@ namespace PokemonGameLib.Models.Trainers
                 var newPokemon = SelectBestPokemonToSwitchTo(battle);
                 if (newPokemon != null)
                 {
-                    battle.PerformSwitch(newPokemon);
+                    battle.PerformSwitch(this, newPokemon);
                     return;
                 }
             }
@@ -39,27 +40,6 @@ namespace PokemonGameLib.Models.Trainers
             if (move != null)
             {
                 battle.PerformAttack(move);
-            }
-        }
-
-        private void HandleFaintedPokemon(IBattle battle)
-        {
-            if (CurrentPokemon.IsFainted())
-            {
-                _logger.LogInfo($"{Name}'s {CurrentPokemon.Name} has fainted.");
-
-                var newPokemon = Pokemons.FirstOrDefault(p => !p.IsFainted());
-
-                if (newPokemon != null)
-                {
-                    battle.PerformSwitch(newPokemon);
-                    CurrentPokemon = newPokemon;
-                }
-                else
-                {
-                    _logger.LogError($"{Name} has no Pokémon left to switch to!");
-                    Console.WriteLine($"{Name} has no Pokémon left!");
-                }
             }
         }
 
@@ -155,6 +135,27 @@ namespace PokemonGameLib.Models.Trainers
             }
 
             return false;
+        }
+
+        public override void HandleFaintedPokemon(IBattle battle)
+        {
+            if (CurrentPokemon.IsFainted())
+            {
+                _logger.LogInfo($"{Name}'s {CurrentPokemon.Name} has fainted.");
+
+                var newPokemon = Pokemons.FirstOrDefault(p => !p.IsFainted());
+
+                if (newPokemon != null)
+                {
+                    CurrentPokemon = newPokemon;
+                    battle.PerformSwitch(this, newPokemon);
+                }
+                else
+                {
+                    _logger.LogError($"{Name} has no Pokémon left to switch to!");
+                    Console.WriteLine($"{Name} has no Pokémon left!");
+                }
+            }
         }
     }
 }

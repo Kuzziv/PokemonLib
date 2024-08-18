@@ -150,11 +150,12 @@
             </summary>
             <param name="move">The move to be used in the attack.</param>
         </member>
-        <member name="M:PokemonGameLib.Interfaces.IBattle.PerformSwitch(PokemonGameLib.Interfaces.IPokemon)">
+        <member name="M:PokemonGameLib.Interfaces.IBattle.PerformSwitch(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.IPokemon)">
             <summary>
             Switches the current Pokémon with the specified new Pokémon.
             </summary>
             <param name="newPokemon">The new Pokémon to switch to.</param>
+            <param name="trainer">The trainer who is switching Pokémon.</param>
         </member>
         <member name="M:PokemonGameLib.Interfaces.IBattle.PerformUseItem(PokemonGameLib.Interfaces.IItem,PokemonGameLib.Interfaces.IPokemon)">
             <summary>
@@ -162,12 +163,6 @@
             </summary>
             <param name="item">The item to be used.</param>
             <param name="targetPokemon">The target Pokémon to use the item on.</param>
-        </member>
-        <member name="M:PokemonGameLib.Interfaces.IBattle.HandleFaintedPokemon(PokemonGameLib.Interfaces.ITrainer)">
-            <summary>
-            Handles the fainting of a Pokémon, forcing the trainer to switch to another Pokémon.
-            </summary>
-            <param name="trainer">The trainer whose Pokémon has fainted.</param>
         </member>
         <member name="M:PokemonGameLib.Interfaces.IBattle.SwitchTurns">
             <summary>

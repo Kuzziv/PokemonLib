@@ -20,7 +20,7 @@ namespace PokemonGameLib.Commands
         public override void Execute()
         {
             _trainer.CurrentPokemon = _newPokemon;
-            _battle.PerformSwitch(_newPokemon);
+            _battle.PerformSwitch(_trainer, _newPokemon);
         }
     }
 }
