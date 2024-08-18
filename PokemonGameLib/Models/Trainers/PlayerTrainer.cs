@@ -45,9 +45,11 @@ namespace PokemonGameLib.Models.Trainers
                         return;
                     case "2":
                         SwitchPokemon(battle);
-                        return;
+                        // If the player chose to go back, continue to display the main menu
+                        continue;
                     case "3":
                         UseItem(battle);
+                        // If the player chose to go back, continue to display the main menu
                         continue;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
@@ -61,6 +63,7 @@ namespace PokemonGameLib.Models.Trainers
                 }
             }
         }
+
 
         /// <summary>
         /// Handles the player's choice to perform an attack.
@@ -103,34 +106,45 @@ namespace PokemonGameLib.Models.Trainers
         /// <param name="battle">The current battle instance.</param>
         private void SwitchPokemon(IBattle battle)
         {
-            Console.WriteLine("Choose a Pokémon to switch to:");
-            for (int i = 0; i < Pokemons.Count; i++)
+            while (true)
             {
-                Console.WriteLine($"{i + 1}. {Pokemons[i].Name} (HP: {Pokemons[i].CurrentHP}/{Pokemons[i].MaxHP})");
-            }
+                Console.WriteLine("Choose a Pokémon to switch to:");
+                for (int i = 0; i < Pokemons.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {Pokemons[i].Name} (HP: {Pokemons[i].CurrentHP}/{Pokemons[i].MaxHP})");
+                }
+                Console.WriteLine($"{Pokemons.Count + 1}. Back to main menu");
 
-            if (int.TryParse(Console.ReadLine(), out int pokemonIndex) && pokemonIndex >= 1 && pokemonIndex <= Pokemons.Count)
-            {
-                IPokemon selectedPokemon = Pokemons[pokemonIndex - 1];
-                if (selectedPokemon.IsFainted())
+                if (int.TryParse(Console.ReadLine(), out int pokemonIndex))
                 {
-                    Console.WriteLine("Cannot switch to a fainted Pokémon. Turn skipped.");
-                    _logger.LogWarning($"{Name} attempted to switch to a fainted Pokémon. Turn skipped.");
+                    if (pokemonIndex == Pokemons.Count + 1)
+                    {
+                        // Go back to the previous menu
+                        return;
+                    }
+                    else if (pokemonIndex >= 1 && pokemonIndex <= Pokemons.Count)
+                    {
+                        IPokemon selectedPokemon = Pokemons[pokemonIndex - 1];
+                        if (selectedPokemon.IsFainted())
+                        {
+                            Console.WriteLine("Cannot switch to a fainted Pokémon. Turn skipped.");
+                            _logger.LogWarning($"{Name} attempted to switch to a fainted Pokémon. Turn skipped.");
+                        }
+                        else
+                        {
+                            var switchCommand = CreateSwitchCommand(battle, selectedPokemon);
+                            switchCommand.Execute();
+                            _logger.LogInfo($"{Name} switched to {selectedPokemon.Name}.");
+                            PerformAttack(battle); // After switching, immediately allow the player to select a move for the new Pokémon
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid choice. Turn skipped.");
+                        _logger.LogWarning($"{Name} attempted to switch to an invalid Pokémon. Turn skipped.");
+                    }
                 }
-                else
-                {
-                    var switchCommand = CreateSwitchCommand(battle, selectedPokemon);
-                    switchCommand.Execute();
-                    _logger.LogInfo($"{Name} switched to {selectedPokemon.Name}.");
-                    
-                    // Ensure that a move from the new Pokémon is selected next turn
-                    PerformAttack(battle); // After switching, immediately allow the player to select a move for the new Pokémon
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid choice. Turn skipped.");
-                _logger.LogWarning($"{Name} attempted to switch to an invalid Pokémon. Turn skipped.");
             }
         }
 
@@ -140,27 +154,79 @@ namespace PokemonGameLib.Models.Trainers
         /// <param name="battle">The current battle instance.</param>
         private void UseItem(IBattle battle)
         {
-            Console.WriteLine("Choose an item to use:");
-            for (int i = 0; i < Items.Count; i++)
+            while (true)
             {
-                Console.WriteLine($"{i + 1}. {Items[i].Name} - {Items[i].Description}");
-            }
+                Console.WriteLine("Choose an item to use:");
+                for (int i = 0; i < Items.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {Items[i].Name} - {Items[i].Description}");
+                }
+                Console.WriteLine($"{Items.Count + 1}. Back to main menu");
 
-            if (int.TryParse(Console.ReadLine(), out int itemIndex) && itemIndex >= 1 && itemIndex <= Items.Count)
-            {
-                IItem selectedItem = Items[itemIndex - 1];
-                var useItemCommand = CreateUseItemCommand(battle, selectedItem, CurrentPokemon);
-                useItemCommand.Execute();
-                _logger.LogInfo($"{Name} used {selectedItem.Name}.");
-                Console.WriteLine($"{CurrentPokemon.Name} was healed by {selectedItem.Description}!");
+                if (int.TryParse(Console.ReadLine(), out int itemIndex))
+                {
+                    if (itemIndex == Items.Count + 1)
+                    {
+                        return;
+                    }
+                    else if (itemIndex >= 1 && itemIndex <= Items.Count)
+                    {
+                        IItem selectedItem = Items[itemIndex - 1];
+                        IPokemon targetPokemon = SelectPokemonTarget();
 
-                // After using an item, revalidate or prompt for another action
-            }
-            else
-            {
-                Console.WriteLine("Invalid item. Turn skipped.");
-                _logger.LogWarning($"{Name} attempted to use an invalid item. Turn skipped.");
+                        if (targetPokemon != null)
+                        {
+                            var useItemCommand = CreateUseItemCommand(battle, selectedItem, targetPokemon);
+                            useItemCommand.Execute();
+                            _logger.LogInfo($"{Name} used {selectedItem.Name} on {targetPokemon.Name}.");
+                        }
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid item. Please try again.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please try again.");
+                }
             }
         }
+
+        private IPokemon SelectPokemonTarget()
+        {
+            while (true)
+            {
+                Console.WriteLine("Choose a Pokémon to use the item on:");
+                for (int i = 0; i < Pokemons.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {Pokemons[i].Name} (HP: {Pokemons[i].CurrentHP}/{Pokemons[i].MaxHP})");
+                }
+                Console.WriteLine($"{Pokemons.Count + 1}. Back to main menu");
+
+                if (int.TryParse(Console.ReadLine(), out int pokemonIndex))
+                {
+                    if (pokemonIndex == Pokemons.Count + 1)
+                    {
+                        return null; // Go back to the item selection menu
+                    }
+                    else if (pokemonIndex >= 1 && pokemonIndex <= Pokemons.Count)
+                    {
+                        IPokemon selectedPokemon = Pokemons[pokemonIndex - 1];
+                        return selectedPokemon;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid choice. Please try again.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please try again.");
+                }
+            }
+        }
+
     }
 }
