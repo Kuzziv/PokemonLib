@@ -1,42 +1,27 @@
-using System;
 using System.Linq;
 using PokemonGameLib.Interfaces;
-using PokemonGameLib.Models.Items;
 using PokemonGameLib.Utilities;
 using PokemonGameLib.Services;
+using PokemonGameLib.Models.Items;
 
 namespace PokemonGameLib.Models.Trainers
 {
-    /// <summary>
-    /// Represents an AI-controlled trainer in the Pokémon game.
-    /// </summary>
     public class AITrainer : Trainer
     {
         private readonly ILogger _logger;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AITrainer"/> class with the specified name.
-        /// </summary>
-        /// <param name="name">The name of the AI trainer.</param>
         public AITrainer(string name) : base(name)
         {
-            _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
+            _logger = LoggingService.GetLogger();
         }
 
-        /// <summary>
-        /// Takes the AI's turn during a battle.
-        /// The AI will choose the best action to maximize its chances of winning.
-        /// </summary>
-        /// <param name="battle">The current battle instance.</param>
         public override void TakeTurn(IBattle battle)
         {
-            // Check if the current Pokémon has fainted and handle it
             HandleFaintedPokemon(battle);
 
             if (ShouldUseItem(out IItem? itemToUse, battle))
             {
-                var useItemCommand = CreateUseItemCommand(battle, itemToUse, CurrentPokemon);
-                useItemCommand.Execute();
+                battle.PerformUseItem(itemToUse, CurrentPokemon);
                 return;
             }
 
@@ -45,8 +30,7 @@ namespace PokemonGameLib.Models.Trainers
                 var newPokemon = SelectBestPokemonToSwitchTo(battle);
                 if (newPokemon != null)
                 {
-                    var switchCommand = CreateSwitchCommand(battle, newPokemon);
-                    switchCommand.Execute();
+                    battle.PerformSwitch(newPokemon);
                     return;
                 }
             }
@@ -54,8 +38,7 @@ namespace PokemonGameLib.Models.Trainers
             var move = SelectBestMove(battle);
             if (move != null)
             {
-                var attackCommand = CreateAttackCommand(battle, move);
-                attackCommand.Execute();
+                battle.PerformAttack(move);
             }
         }
 
@@ -69,8 +52,7 @@ namespace PokemonGameLib.Models.Trainers
 
                 if (newPokemon != null)
                 {
-                    var switchCommand = CreateSwitchCommand(battle, newPokemon);
-                    switchCommand.Execute();
+                    battle.PerformSwitch(newPokemon);
                     CurrentPokemon = newPokemon;
                 }
                 else
@@ -84,7 +66,7 @@ namespace PokemonGameLib.Models.Trainers
         internal bool ShouldSwitchPokemon(IBattle battle)
         {
             var currentPokemon = CurrentPokemon;
-            var opponentPokemon = battle.DefendingTrainer.CurrentPokemon;
+            var opponentPokemon = battle.OpponentTrainer.CurrentPokemon;
 
             if (currentPokemon == null || opponentPokemon == null) return false;
 
@@ -105,23 +87,9 @@ namespace PokemonGameLib.Models.Trainers
 
         internal IPokemon? SelectBestPokemonToSwitchTo(IBattle battle)
         {
-            var opponentPokemon = battle.DefendingTrainer.CurrentPokemon;
+            var opponentPokemon = battle.OpponentTrainer.CurrentPokemon;
 
             _logger.LogInfo($"Evaluating switch for {Name}. Opponent Pokémon: {opponentPokemon.Name} ({opponentPokemon.Type})");
-
-            foreach (var pokemon in Pokemons)
-            {
-                if (!pokemon.IsFainted())
-                {
-                    double effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(pokemon.Type, opponentPokemon.Type);
-                    _logger.LogInfo($"Effectiveness of {pokemon.Name} ({pokemon.Type}) against {opponentPokemon.Name} ({opponentPokemon.Type}): {effectiveness}");
-
-                    if (effectiveness > 1.0)
-                    {
-                        _logger.LogInfo($"{pokemon.Name} is considered for switching due to type advantage.");
-                    }
-                }
-            }
 
             var bestPokemon = Pokemons
                 .Where(p => !p.IsFainted() && TypeEffectivenessService.Instance.GetEffectiveness(p.Type, opponentPokemon.Type) > 1.0)
@@ -142,10 +110,12 @@ namespace PokemonGameLib.Models.Trainers
 
         internal IMove? SelectBestMove(IBattle battle)
         {
-            var currentPokemon = CurrentPokemon;
-            var opponentPokemon = battle.DefendingTrainer.CurrentPokemon;
+            var currentPokemon = CurrentPokemon;  // Make sure this is the current Pokémon
+            var opponentPokemon = battle.OpponentTrainer.CurrentPokemon;
 
-            var bestMove = currentPokemon?.Moves
+            if (currentPokemon == null || opponentPokemon == null) return null;
+
+            var bestMove = currentPokemon.Moves
                 .OrderByDescending(m => TypeEffectivenessService.Instance.GetEffectiveness(m.Type, opponentPokemon.Type) * m.Power)
                 .FirstOrDefault();
 
@@ -161,6 +131,7 @@ namespace PokemonGameLib.Models.Trainers
             return bestMove;
         }
 
+
         internal bool ShouldUseItem(out IItem? itemToUse, IBattle battle)
         {
             var currentPokemon = CurrentPokemon;
@@ -168,7 +139,7 @@ namespace PokemonGameLib.Models.Trainers
 
             if (currentPokemon != null && currentPokemon.CurrentHP < currentPokemon.MaxHP / 2)
             {
-                var opponentMove = battle.DefendingTrainer.CurrentPokemon.Moves
+                var opponentMove = battle.OpponentTrainer.CurrentPokemon.Moves
                     .OrderByDescending(m => TypeEffectivenessService.Instance.GetEffectiveness(m.Type, currentPokemon.Type) * m.Power)
                     .FirstOrDefault();
 

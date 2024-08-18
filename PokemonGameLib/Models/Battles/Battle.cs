@@ -1,194 +1,157 @@
 using System;
+using System.Linq;
 using PokemonGameLib.Interfaces;
 using PokemonGameLib.Utilities;
-using PokemonGameLib.Exceptions;
-using PokemonGameLib.Events;
 using PokemonGameLib.Services;
 
 namespace PokemonGameLib.Models.Battles
 {
     public class Battle : Loggable, IBattle
     {
+        public ITrainer CurrentTrainer { get; private set; }
+        public ITrainer OpponentTrainer => CurrentTrainer == _trainer1 ? _trainer2 : _trainer1;
+
+        private readonly ITrainer _trainer1;
+        private readonly ITrainer _trainer2;
         private readonly BattleCalculator _battleCalculator;
-        private bool _isFirstTrainerAttacking;
 
-        public ITrainer FirstTrainer { get; }
-        public ITrainer SecondTrainer { get; }
-
-        public ITrainer AttackingTrainer => _isFirstTrainerAttacking ? FirstTrainer : SecondTrainer;
-        public ITrainer DefendingTrainer => _isFirstTrainerAttacking ? SecondTrainer : FirstTrainer;
-
-        public event Action<PokemonEventArgs> PokemonFainted;
-        public event Action<MoveEventArgs> MoveUsed;
-
-        public Battle(ITrainer firstTrainer, ITrainer secondTrainer)
+        public Battle(ITrainer trainer1, ITrainer trainer2)
         {
-            FirstTrainer = firstTrainer ?? throw new ArgumentNullException(nameof(firstTrainer));
-            SecondTrainer = secondTrainer ?? throw new ArgumentNullException(nameof(secondTrainer));
+            _trainer1 = trainer1;
+            _trainer2 = trainer2;
+            CurrentTrainer = _trainer1;
             _battleCalculator = new BattleCalculator();
-
-            ValidateTrainers();
-
-            _isFirstTrainerAttacking = true;
-
-            LogBattleStart();
-            PrintCurrentHP();
         }
 
-        private void ValidateTrainers()
+        public void StartBattle()
         {
-            FirstTrainer.ValidateTrainer();
-            SecondTrainer.ValidateTrainer();
-        }
+            LogInfo("The battle has started!");
 
-        private void LogBattleStart()
-        {
-            LogInfo($"{FirstTrainer.Name} vs. {SecondTrainer.Name}");
-            Console.WriteLine($"{FirstTrainer.Name} has {FirstTrainer.Pokemons.Count} Pokémon.");
-            Console.WriteLine($"{SecondTrainer.Name} has {SecondTrainer.Pokemons.Count} Pokémon.");
+            while (!IsBattleOver())
+            {
+                PrintBattle();
+                
+                Console.WriteLine($"{CurrentTrainer.Name}'s turn.");
+
+                CurrentTrainer.TakeTurn(this);
+
+                if (!IsBattleOver())
+                {
+                    SwitchTurns();
+                }
+            }
+
+            ITrainer winner = GetWinner();
+            if (winner != null)
+            {
+                LogInfo($"{winner.Name} wins the battle!");
+                Console.WriteLine($"{winner.Name} wins the battle!");
+            }
+            else
+            {
+                LogInfo("The battle ended in a draw!");
+                Console.WriteLine("The battle ended in a draw!");
+            }
         }
 
         public void PerformAttack(IMove move)
         {
-            PrintCurrentHP();
+            LogInfo($"{CurrentTrainer.Name} is attacking with {CurrentTrainer.CurrentPokemon.Name} using {move.Name}.");
 
-            var attacker = AttackingTrainer.CurrentPokemon;
-            var defender = DefendingTrainer.CurrentPokemon;
-
-            if (attacker == null || defender == null)
-                throw new InvalidOperationException("Current Pokémon cannot be null.");
-
-            attacker.ApplyStatusEffects();
-
-            if (attacker.IsFainted())
-            {
-                LogInfo($"{attacker.Name} is fainted and cannot attack.");
-                return;
-            }
+            var attacker = CurrentTrainer.CurrentPokemon;
+            var defender = OpponentTrainer.CurrentPokemon;
 
             BattleValidator.ValidateMove(attacker, move);
 
-            ExecuteMultipleHits(attacker, defender, move);
-
-            ApplyRecoilAndHealing(attacker, move);
-
-            ToggleAttackingTrainer();
-        }
-
-        private void ExecuteMultipleHits(IPokemon attacker, IPokemon defender, IMove move)
-        {
-            for (int i = 0; i < move.MaxHits; i++)
-            {
-                ExecuteAttack(attacker, defender, move);
-
-                if (defender.IsFainted())
-                {
-                    HandleDefenderFainting(defender);
-                    break;
-                }
-
-                defender.ApplyStatusEffects();
-
-                if (defender.IsFainted())
-                {
-                    HandleDefenderFainting(defender);
-                    break;
-                }
-            }
-        }
-
-        private void ExecuteAttack(IPokemon attacker, IPokemon defender, IMove move)
-        {
             int damage = _battleCalculator.CalculateDamage(attacker, defender, move);
             defender.TakeDamage(damage);
 
-            string effectivenessMessage = _battleCalculator.GetEffectivenessMessage(
-                TypeEffectivenessService.Instance.GetEffectiveness(move.Type, defender.Type));
+            LogInfo($"{defender.Name} took {damage} damage. HP is now {defender.CurrentHP}/{defender.MaxHP}.");
 
-            LogInfo($"{attacker.Name} used {move.Name}! {defender.Name} took {damage} damage.");
-            Console.WriteLine($"{attacker.Name} used {move.Name}!");
-            Console.WriteLine(effectivenessMessage);
-            Console.WriteLine($"{defender.Name} took {damage} damage!");
-
-            OnMoveUsed(new MoveEventArgs { Move = move, Attacker = attacker, Defender = defender });
-        }
-
-        private void HandleDefenderFainting(IPokemon defender)
-        {
-            LogInfo($"{defender.Name} has fainted!");
-            Console.WriteLine($"{defender.Name} has fainted!");
-            OnPokemonFainted(new PokemonEventArgs { FaintedPokemon = defender });
-        }
-
-        private void ApplyRecoilAndHealing(IPokemon attacker, IMove move)
-        {
-            if (move.RecoilPercentage > 0)
+            if (defender.CurrentHP <= 0)
             {
-                int recoilDamage = _battleCalculator.CalculateRecoilDamage(attacker, move);
-                attacker.TakeDamage(recoilDamage);
-                LogInfo($"{attacker.Name} took {recoilDamage} recoil damage!");
-            }
-
-            if (move.HealingPercentage > 0)
-            {
-                int healingAmount = _battleCalculator.CalculateHealingAmount(attacker, move);
-                attacker.Heal(healingAmount);
-                LogInfo($"{attacker.Name} healed {healingAmount} HP!");
+                HandleFaintedPokemon(OpponentTrainer);
             }
         }
 
-        private void ToggleAttackingTrainer()
+        public void PerformSwitch(IPokemon newPokemon)
         {
-            _isFirstTrainerAttacking = !_isFirstTrainerAttacking;
+            LogInfo($"{CurrentTrainer.Name} is switching Pokémon from {CurrentTrainer.CurrentPokemon.Name} to {newPokemon.Name}.");
+
+            BattleValidator.ValidatePokemonSwitch(CurrentTrainer, newPokemon);
+            CurrentTrainer.CurrentPokemon = newPokemon;
+        }
+
+        public void PerformUseItem(IItem item, IPokemon targetPokemon)
+        {
+            LogInfo($"{CurrentTrainer.Name} is using {item.Name} on {targetPokemon.Name}.");
+            item.Use(CurrentTrainer, targetPokemon);
+        }
+
+        public void HandleFaintedPokemon(ITrainer trainer)
+        {
+            LogInfo($"{trainer.CurrentPokemon.Name} has fainted!");
+
+            var newPokemon = trainer.Pokemons.FirstOrDefault(p => !p.IsFainted());
+            if (newPokemon != null)
+            {
+                trainer.CurrentPokemon = newPokemon;
+                LogInfo($"{trainer.Name} sent out {newPokemon.Name}!");
+            }
+            else
+            {
+                LogError($"{trainer.Name} has no Pokémon left!");
+                Console.WriteLine($"{trainer.Name} has no Pokémon left!");
+            }
+        }
+
+        public void SwitchTurns()
+        {
+            CurrentTrainer = OpponentTrainer;
+            LogInfo($"It is now {CurrentTrainer.Name}'s turn.");
+        }
+
+        public bool IsBattleOver()
+        {
+            return _trainer1.Pokemons.All(p => p.IsFainted()) || _trainer2.Pokemons.All(p => p.IsFainted());
+        }
+
+        public ITrainer GetWinner()
+        {
+            if (_trainer1.Pokemons.All(p => p.IsFainted())) return _trainer2;
+            if (_trainer2.Pokemons.All(p => p.IsFainted())) return _trainer1;
+            return null;
         }
 
         public string DetermineBattleResult()
         {
-            if (FirstTrainer.Pokemons.All(p => p.IsFainted()))
+            if (IsBattleOver())
             {
-                return LogBattleResult($"{FirstTrainer.Name} has no remaining Pokémon. {SecondTrainer.Name} wins!");
+                var winner = GetWinner();
+                if (winner != null)
+                {
+                    return $"{winner.Name} wins the battle!";
+                }
+                else
+                {
+                    return "The battle ended in a draw!";
+                }
             }
-            if (SecondTrainer.Pokemons.All(p => p.IsFainted()))
-            {
-                return LogBattleResult($"{SecondTrainer.Name} has no remaining Pokémon. {FirstTrainer.Name} wins!");
-            }
+
             return "The battle is ongoing.";
         }
 
-        private string LogBattleResult(string result)
+        public void PrintBattle()
         {
-            LogInfo(result);
-            return result;
-        }
+            Console.WriteLine("Battle status:");
+            Console.WriteLine($"{_trainer1.Name}: {(CurrentTrainer == _trainer1 ? "(current)" : "")}");
+            Console.WriteLine($"{_trainer1.CurrentPokemon.Name} HP: {_trainer1.CurrentPokemon.CurrentHP}/{_trainer1.CurrentPokemon.MaxHP}");
 
-        public void SwitchPokemon(ITrainer trainer, IPokemon newPokemon)
-        {
-            BattleValidator.ValidatePokemonSwitch(trainer, newPokemon);
-            trainer.CurrentPokemon = newPokemon;
-            LogInfo($"{trainer.Name} switched to {newPokemon.Name}!");
-            Console.WriteLine($"{trainer.Name} switched to {newPokemon.Name}!");
-        }
+            Console.WriteLine($"{_trainer2.Name}: {(CurrentTrainer == _trainer2 ? "(current)" : "")}");
+            Console.WriteLine($"{_trainer2.CurrentPokemon.Name} HP: {_trainer2.CurrentPokemon.CurrentHP}/{_trainer2.CurrentPokemon.MaxHP}");
 
-        private void PrintCurrentHP()
-        {
-            Console.WriteLine($"{AttackingTrainer.CurrentPokemon.Name}'s HP: {AttackingTrainer.CurrentPokemon.CurrentHP}/{AttackingTrainer.CurrentPokemon.MaxHP}");
-            Console.WriteLine($"{DefendingTrainer.CurrentPokemon.Name}'s HP: {DefendingTrainer.CurrentPokemon.CurrentHP}/{DefendingTrainer.CurrentPokemon.MaxHP}");
-        }
-
-        public void UseItem(ITrainer trainer, IItem item, IPokemon target)
-        {
-            item.Use(trainer, target);
-            LogInfo($"{trainer.Name} used {item.Name} on {target.Name}.");
-        }
-
-        protected virtual void OnPokemonFainted(PokemonEventArgs e)
-        {
-            PokemonFainted?.Invoke(e);
-        }
-
-        protected virtual void OnMoveUsed(MoveEventArgs e)
-        {
-            MoveUsed?.Invoke(e);
+            Console.WriteLine("----");
+            Console.WriteLine($"{_trainer1.CurrentPokemon.Name} (controlled by {_trainer1.Name}) vs. {_trainer2.CurrentPokemon.Name} (controlled by {_trainer2.Name})");
         }
     }
 }

@@ -1,62 +1,73 @@
 using PokemonGameLib.Interfaces;
-using PokemonGameLib.Events;
 
 namespace PokemonGameLib.Interfaces
 {
     /// <summary>
-    /// Represents a Pokémon battle between two trainers, handling battle mechanics and interactions.
+    /// Represents a battle between two trainers in the Pokémon game.
     /// </summary>
     public interface IBattle
     {
         /// <summary>
-        /// Gets the first trainer in the battle.
+        /// Gets the current trainer whose turn it is.
         /// </summary>
-        ITrainer FirstTrainer { get; }
+        ITrainer CurrentTrainer { get; }
 
         /// <summary>
-        /// Gets the second trainer in the battle.
+        /// Gets the opponent trainer in the current battle.
         /// </summary>
-        ITrainer SecondTrainer { get; }
+        ITrainer OpponentTrainer { get; }
 
         /// <summary>
-        /// Gets the trainer currently attacking based on the turn.
+        /// Starts the battle between the two trainers.
         /// </summary>
-        ITrainer AttackingTrainer { get; }
+        void StartBattle();
 
         /// <summary>
-        /// Gets the current defending trainer based on the turn.
+        /// Executes an attack using the specified move.
         /// </summary>
-        ITrainer DefendingTrainer { get; }
-
-        /// <summary>
-        /// Performs an attack using the specified move.
-        /// </summary>
-        /// <param name="move">The move to be used for the attack.</param>
-        /// <exception cref="InvalidOperationException">Thrown if any condition for performing the attack is invalid.</exception>
+        /// <param name="move">The move to be used in the attack.</param>
         void PerformAttack(IMove move);
 
         /// <summary>
-        /// Switches the current Pokémon of the specified trainer to the new Pokémon.
+        /// Switches the current Pokémon with the specified new Pokémon.
         /// </summary>
-        /// <param name="trainer">The trainer who is switching Pokémon.</param>
         /// <param name="newPokemon">The new Pokémon to switch to.</param>
-        /// <exception cref="ArgumentNullException">Thrown if trainer or newPokemon is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the switch is invalid (e.g., fainted Pokémon, Pokémon not owned by the trainer).</exception>
-        void SwitchPokemon(ITrainer trainer, IPokemon newPokemon);
+        void PerformSwitch(IPokemon newPokemon);
 
         /// <summary>
         /// Uses the specified item on the target Pokémon.
         /// </summary>
-        void UseItem(ITrainer trainer, IItem item, IPokemon target);
+        /// <param name="item">The item to be used.</param>
+        /// <param name="targetPokemon">The target Pokémon to use the item on.</param>
+        void PerformUseItem(IItem item, IPokemon targetPokemon);
+
+        /// <summary>
+        /// Handles the fainting of a Pokémon, forcing the trainer to switch to another Pokémon.
+        /// </summary>
+        /// <param name="trainer">The trainer whose Pokémon has fainted.</param>
+        void HandleFaintedPokemon(ITrainer trainer);
+
+        /// <summary>
+        /// Switches the turn to the other trainer.
+        /// </summary>
+        void SwitchTurns();
+
+        /// <summary>
+        /// Determines whether the battle is over.
+        /// </summary>
+        /// <returns>True if the battle is over; otherwise, false.</returns>
+        bool IsBattleOver();
+
+        /// <summary>
+        /// Gets the winner of the battle.
+        /// </summary>
+        /// <returns>The winning trainer.</returns>
+        ITrainer GetWinner();
 
         /// <summary>
         /// Determines the result of the battle.
         /// </summary>
-        /// <returns>A string describing the result of the battle.</returns>
+        /// <returns>A string representing the result of the battle.</returns>
         string DetermineBattleResult();
-
-        event Action<PokemonEventArgs> PokemonFainted;
-        event Action<MoveEventArgs> MoveUsed;
-
     }
 }

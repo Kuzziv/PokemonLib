@@ -7,12 +7,13 @@ namespace PokemonGameLib.Utilities
     {
         public static void ValidateMove(IPokemon attacker, IMove move)
         {
-            if (attacker == null) throw new ArgumentNullException(nameof(attacker));
-            if (move == null) throw new ArgumentNullException(nameof(move));
+            if (attacker == null || move == null)
+                throw new ArgumentNullException("Attacker or move cannot be null.");
 
             if (!attacker.Moves.Contains(move))
-                throw new InvalidMoveException($"{attacker.Name} cannot use {move.Name}.");
+                throw new InvalidOperationException($"{attacker.Name} cannot use {move.Name}.");
         }
+
 
         public static void ValidatePokemonSwitch(ITrainer trainer, IPokemon newPokemon)
         {

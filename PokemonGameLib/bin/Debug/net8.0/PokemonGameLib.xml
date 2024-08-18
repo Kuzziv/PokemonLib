@@ -126,55 +126,71 @@
         </member>
         <member name="T:PokemonGameLib.Interfaces.IBattle">
             <summary>
-            Represents a Pokémon battle between two trainers, handling battle mechanics and interactions.
+            Represents a battle between two trainers in the Pokémon game.
             </summary>
         </member>
-        <member name="P:PokemonGameLib.Interfaces.IBattle.FirstTrainer">
+        <member name="P:PokemonGameLib.Interfaces.IBattle.CurrentTrainer">
             <summary>
-            Gets the first trainer in the battle.
+            Gets the current trainer whose turn it is.
             </summary>
         </member>
-        <member name="P:PokemonGameLib.Interfaces.IBattle.SecondTrainer">
+        <member name="P:PokemonGameLib.Interfaces.IBattle.OpponentTrainer">
             <summary>
-            Gets the second trainer in the battle.
+            Gets the opponent trainer in the current battle.
             </summary>
         </member>
-        <member name="P:PokemonGameLib.Interfaces.IBattle.AttackingTrainer">
+        <member name="M:PokemonGameLib.Interfaces.IBattle.StartBattle">
             <summary>
-            Gets the trainer currently attacking based on the turn.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Interfaces.IBattle.DefendingTrainer">
-            <summary>
-            Gets the current defending trainer based on the turn.
+            Starts the battle between the two trainers.
             </summary>
         </member>
         <member name="M:PokemonGameLib.Interfaces.IBattle.PerformAttack(PokemonGameLib.Interfaces.IMove)">
             <summary>
-            Performs an attack using the specified move.
+            Executes an attack using the specified move.
             </summary>
-            <param name="move">The move to be used for the attack.</param>
-            <exception cref="T:System.InvalidOperationException">Thrown if any condition for performing the attack is invalid.</exception>
+            <param name="move">The move to be used in the attack.</param>
         </member>
-        <member name="M:PokemonGameLib.Interfaces.IBattle.SwitchPokemon(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.IPokemon)">
+        <member name="M:PokemonGameLib.Interfaces.IBattle.PerformSwitch(PokemonGameLib.Interfaces.IPokemon)">
             <summary>
-            Switches the current Pokémon of the specified trainer to the new Pokémon.
+            Switches the current Pokémon with the specified new Pokémon.
             </summary>
-            <param name="trainer">The trainer who is switching Pokémon.</param>
             <param name="newPokemon">The new Pokémon to switch to.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if trainer or newPokemon is null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown if the switch is invalid (e.g., fainted Pokémon, Pokémon not owned by the trainer).</exception>
         </member>
-        <member name="M:PokemonGameLib.Interfaces.IBattle.UseItem(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.IItem,PokemonGameLib.Interfaces.IPokemon)">
+        <member name="M:PokemonGameLib.Interfaces.IBattle.PerformUseItem(PokemonGameLib.Interfaces.IItem,PokemonGameLib.Interfaces.IPokemon)">
             <summary>
             Uses the specified item on the target Pokémon.
             </summary>
+            <param name="item">The item to be used.</param>
+            <param name="targetPokemon">The target Pokémon to use the item on.</param>
+        </member>
+        <member name="M:PokemonGameLib.Interfaces.IBattle.HandleFaintedPokemon(PokemonGameLib.Interfaces.ITrainer)">
+            <summary>
+            Handles the fainting of a Pokémon, forcing the trainer to switch to another Pokémon.
+            </summary>
+            <param name="trainer">The trainer whose Pokémon has fainted.</param>
+        </member>
+        <member name="M:PokemonGameLib.Interfaces.IBattle.SwitchTurns">
+            <summary>
+            Switches the turn to the other trainer.
+            </summary>
+        </member>
+        <member name="M:PokemonGameLib.Interfaces.IBattle.IsBattleOver">
+            <summary>
+            Determines whether the battle is over.
+            </summary>
+            <returns>True if the battle is over; otherwise, false.</returns>
+        </member>
+        <member name="M:PokemonGameLib.Interfaces.IBattle.GetWinner">
+            <summary>
+            Gets the winner of the battle.
+            </summary>
+            <returns>The winning trainer.</returns>
         </member>
         <member name="M:PokemonGameLib.Interfaces.IBattle.DetermineBattleResult">
             <summary>
             Determines the result of the battle.
             </summary>
-            <returns>A string describing the result of the battle.</returns>
+            <returns>A string representing the result of the battle.</returns>
         </member>
         <member name="T:PokemonGameLib.Interfaces.ICommand">
             <summary>
@@ -427,59 +443,6 @@
         <member name="T:PokemonGameLib.Interfaces.ITrainer">
             <summary>
             Represents a trainer in the Pokémon game, managing a team of Pokémon and facilitating interactions during battles.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Interfaces.ITrainer.Name">
-            <summary>
-            Gets the name of the Trainer.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Interfaces.ITrainer.CurrentPokemon">
-            <summary>
-            Gets or sets the current Pokémon of the Trainer.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Interfaces.ITrainer.Pokemons">
-            <summary>
-            Gets the list of Pokemons owned by the Trainer.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Interfaces.ITrainer.AddPokemon(PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Adds a Pokémon to the Trainer's list of Pokemons.
-            </summary>
-            <param name="pokemon">The Pokémon to be added.</param>
-        </member>
-        <member name="M:PokemonGameLib.Interfaces.ITrainer.RemovePokemon(PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Removes a Pokémon from the Trainer's list of Pokemons.
-            </summary>
-            <param name="pokemon">The Pokémon to remove.</param>
-        </member>
-        <member name="M:PokemonGameLib.Interfaces.ITrainer.CreateAttackCommand(PokemonGameLib.Interfaces.IBattle,PokemonGameLib.Interfaces.IMove)">
-            <summary>
-            Attacks the opponent with the specified move.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Interfaces.ITrainer.CreateSwitchCommand(PokemonGameLib.Interfaces.IBattle,PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Switches the current Pokémon with the specified new Pokémon.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Interfaces.ITrainer.CreateUseItemCommand(PokemonGameLib.Interfaces.IBattle,PokemonGameLib.Interfaces.IItem,PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Uses the specified item on the target Pokémon.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Interfaces.ITrainer.TakeTurn(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Takes the Trainer's turn during a battle.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-        </member>
-        <member name="M:PokemonGameLib.Interfaces.ITrainer.ValidateTrainer">
-            <summary>
-            Validates the Trainer's state to ensure it is valid.
             </summary>
         </member>
         <member name="T:PokemonGameLib.Interfaces.ITypeEffectivenessService">
@@ -973,139 +936,6 @@
             <summary>
             The Pokémon is poisoned and loses 1/8 of its maximum HP each turn.
             </summary>
-        </member>
-        <member name="T:PokemonGameLib.Models.Trainers.AITrainer">
-            <summary>
-            Represents an AI-controlled trainer in the Pokémon game.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Trainers.AITrainer"/> class with the specified name.
-            </summary>
-            <param name="name">The name of the AI trainer.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.AITrainer.TakeTurn(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Takes the AI's turn during a battle.
-            The AI will choose the best action to maximize its chances of winning.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-        </member>
-        <member name="T:PokemonGameLib.Models.Trainers.PlayerTrainer">
-            <summary>
-            Represents a human player trainer in the Pokémon game.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.PlayerTrainer.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Trainers.PlayerTrainer"/> class with the specified name.
-            </summary>
-            <param name="name">The name of the player trainer.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.PlayerTrainer.TakeTurn(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Takes the player's turn during a battle.
-            The player can choose to attack, switch Pokémon, or use an item.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.PlayerTrainer.PerformAttack(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Handles the player's choice to perform an attack.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.PlayerTrainer.SwitchPokemon(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Handles the player's choice to switch Pokémon.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.PlayerTrainer.UseItem(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Handles the player's choice to use an item.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-        </member>
-        <member name="T:PokemonGameLib.Models.Trainers.Trainer">
-            <summary>
-            Represents a trainer in the Pokémon game, managing a team of Pokémon and facilitating interactions during battles.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Trainers.Trainer.Name">
-            <summary>
-            Gets the name of the Trainer.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Trainers.Trainer.CurrentPokemon">
-            <summary>
-            Gets or sets the current Pokémon that the Trainer is using in battle.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Trainers.Trainer.Pokemons">
-            <summary>
-            Gets the list of Pokémon that the Trainer owns.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Trainers.Trainer.Items">
-            <summary>
-            Gets the list of items that the Trainer possesses.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Trainers.Trainer"/> class with the specified name.
-            </summary>
-            <param name="name">The name of the Trainer.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if the name is null.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.ValidateTrainer">
-            <summary>
-            Validates the Trainer to ensure that it is in a valid state.
-            </summary>
-            <exception cref="T:System.InvalidOperationException">Thrown if the Trainer is not in a valid state.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.AddPokemon(PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Adds a Pokémon to the Trainer's collection.
-            </summary>
-            <param name="pokemon">The Pokémon to add.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if the Pokémon is null.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.RemovePokemon(PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Removes a Pokémon from the Trainer's collection.
-            </summary>
-            <param name="pokemon">The Pokémon to remove.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if the Pokémon is null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown if the Pokémon is not in the Trainer's collection.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.AddItem(PokemonGameLib.Interfaces.IItem)">
-            <summary>
-            Adds an item to the Trainer's inventory.
-            </summary>
-            <param name="item">The item to add.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.RemoveItem(PokemonGameLib.Interfaces.IItem)">
-            <summary>
-            Removes an item from the Trainer's inventory.
-            </summary>
-            <param name="item">The item to remove.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if the item is null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown if the item is not in the Trainer's inventory.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.ForceSwitchPokemon(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Forces the trainer to switch to a non-fainted Pokémon.
-            </summary>
-            <param name="battle">The current battle instance.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.HandleFaintedPokemon(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Forces the trainer to switch Pokémon if the current one has fainted.
-            </summary>
-            <param name="battle">The current battle instance.</param>
         </member>
         <member name="T:PokemonGameLib.Services.BattleCalculator">
             <summary>
