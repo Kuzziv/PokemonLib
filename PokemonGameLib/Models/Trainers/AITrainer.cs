@@ -69,20 +69,28 @@ namespace PokemonGameLib.Models.Trainers
             if (CurrentPokemon.IsFainted())
             {
                 _logger.LogInfo($"{Name}'s {CurrentPokemon.Name} has fainted.");
-                var newPokemon = SelectBestPokemonToSwitchTo(battle);
+
+                // Check if there are any Pokémon left that have not fainted
+                var newPokemon = Pokemons.FirstOrDefault(p => !p.IsFainted());
+
                 if (newPokemon != null)
                 {
                     var switchCommand = CreateSwitchCommand(battle, newPokemon);
                     switchCommand.Execute();
+                    CurrentPokemon = newPokemon;
                 }
                 else
                 {
-                    // If no valid Pokémon to switch to (shouldn't happen under normal rules)
+                    // No Pokémon left to switch to, AI trainer has lost the battle
                     _logger.LogError($"{Name} has no Pokémon left to switch to!");
-                    throw new InvalidOperationException("No Pokémon left to switch to.");
+                    Console.WriteLine($"{Name} has no Pokémon left!");
+                    // End the battle for the AI trainer
+                    // Optionally, you could throw an exception or handle the end of the battle in another way
+                    // For now, just return control to indicate the battle should stop
                 }
             }
         }
+
 
         /// <summary>
         /// Determines whether the AI should switch Pokémon based on the battle situation.
