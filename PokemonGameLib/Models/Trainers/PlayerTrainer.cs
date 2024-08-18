@@ -3,10 +3,21 @@ using PokemonGameLib.Interfaces;
 
 namespace PokemonGameLib.Models.Trainers
 {
+    /// <summary>
+    /// Represents a player-controlled trainer in a Pokémon battle.
+    /// </summary>
     public class PlayerTrainer : Trainer
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerTrainer"/> class.
+        /// </summary>
+        /// <param name="name">The name of the player trainer.</param>
         public PlayerTrainer(string name) : base(name) { }
 
+        /// <summary>
+        /// Executes the player's turn in the battle.
+        /// </summary>
+        /// <param name="battle">The current battle instance.</param>
         public override void TakeTurn(IBattle battle)
         {
             while (true)
@@ -16,7 +27,7 @@ namespace PokemonGameLib.Models.Trainers
                 Console.WriteLine("2. Switch Pokémon");
                 Console.WriteLine("3. Use Item");
 
-                string choice = Console.ReadLine();
+                string? choice = Console.ReadLine();
 
                 switch (choice)
                 {
@@ -46,6 +57,11 @@ namespace PokemonGameLib.Models.Trainers
             }
         }
 
+        /// <summary>
+        /// Performs an attack with the player's current Pokémon.
+        /// </summary>
+        /// <param name="battle">The current battle instance.</param>
+        /// <returns>True if the attack was performed, otherwise false.</returns>
         private bool PerformAttack(IBattle battle)
         {
             while (true)
@@ -77,6 +93,11 @@ namespace PokemonGameLib.Models.Trainers
             }
         }
 
+        /// <summary>
+        /// Switches the player's current Pokémon to another Pokémon in their party.
+        /// </summary>
+        /// <param name="battle">The current battle instance.</param>
+        /// <returns>True if the Pokémon was switched, otherwise false.</returns>
         private bool SwitchPokemon(IBattle battle)
         {
             while (true)
@@ -115,6 +136,11 @@ namespace PokemonGameLib.Models.Trainers
             }
         }
 
+        /// <summary>
+        /// Uses an item from the player's inventory on a Pokémon.
+        /// </summary>
+        /// <param name="battle">The current battle instance.</param>
+        /// <returns>True if the item was used, otherwise false.</returns>
         private bool UseItem(IBattle battle)
         {
             while (true)
@@ -169,6 +195,10 @@ namespace PokemonGameLib.Models.Trainers
             }
         }
 
+        /// <summary>
+        /// Handles the situation when the player's current Pokémon has fainted.
+        /// </summary>
+        /// <param name="battle">The current battle instance.</param>
         public override void HandleFaintedPokemon(IBattle battle)
         {
             Console.WriteLine($"{CurrentPokemon.Name} has fainted!");

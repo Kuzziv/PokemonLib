@@ -56,8 +56,8 @@ namespace PokemonGameLib.Interfaces
         /// <summary>
         /// Gets the winner of the battle.
         /// </summary>
-        /// <returns>The winning trainer.</returns>
-        ITrainer GetWinner();
+        /// <returns>The winning trainer. or null</returns>
+        ITrainer? GetWinner();
 
         /// <summary>
         /// Determines the result of the battle.

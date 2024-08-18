@@ -19,6 +19,9 @@ namespace PokemonGameLib.Models.Items
         /// </summary>
         public string Description { get; }
 
+        /// <summary>
+        /// The logger for the item.
+        /// </summary>
         protected readonly ILogger _logger;
 
         /// <summary>

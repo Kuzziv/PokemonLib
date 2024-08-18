@@ -63,7 +63,9 @@ namespace PokemonGameLib.Models.Pokemons
 
         private readonly ILogger _logger;
 
-
+        /// <summary>
+        /// The counter for the number of turns the Pokémon will remain asleep.
+        /// </summary>
         protected int _sleepCounter;
 
         /// <summary>
@@ -75,7 +77,6 @@ namespace PokemonGameLib.Models.Pokemons
         /// <param name="maxHp">The maximum HP of the Pokémon.</param>
         /// <param name="attack">The attack stat of the Pokémon.</param>
         /// <param name="defense">The defense stat of the Pokémon.</param>
-        /// <param name="abilities">A list of abilities the Pokémon has. Default is an empty list.</param>
         /// <param name="evolutions">A list of possible evolutions for the Pokémon. Default is an empty list.</param>
         /// <exception cref="ArgumentNullException">Thrown if the name is null or whitespace.</exception>
         /// <exception cref="ArgumentException">Thrown if the type is invalid.</exception>
