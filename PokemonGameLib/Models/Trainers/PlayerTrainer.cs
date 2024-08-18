@@ -21,7 +21,10 @@ namespace PokemonGameLib.Models.Trainers
                 switch (choice)
                 {
                     case "1":
-                        PerformAttack(battle);
+                        if (!PerformAttack(battle))
+                        {
+                            continue;  // If the player chooses to go back to the main menu, continue the loop
+                        }
                         break;  // Return to the main action menu after attacking
                     case "2":
                         if (!SwitchPokemon(battle))
@@ -35,12 +38,15 @@ namespace PokemonGameLib.Models.Trainers
                             continue;  // If the player chooses to go back to the main menu, continue the loop
                         }
                         break;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        continue;  // Re-display the main menu if an invalid choice is made
                 }
                 break;  // End the loop after performing an action
             }
         }
 
-        private void PerformAttack(IBattle battle)
+        private bool PerformAttack(IBattle battle)
         {
             while (true)
             {
@@ -55,13 +61,13 @@ namespace PokemonGameLib.Models.Trainers
                 {
                     if (moveIndex == CurrentPokemon.Moves.Count + 1)
                     {
-                        return;  // Go back to the main action menu
+                        return false;  // Go back to the main action menu
                     }
                     else if (moveIndex >= 1 && moveIndex <= CurrentPokemon.Moves.Count)
                     {
                         IMove selectedMove = CurrentPokemon.Moves[moveIndex - 1];
                         battle.PerformAttack(selectedMove);
-                        return;  // Return after performing an attack
+                        return true;  // Return after performing an attack
                     }
                     else
                     {
