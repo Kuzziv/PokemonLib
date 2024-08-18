@@ -108,6 +108,58 @@ namespace PokemonGameLib.Models.Trainers
             _logger.LogInfo($"{Name} added {item.Name} to their inventory.");
         }
 
+        /// <summary>
+        /// Forces the trainer to switch to a non-fainted Pokémon.
+        /// </summary>
+        /// <param name="battle">The current battle instance.</param>
+        private void ForceSwitchPokemon(IBattle battle)
+        {
+            while (true)
+            {
+                Console.WriteLine("Choose a Pokémon to switch to:");
+                for (int i = 0; i < Pokemons.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {Pokemons[i].Name} (HP: {Pokemons[i].CurrentHP}/{Pokemons[i].MaxHP})");
+                }
+
+                if (int.TryParse(Console.ReadLine(), out int pokemonIndex) && pokemonIndex >= 1 && pokemonIndex <= Pokemons.Count)
+                {
+                    IPokemon selectedPokemon = Pokemons[pokemonIndex - 1];
+                    if (selectedPokemon.IsFainted())
+                    {
+                        Console.WriteLine("Cannot switch to a fainted Pokémon. Choose again.");
+                        _logger.LogWarning($"{Name} attempted to switch to a fainted Pokémon.");
+                    }
+                    else
+                    {
+                        CurrentPokemon = selectedPokemon;
+                        _logger.LogInfo($"{Name} switched to {selectedPokemon.Name}.");
+                        Console.WriteLine($"{Name} switched to {selectedPokemon.Name}!");
+                        break; // Exit the loop once a valid Pokémon is selected
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    _logger.LogWarning($"{Name} attempted to switch to an invalid Pokémon.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Forces the trainer to switch Pokémon if the current one has fainted.
+        /// </summary>
+        /// <param name="battle">The current battle instance.</param>
+        protected void HandleFaintedPokemon(IBattle battle)
+        {
+            if (CurrentPokemon.IsFainted())
+            {
+                Console.WriteLine($"{CurrentPokemon.Name} has fainted!");
+                _logger.LogInfo($"{Name}'s {CurrentPokemon.Name} has fainted!");
+                ForceSwitchPokemon(battle);
+            }
+        }
+
         public ICommand CreateAttackCommand(IBattle battle, IMove move)
         {
             return new AttackCommand(battle, move);

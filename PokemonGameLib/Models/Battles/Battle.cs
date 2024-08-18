@@ -38,7 +38,10 @@ namespace PokemonGameLib.Models.Battles
 
             System.Console.WriteLine($"{FirstTrainer.Name} vs. {SecondTrainer.Name}");
 
-            PrintCurrentHP();            
+            PrintCurrentHP();
+            
+            System.Console.WriteLine($"{FirstTrainer.Name} has {FirstTrainer.Pokemons.Count} Pokémon.");
+            System.Console.WriteLine($"{SecondTrainer.Name} has {SecondTrainer.Pokemons.Count} Pokémon.");
         }
 
         public void PerformAttack(IMove move)

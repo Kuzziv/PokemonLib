@@ -27,6 +27,8 @@ namespace PokemonGameLib.Models.Trainers
         /// <param name="battle">The current battle instance.</param>
         public override void TakeTurn(IBattle battle)
         {
+            HandleFaintedPokemon(battle); // Check if the current Pokémon has fainted and handle it
+
             int invalidAttempts = 0;
             const int maxInvalidAttempts = 3;
             while (true)
@@ -164,5 +166,6 @@ namespace PokemonGameLib.Models.Trainers
                 _logger.LogWarning($"{Name} attempted to use an invalid item. Turn skipped.");
             }
         }
+
     }
 }

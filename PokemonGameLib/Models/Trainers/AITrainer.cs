@@ -18,7 +18,6 @@ namespace PokemonGameLib.Models.Trainers
         /// Initializes a new instance of the <see cref="AITrainer"/> class with the specified name.
         /// </summary>
         /// <param name="name">The name of the AI trainer.</param>
-        /// <param name="logger">The logger to use for logging actions.</param>
         public AITrainer(string name) : base(name)
         {
             _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
@@ -31,6 +30,9 @@ namespace PokemonGameLib.Models.Trainers
         /// <param name="battle">The current battle instance.</param>
         public override void TakeTurn(IBattle battle)
         {
+            // Check if the current Pokémon has fainted and handle it
+            HandleFaintedPokemon(battle);
+
             if (ShouldUseItem(out IItem? itemToUse, battle))
             {
                 var useItemCommand = CreateUseItemCommand(battle, itemToUse, CurrentPokemon);
@@ -54,6 +56,31 @@ namespace PokemonGameLib.Models.Trainers
             {
                 var attackCommand = CreateAttackCommand(battle, move);
                 attackCommand.Execute();
+            }
+        }
+
+        /// <summary>
+        /// Handles the situation when the AI's current Pokémon has fainted.
+        /// Forces the AI to switch to another available Pokémon.
+        /// </summary>
+        /// <param name="battle">The current battle instance.</param>
+        private void HandleFaintedPokemon(IBattle battle)
+        {
+            if (CurrentPokemon.IsFainted())
+            {
+                _logger.LogInfo($"{Name}'s {CurrentPokemon.Name} has fainted.");
+                var newPokemon = SelectBestPokemonToSwitchTo(battle);
+                if (newPokemon != null)
+                {
+                    var switchCommand = CreateSwitchCommand(battle, newPokemon);
+                    switchCommand.Execute();
+                }
+                else
+                {
+                    // If no valid Pokémon to switch to (shouldn't happen under normal rules)
+                    _logger.LogError($"{Name} has no Pokémon left to switch to!");
+                    throw new InvalidOperationException("No Pokémon left to switch to.");
+                }
             }
         }
 
@@ -131,6 +158,7 @@ namespace PokemonGameLib.Models.Trainers
                 return null;
             }
         }
+
 
         /// <summary>
         /// Selects the best move to use based on effectiveness and power.
