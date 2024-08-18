@@ -1,4 +1,5 @@
 using PokemonGameLib.Interfaces;
+using PokemonGameLib.Events;
 
 namespace PokemonGameLib.Interfaces
 {
@@ -35,12 +36,6 @@ namespace PokemonGameLib.Interfaces
         void PerformAttack(IMove move);
 
         /// <summary>
-        /// Determines the result of the battle.
-        /// </summary>
-        /// <returns>A string describing the result of the battle.</returns>
-        string DetermineBattleResult();
-
-        /// <summary>
         /// Switches the current Pokémon of the specified trainer to the new Pokémon.
         /// </summary>
         /// <param name="trainer">The trainer who is switching Pokémon.</param>
@@ -48,5 +43,20 @@ namespace PokemonGameLib.Interfaces
         /// <exception cref="ArgumentNullException">Thrown if trainer or newPokemon is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if the switch is invalid (e.g., fainted Pokémon, Pokémon not owned by the trainer).</exception>
         void SwitchPokemon(ITrainer trainer, IPokemon newPokemon);
+
+        /// <summary>
+        /// Uses the specified item on the target Pokémon.
+        /// </summary>
+        void UseItem(ITrainer trainer, IItem item, IPokemon target);
+
+        /// <summary>
+        /// Determines the result of the battle.
+        /// </summary>
+        /// <returns>A string describing the result of the battle.</returns>
+        string DetermineBattleResult();
+
+        event Action<PokemonEventArgs> PokemonFainted;
+        event Action<MoveEventArgs> MoveUsed;
+
     }
 }

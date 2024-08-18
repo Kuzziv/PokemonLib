@@ -188,16 +188,14 @@ namespace PokemonGameLib.Models.Pokemons
         /// <exception cref="ArgumentException">Thrown if the Pokémon already knows the move, or if the move is not compatible with the Pokémon's type or level.</exception>
         public void AddMove(IMove move)
         {
-            if (move == null)
-                throw new ArgumentNullException(nameof(move), "Move cannot be null.");
+            move.ValidateMove(this);
+
             if (Moves.Count >= 4)
-                throw new InvalidOperationException("A Pokémon can only know up to 4 moves.");
+                throw new InvalidOperationException("Pokémon can only learn 4 moves.");
             if (Moves.Contains(move))
                 throw new ArgumentException("Pokémon already knows this move.", nameof(move));
-            if (move.Type != Type)
-                throw new ArgumentException("Move is not compatible with the Pokémon's type.", nameof(move));
-            if (move.Level > Level)
-                throw new ArgumentException("Move is not compatible with the Pokémon's level.", nameof(move));
+            if (!move.ValidateMove(this))
+                throw new ArgumentException("Move is not compatible with the Pokémon's type or level.", nameof(move));
 
             Moves.Add(move);
             _logger.LogInfo($"{Name} learned the move {move.Name}.");

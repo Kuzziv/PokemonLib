@@ -43,11 +43,10 @@ namespace PokemonGameLib.Interfaces
         int HealingPercentage { get; }
 
         /// <summary>
-        /// Determines whether this move is compatible with a given Pokémon type and level.
+        /// Validates whether this move is compatible with the given Pokémon.
         /// </summary>
-        /// <param name="pokemonType">The type of the Pokémon.</param>
-        /// <param name="pokemonLevel">The level of the Pokémon.</param>
-        /// <returns><c>true</c> if the move type is compatible with the Pokémon type and the Pokémon's level is sufficient to learn the move; otherwise, <c>false</c>.</returns>
-        bool IsCompatibleWith(PokemonType pokemonType, int pokemonLevel);
+        /// <param name="pokemon">The Pokémon to validate against.</param>
+        /// <returns><c>true</c> if the move is compatible with the Pokémon's type and level; otherwise, <c>false</c>.</returns>
+        bool ValidateMove(IPokemon pokemon);
     }
 }

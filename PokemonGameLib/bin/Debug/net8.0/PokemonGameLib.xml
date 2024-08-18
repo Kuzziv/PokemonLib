@@ -131,12 +131,6 @@
             <param name="move">The move to be used for the attack.</param>
             <exception cref="T:System.InvalidOperationException">Thrown if any condition for performing the attack is invalid.</exception>
         </member>
-        <member name="M:PokemonGameLib.Interfaces.IBattle.DetermineBattleResult">
-            <summary>
-            Determines the result of the battle.
-            </summary>
-            <returns>A string describing the result of the battle.</returns>
-        </member>
         <member name="M:PokemonGameLib.Interfaces.IBattle.SwitchPokemon(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.IPokemon)">
             <summary>
             Switches the current Pokémon of the specified trainer to the new Pokémon.
@@ -145,6 +139,22 @@
             <param name="newPokemon">The new Pokémon to switch to.</param>
             <exception cref="T:System.ArgumentNullException">Thrown if trainer or newPokemon is null.</exception>
             <exception cref="T:System.InvalidOperationException">Thrown if the switch is invalid (e.g., fainted Pokémon, Pokémon not owned by the trainer).</exception>
+        </member>
+        <member name="M:PokemonGameLib.Interfaces.IBattle.UseItem(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.IItem,PokemonGameLib.Interfaces.IPokemon)">
+            <summary>
+            Uses the specified item on the target Pokémon.
+            </summary>
+        </member>
+        <member name="M:PokemonGameLib.Interfaces.IBattle.DetermineBattleResult">
+            <summary>
+            Determines the result of the battle.
+            </summary>
+            <returns>A string describing the result of the battle.</returns>
+        </member>
+        <member name="T:PokemonGameLib.Interfaces.ICommand">
+            <summary>
+            Represents a command that can be executed within the game.
+            </summary>
         </member>
         <member name="T:PokemonGameLib.Interfaces.IEvolution">
             <summary>
@@ -253,13 +263,12 @@
             Gets the percentage of HP healed by the move.
             </summary>
         </member>
-        <member name="M:PokemonGameLib.Interfaces.IMove.IsCompatibleWith(PokemonGameLib.Models.Pokemons.PokemonType,System.Int32)">
+        <member name="M:PokemonGameLib.Interfaces.IMove.ValidateMove(PokemonGameLib.Interfaces.IPokemon)">
             <summary>
-            Determines whether this move is compatible with a given Pokémon type and level.
+            Validates whether this move is compatible with the given Pokémon.
             </summary>
-            <param name="pokemonType">The type of the Pokémon.</param>
-            <param name="pokemonLevel">The level of the Pokémon.</param>
-            <returns><c>true</c> if the move type is compatible with the Pokémon type and the Pokémon's level is sufficient to learn the move; otherwise, <c>false</c>.</returns>
+            <param name="pokemon">The Pokémon to validate against.</param>
+            <returns><c>true</c> if the move is compatible with the Pokémon's type and level; otherwise, <c>false</c>.</returns>
         </member>
         <member name="T:PokemonGameLib.Interfaces.IPokemon">
             <summary>
@@ -422,24 +431,31 @@
             </summary>
             <param name="pokemon">The Pokémon to remove.</param>
         </member>
-        <member name="M:PokemonGameLib.Interfaces.ITrainer.SwitchPokemon(PokemonGameLib.Interfaces.IPokemon)">
+        <member name="M:PokemonGameLib.Interfaces.ITrainer.CreateAttackCommand(PokemonGameLib.Interfaces.IBattle,PokemonGameLib.Interfaces.IMove)">
             <summary>
-            Switches the Trainer's current Pokémon to the specified new Pokémon.
+            Attacks the opponent with the specified move.
             </summary>
-            <param name="newPokemon">The new Pokémon to switch to.</param>
         </member>
-        <member name="M:PokemonGameLib.Interfaces.ITrainer.UseItem(PokemonGameLib.Interfaces.IItem,PokemonGameLib.Interfaces.IPokemon)">
+        <member name="M:PokemonGameLib.Interfaces.ITrainer.CreateSwitchCommand(PokemonGameLib.Interfaces.IBattle,PokemonGameLib.Interfaces.IPokemon)">
             <summary>
-            Uses an item on the specified Pokémon.
+            Switches the current Pokémon with the specified new Pokémon.
             </summary>
-            <param name="item">The item to be used.</param>
-            <param name="target">The Pokémon to use the item on.</param>
+        </member>
+        <member name="M:PokemonGameLib.Interfaces.ITrainer.CreateUseItemCommand(PokemonGameLib.Interfaces.IBattle,PokemonGameLib.Interfaces.IItem,PokemonGameLib.Interfaces.IPokemon)">
+            <summary>
+            Uses the specified item on the target Pokémon.
+            </summary>
         </member>
         <member name="M:PokemonGameLib.Interfaces.ITrainer.TakeTurn(PokemonGameLib.Interfaces.IBattle)">
             <summary>
             Takes the Trainer's turn during a battle.
             </summary>
             <param name="battle">The current battle instance.</param>
+        </member>
+        <member name="M:PokemonGameLib.Interfaces.ITrainer.ValidateTrainer">
+            <summary>
+            Validates the Trainer's state to ensure it is valid.
+            </summary>
         </member>
         <member name="T:PokemonGameLib.Interfaces.ITypeEffectivenessService">
             <summary>
@@ -453,125 +469,6 @@
             <param name="attackType">The type of the move being used.</param>
             <param name="defenseType">The type of the defending Pokémon.</param>
             <returns>A multiplier representing the effectiveness.</returns>
-        </member>
-        <member name="T:PokemonGameLib.Models.Battles.Battle">
-            <summary>
-            Represents a Pokémon battle between two trainers, handling battle mechanics and interactions.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Battles.Battle.FirstTrainer">
-            <summary>
-            Gets the first trainer in the battle.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Battles.Battle.SecondTrainer">
-            <summary>
-            Gets the second trainer in the battle.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Battles.Battle.AttackingTrainer">
-            <summary>
-            Gets the trainer currently attacking based on the turn.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Battles.Battle.DefendingTrainer">
-            <summary>
-            Gets the current defending trainer based on the turn.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Battles.Battle.Attacker">
-            <summary>
-            Gets the current attacking Pokémon.
-            </summary>
-        </member>
-        <member name="P:PokemonGameLib.Models.Battles.Battle.Defender">
-            <summary>
-            Gets the current defending Pokémon.
-            </summary>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.#ctor(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.ITrainer)">
-            <summary>
-            Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Battles.Battle"/> class.
-            </summary>
-            <param name="firstTrainer">The first trainer in the battle.</param>
-            <param name="secondTrainer">The second trainer in the battle.</param>
-            <exception cref="T:System.ArgumentNullException">
-            Thrown when any of the required dependencies (trainers) are null.
-            </exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.ValidateTrainers">
-            <summary>
-            Validates that both trainers have valid, non-fainted Pokémon.
-            </summary>
-            <exception cref="T:System.InvalidOperationException">
-            Thrown if a trainer has no valid Pokémon to battle with.
-            </exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.PerformAttack(PokemonGameLib.Interfaces.IMove)">
-            <summary>
-            Performs an attack using the specified move.
-            </summary>
-            <param name="move">The move to be used for the attack.</param>
-            <exception cref="T:PokemonGameLib.Exceptions.InvalidMoveException">Thrown if the move is invalid for the current battle state.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.ValidateAttackConditions(PokemonGameLib.Interfaces.IMove)">
-            <summary>
-            Validates that the current attack conditions are valid.
-            </summary>
-            <param name="move">The move being validated.</param>
-            <exception cref="T:PokemonGameLib.Exceptions.InvalidMoveException">Thrown if any condition is invalid.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.ExecuteAttack(PokemonGameLib.Interfaces.IMove)">
-            <summary>
-            Executes the attack, calculating damage and applying effects.
-            </summary>
-            <param name="move">The move to be executed.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.ApplyRecoilAndHealing(PokemonGameLib.Interfaces.IMove)">
-            <summary>
-            Applies recoil damage to the attacker and healing effects if applicable.
-            </summary>
-            <param name="move">The move being used.</param>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.CalculateDamage(System.Int32,System.Int32,System.Int32,System.Double,PokemonGameLib.Models.Pokemons.PokemonType)">
-            <summary>
-            Calculates the damage dealt by a move.
-            </summary>
-            <param name="movePower">The base power of the move.</param>
-            <param name="attackerAttack">The attack stat of the attacking Pokémon.</param>
-            <param name="defenderDefense">The defense stat of the defending Pokémon.</param>
-            <param name="effectiveness">The effectiveness multiplier.</param>
-            <param name="moveType">The type of the move.</param>
-            <returns>The total calculated damage.</returns>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.GetEffectivenessMessage(System.Double)">
-            <summary>
-            Generates a message based on the effectiveness of the move.
-            </summary>
-            <param name="effectiveness">The effectiveness multiplier.</param>
-            <returns>A string message describing the effectiveness.</returns>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.DetermineBattleResult">
-            <summary>
-            Determines the result of the battle.
-            </summary>
-            <returns>A string describing the result of the battle.</returns>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.SwitchPokemon(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Switches the current Pokémon of a trainer with another Pokémon in their party.
-            </summary>
-            <param name="trainer">The trainer switching Pokémon.</param>
-            <param name="newPokemon">The new Pokémon to switch to.</param>
-            <exception cref="T:PokemonGameLib.Exceptions.InvalidPokemonSwitchException">Thrown if the switch conditions are invalid.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Battles.Battle.ValidateSwitchConditions(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Validates the conditions for switching Pokémon.
-            </summary>
-            <param name="trainer">The trainer switching Pokémon.</param>
-            <param name="newPokemon">The new Pokémon to switch to.</param>
-            <exception cref="T:PokemonGameLib.Exceptions.InvalidPokemonSwitchException">Thrown if the switch is invalid.</exception>
         </member>
         <member name="T:PokemonGameLib.Models.Items.Item">
             <summary>
@@ -745,13 +642,12 @@
             <param name="healingPercentage">The percentage of HP healed by the move. Default is 0.</param>
             <exception cref="T:System.ArgumentException">Thrown if the move name is null or empty, the type is invalid, the power is negative, or the level is less than 1.</exception>
         </member>
-        <member name="M:PokemonGameLib.Models.Pokemons.Moves.Move.IsCompatibleWith(PokemonGameLib.Models.Pokemons.PokemonType,System.Int32)">
+        <member name="M:PokemonGameLib.Models.Pokemons.Moves.Move.ValidateMove(PokemonGameLib.Interfaces.IPokemon)">
             <summary>
-            Determines whether this move is compatible with a given Pokémon type and level.
+            Validates whether this move is compatible with the given Pokémon.
             </summary>
-            <param name="pokemonType">The type of the Pokémon.</param>
-            <param name="pokemonLevel">The level of the Pokémon.</param>
-            <returns><c>true</c> if the move type is compatible with the Pokémon type and the Pokémon's level is sufficient to learn the move; otherwise, <c>false</c>.</returns>
+            <param name="pokemon">The Pokémon to validate against.</param>
+            <returns><c>true</c> if the move is compatible with the Pokémon's type and level; otherwise, <c>false</c>.</returns>
         </member>
         <member name="T:PokemonGameLib.Models.Pokemons.Pokemon">
             <summary>
@@ -1063,6 +959,7 @@
             Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Trainers.AITrainer"/> class with the specified name.
             </summary>
             <param name="name">The name of the AI trainer.</param>
+            <param name="logger">The logger to use for logging actions.</param>
         </member>
         <member name="M:PokemonGameLib.Models.Trainers.AITrainer.TakeTurn(PokemonGameLib.Interfaces.IBattle)">
             <summary>
@@ -1110,6 +1007,7 @@
             Initializes a new instance of the <see cref="T:PokemonGameLib.Models.Trainers.PlayerTrainer"/> class with the specified name.
             </summary>
             <param name="name">The name of the player trainer.</param>
+            <param name="logger">The logger to use for logging actions.</param>
         </member>
         <member name="M:PokemonGameLib.Models.Trainers.PlayerTrainer.TakeTurn(PokemonGameLib.Interfaces.IBattle)">
             <summary>
@@ -1130,10 +1028,11 @@
             </summary>
             <param name="battle">The current battle instance.</param>
         </member>
-        <member name="M:PokemonGameLib.Models.Trainers.PlayerTrainer.UseItem">
+        <member name="M:PokemonGameLib.Models.Trainers.PlayerTrainer.UseItem(PokemonGameLib.Interfaces.IBattle)">
             <summary>
             Handles the player's choice to use an item.
             </summary>
+            <param name="battle">The current battle instance.</param>
         </member>
         <member name="T:PokemonGameLib.Models.Trainers.Trainer">
             <summary>
@@ -1167,6 +1066,12 @@
             <param name="name">The name of the Trainer.</param>
             <exception cref="T:System.ArgumentNullException">Thrown if the name is null.</exception>
         </member>
+        <member name="M:PokemonGameLib.Models.Trainers.Trainer.ValidateTrainer">
+            <summary>
+            Validates the Trainer to ensure that it is in a valid state.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown if the Trainer is not in a valid state.</exception>
+        </member>
         <member name="M:PokemonGameLib.Models.Trainers.Trainer.AddPokemon(PokemonGameLib.Interfaces.IPokemon)">
             <summary>
             Adds a Pokémon to the Trainer's collection.
@@ -1182,47 +1087,15 @@
             <exception cref="T:System.ArgumentNullException">Thrown if the Pokémon is null.</exception>
             <exception cref="T:System.InvalidOperationException">Thrown if the Pokémon is not in the Trainer's collection.</exception>
         </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.SwitchPokemon(PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Switches the current Pokémon to a different one from the Trainer's collection.
-            </summary>
-            <param name="newPokemon">The new Pokémon to switch to.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if the new Pokémon is null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown if the Pokémon is not in the Trainer's collection or if it is fainted.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.UseItem(PokemonGameLib.Interfaces.IItem,PokemonGameLib.Interfaces.IPokemon)">
-            <summary>
-            Uses an item on a target Pokémon.
-            </summary>
-            <param name="item">The item to use.</param>
-            <param name="target">The target Pokémon to use the item on.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if the item or target is null.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.AddItem(PokemonGameLib.Interfaces.IItem)">
-            <summary>
-            Adds an item to the Trainer's inventory.
-            </summary>
-            <param name="item">The item to add.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if the item is null.</exception>
-        </member>
-        <member name="M:PokemonGameLib.Models.Trainers.Trainer.TakeTurn(PokemonGameLib.Interfaces.IBattle)">
-            <summary>
-            Represents the action that the Trainer takes during a battle.
-            </summary>
-            <param name="battle">The battle in which the Trainer is participating.</param>
-        </member>
         <member name="T:PokemonGameLib.Services.BattleCalculator">
             <summary>
             Provides methods for calculating various aspects of Pokémon battles.
             </summary>
         </member>
-        <member name="M:PokemonGameLib.Services.BattleCalculator.#ctor(PokemonGameLib.Interfaces.ITypeEffectivenessService,PokemonGameLib.Utilities.RandomNumberGenerator,PokemonGameLib.Utilities.Logger)">
+        <member name="M:PokemonGameLib.Services.BattleCalculator.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:PokemonGameLib.Services.BattleCalculator"/> class.
             </summary>
-            <param name="typeEffectivenessService">Service for calculating type effectiveness.</param>
-            <param name="randomNumberGenerator">Service for generating random numbers.</param>
-            <param name="logger">Logger for recording calculation events.</param>
         </member>
         <member name="M:PokemonGameLib.Services.BattleCalculator.CalculateDamage(PokemonGameLib.Interfaces.IPokemon,PokemonGameLib.Interfaces.IPokemon,PokemonGameLib.Interfaces.IMove)">
             <summary>
@@ -1233,12 +1106,34 @@
             <param name="move">The move being used by the attacker.</param>
             <returns>The amount of damage dealt to the defender.</returns>
         </member>
-        <member name="M:PokemonGameLib.Services.BattleCalculator.CalculateStatusEffectChance(System.Double)">
+        <member name="M:PokemonGameLib.Services.BattleCalculator.CalculateRecoilDamage(PokemonGameLib.Interfaces.IPokemon,PokemonGameLib.Interfaces.IMove)">
             <summary>
-            Calculates the chance of a status effect being applied.
+            Calculates the recoil damage that the attacker takes after using a move.
             </summary>
-            <param name="chance">The base chance of the status effect.</param>
-            <returns>True if the status effect should be applied, otherwise false.</returns>
+            <param name="attacker">The attacking Pokémon.</param>
+            <param name="move">The move that caused recoil.</param>
+            <returns>The amount of recoil damage.</returns>
+        </member>
+        <member name="M:PokemonGameLib.Services.BattleCalculator.GetEffectivenessMessage(System.Double)">
+            <summary>
+            Gets the message describing the effectiveness of the move.
+            </summary>
+            <param name="effectiveness">The effectiveness multiplier.</param>
+            <returns>A string message describing the effectiveness.</returns>
+        </member>
+        <member name="M:PokemonGameLib.Services.BattleCalculator.IsCriticalHit">
+            <summary>
+            Determines if the move is a critical hit based on the critical hit chance.
+            </summary>
+            <returns>True if the move is a critical hit; otherwise, false.</returns>
+        </member>
+        <member name="M:PokemonGameLib.Services.BattleCalculator.CalculateHealingAmount(PokemonGameLib.Interfaces.IPokemon,PokemonGameLib.Interfaces.IMove)">
+            <summary>
+            Calculates the amount of HP a Pokémon should heal based on the move used.
+            </summary>
+            <param name="attacker">The Pokémon using the healing move.</param>
+            <param name="move">The move being used that has a healing effect.</param>
+            <returns>The amount of HP the Pokémon should recover.</returns>
         </member>
         <member name="T:PokemonGameLib.Services.TypeEffectivenessService">
             <summary>

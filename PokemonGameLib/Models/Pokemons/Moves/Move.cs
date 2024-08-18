@@ -79,23 +79,27 @@ namespace PokemonGameLib.Models.Pokemons.Moves
         }
 
         /// <summary>
-        /// Determines whether this move is compatible with a given Pokémon type and level.
+        /// Validates whether this move is compatible with the given Pokémon.
         /// </summary>
-        /// <param name="pokemonType">The type of the Pokémon.</param>
-        /// <param name="pokemonLevel">The level of the Pokémon.</param>
-        /// <returns><c>true</c> if the move type is compatible with the Pokémon type and the Pokémon's level is sufficient to learn the move; otherwise, <c>false</c>.</returns>
-        public bool IsCompatibleWith(PokemonType pokemonType, int pokemonLevel)
+        /// <param name="pokemon">The Pokémon to validate against.</param>
+        /// <returns><c>true</c> if the move is compatible with the Pokémon's type and level; otherwise, <c>false</c>.</returns>
+        public bool ValidateMove(IPokemon pokemon)
         {
-            bool compatible = Type == pokemonType && Level <= pokemonLevel;
-            if (compatible)
+            if (pokemon == null) throw new ArgumentNullException(nameof(pokemon), "Pokémon cannot be null.");
+
+            bool isCompatible = (Type == pokemon.Type || Type == PokemonType.Normal) && Level <= pokemon.Level;
+
+            if (isCompatible)
             {
-                _logger.LogInfo($"{Name} is compatible with the Pokémon.");
+                _logger.LogInfo($"{Name} is compatible with the Pokémon (Type: {pokemon.Type}, Level: {pokemon.Level}).");
             }
             else
             {
-                _logger.LogWarning($"{Name} is not compatible with the Pokémon.");
+                _logger.LogWarning($"{Name} is not compatible with the Pokémon (Type: {pokemon.Type}, Level: {pokemon.Level}).");
             }
-            return compatible;
+
+            return isCompatible;
         }
+
     }
 }

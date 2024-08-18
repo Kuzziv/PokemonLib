@@ -1,7 +1,6 @@
 using System;
 using PokemonGameLib.Interfaces;
 using PokemonGameLib.Utilities;
-using PokemonGameLib.Services;
 
 namespace PokemonGameLib.Models.Trainers
 {
@@ -16,6 +15,7 @@ namespace PokemonGameLib.Models.Trainers
         /// Initializes a new instance of the <see cref="PlayerTrainer"/> class with the specified name.
         /// </summary>
         /// <param name="name">The name of the player trainer.</param>
+        /// <param name="logger">The logger to use for logging actions.</param>
         public PlayerTrainer(string name) : base(name)
         {
             _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
@@ -48,7 +48,7 @@ namespace PokemonGameLib.Models.Trainers
                         SwitchPokemon(battle);
                         return;
                     case "3":
-                        UseItem();
+                        UseItem(battle);
                         return;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
@@ -78,7 +78,8 @@ namespace PokemonGameLib.Models.Trainers
             if (int.TryParse(Console.ReadLine(), out int moveIndex) && moveIndex >= 1 && moveIndex <= CurrentPokemon.Moves.Count)
             {
                 IMove selectedMove = CurrentPokemon.Moves[moveIndex - 1];
-                battle.PerformAttack(selectedMove);
+                var attackCommand = CreateAttackCommand(battle, selectedMove);
+                attackCommand.Execute();
                 _logger.LogInfo($"{Name} used {selectedMove.Name}.");
             }
             else
@@ -110,7 +111,8 @@ namespace PokemonGameLib.Models.Trainers
                 }
                 else
                 {
-                    battle.SwitchPokemon(this, selectedPokemon);
+                    var switchCommand = CreateSwitchCommand(battle, selectedPokemon);
+                    switchCommand.Execute();
                     _logger.LogInfo($"{Name} switched to {selectedPokemon.Name}.");
                 }
             }
@@ -124,7 +126,8 @@ namespace PokemonGameLib.Models.Trainers
         /// <summary>
         /// Handles the player's choice to use an item.
         /// </summary>
-        private void UseItem()
+        /// <param name="battle">The current battle instance.</param>
+        private void UseItem(IBattle battle)
         {
             Console.WriteLine("Choose an item to use:");
             for (int i = 0; i < Items.Count; i++)
@@ -135,7 +138,8 @@ namespace PokemonGameLib.Models.Trainers
             if (int.TryParse(Console.ReadLine(), out int itemIndex) && itemIndex >= 1 && itemIndex <= Items.Count)
             {
                 IItem selectedItem = Items[itemIndex - 1];
-                UseItem(selectedItem, CurrentPokemon);
+                var useItemCommand = CreateUseItemCommand(battle, selectedItem, CurrentPokemon);
+                useItemCommand.Execute();
                 _logger.LogInfo($"{Name} used {selectedItem.Name}.");
             }
             else

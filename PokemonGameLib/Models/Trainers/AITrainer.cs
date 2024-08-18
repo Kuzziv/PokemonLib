@@ -12,12 +12,13 @@ namespace PokemonGameLib.Models.Trainers
     /// </summary>
     public class AITrainer : Trainer
     {
-        private new readonly ILogger _logger; // Updated to use 'new' keyword
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AITrainer"/> class with the specified name.
         /// </summary>
         /// <param name="name">The name of the AI trainer.</param>
+        /// <param name="logger">The logger to use for logging actions.</param>
         public AITrainer(string name) : base(name)
         {
             _logger = LoggingService.GetLogger(); // Retrieve the logger from the LoggingService
@@ -32,7 +33,8 @@ namespace PokemonGameLib.Models.Trainers
         {
             if (ShouldUseItem(out IItem? itemToUse, battle))
             {
-                UseItem(itemToUse, CurrentPokemon);
+                var useItemCommand = CreateUseItemCommand(battle, itemToUse, CurrentPokemon);
+                useItemCommand.Execute();
                 return;
             }
 
@@ -41,7 +43,8 @@ namespace PokemonGameLib.Models.Trainers
                 var newPokemon = SelectBestPokemonToSwitchTo(battle);
                 if (newPokemon != null)
                 {
-                    battle.SwitchPokemon(this, newPokemon);
+                    var switchCommand = CreateSwitchCommand(battle, newPokemon);
+                    switchCommand.Execute();
                     return;
                 }
             }
@@ -49,7 +52,8 @@ namespace PokemonGameLib.Models.Trainers
             var move = SelectBestMove(battle);
             if (move != null)
             {
-                battle.PerformAttack(move);
+                var attackCommand = CreateAttackCommand(battle, move);
+                attackCommand.Execute();
             }
         }
 
@@ -127,7 +131,6 @@ namespace PokemonGameLib.Models.Trainers
                 return null;
             }
         }
-
 
         /// <summary>
         /// Selects the best move to use based on effectiveness and power.

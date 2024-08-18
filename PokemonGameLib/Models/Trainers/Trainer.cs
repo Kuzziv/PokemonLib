@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PokemonGameLib.Interfaces;
 using PokemonGameLib.Utilities;
 using PokemonGameLib.Services;
+using PokemonGameLib.Commands;
 
 namespace PokemonGameLib.Models.Trainers
 {
@@ -49,6 +49,28 @@ namespace PokemonGameLib.Models.Trainers
         }
 
         /// <summary>
+        /// Validates the Trainer to ensure that it is in a valid state.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the Trainer is not in a valid state.</exception>
+        public void ValidateTrainer()
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+                throw new InvalidOperationException("Trainer must have a name.");
+
+            if (CurrentPokemon == null)
+                throw new InvalidOperationException("Trainer must have a current Pokémon.");
+
+            if (!Pokemons.Contains(CurrentPokemon))
+                throw new InvalidOperationException("Current Pokémon must be in the Trainer's collection.");
+
+            if (!Pokemons.Any())
+                throw new InvalidOperationException("Trainer must have at least one Pokémon in their collection.");
+
+            if (Pokemons.All(p => p.IsFainted()))
+                throw new InvalidOperationException("Trainer cannot have only fainted Pokémon in their collection.");
+        }
+
+        /// <summary>
         /// Adds a Pokémon to the Trainer's collection.
         /// </summary>
         /// <param name="pokemon">The Pokémon to add.</param>
@@ -80,74 +102,27 @@ namespace PokemonGameLib.Models.Trainers
             _logger.LogInfo($"{Name} removed {pokemon.Name} from their collection.");
         }
 
-        /// <summary>
-        /// Switches the current Pokémon to a different one from the Trainer's collection.
-        /// </summary>
-        /// <param name="newPokemon">The new Pokémon to switch to.</param>
-        /// <exception cref="ArgumentNullException">Thrown if the new Pokémon is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the Pokémon is not in the Trainer's collection or if it is fainted.</exception>
-        public void SwitchPokemon(IPokemon newPokemon)
-        {
-            if (newPokemon == null)
-                throw new ArgumentNullException(nameof(newPokemon), "New Pokémon cannot be null.");
-
-            if (!_pokemons.Contains(newPokemon))
-                throw new InvalidOperationException("Cannot switch to a Pokémon not owned by the trainer.");
-
-            if (newPokemon.IsFainted())
-                throw new InvalidOperationException("Cannot switch to a fainted Pokémon.");
-
-            CurrentPokemon = newPokemon;
-            _logger.LogInfo($"{Name} switched to {newPokemon.Name}!");
-            Console.WriteLine($"{Name} switched to {newPokemon.Name}!");
-        }
-
-        /// <summary>
-        /// Uses an item on a target Pokémon.
-        /// </summary>
-        /// <param name="item">The item to use.</param>
-        /// <param name="target">The target Pokémon to use the item on.</param>
-        /// <exception cref="ArgumentNullException">Thrown if the item or target is null.</exception>
-        public void UseItem(IItem item, IPokemon target)
-        {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item), "Item cannot be null.");
-
-            if (target == null)
-                throw new ArgumentNullException(nameof(target), "Target Pokémon cannot be null.");
-
-            if (Items.Contains(item))
-            {
-                item.Use(this, target);
-                Items.Remove(item);
-                _logger.LogInfo($"{Name} used {item.Name} on {target.Name}.");
-            }
-            else
-            {
-                Console.WriteLine("Item not available in inventory.");
-                _logger.LogWarning($"{Name} attempted to use an item not available in inventory.");
-            }
-        }
-
-
-        /// <summary>
-        /// Adds an item to the Trainer's inventory.
-        /// </summary>
-        /// <param name="item">The item to add.</param>
-        /// <exception cref="ArgumentNullException">Thrown if the item is null.</exception>
         public void AddItem(IItem item)
         {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item), "Item cannot be null.");
-
             Items.Add(item);
             _logger.LogInfo($"{Name} added {item.Name} to their inventory.");
         }
 
-        /// <summary>
-        /// Represents the action that the Trainer takes during a battle.
-        /// </summary>
-        /// <param name="battle">The battle in which the Trainer is participating.</param>
+        public ICommand CreateAttackCommand(IBattle battle, IMove move)
+        {
+            return new AttackCommand(battle, move);
+        }
+
+        public ICommand CreateSwitchCommand(IBattle battle, IPokemon newPokemon)
+        {
+            return new SwitchCommand(battle, this, newPokemon);
+        }
+
+        public ICommand CreateUseItemCommand(IBattle battle, IItem item, IPokemon target)
+        {
+            return new UseItemCommand(battle, this, item, target);
+        }
+
         public abstract void TakeTurn(IBattle battle);
     }
 }
