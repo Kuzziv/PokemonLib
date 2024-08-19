@@ -10,7 +10,7 @@
         "dependencies": {
           "Microsoft.NET.Test.Sdk": "17.6.0",
           "Moq": "4.20.70",
-          "PokemonGameLib": "8.0.0-Release",
+          "PokemonGameLib": "8.1.0",
           "coverlet.collector": "6.0.0",
           "xunit": "2.9.0",
           "xunit.runner.visualstudio": "2.8.2"
@@ -403,7 +403,7 @@
           }
         }
       },
-      "PokemonGameLib/8.0.0-Release": {
+      "PokemonGameLib/8.1.0": {
         "dependencies": {
           "YamlDotNet": "16.0.0"
         },
@@ -559,7 +559,7 @@
       "path": "yamldotnet/16.0.0",
       "hashPath": "yamldotnet.16.0.0.nupkg.sha512"
     },
-    "PokemonGameLib/8.0.0-Release": {
+    "PokemonGameLib/8.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

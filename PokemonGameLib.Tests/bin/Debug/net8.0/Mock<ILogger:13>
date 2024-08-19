@@ -882,3 +882,11 @@ Timestamp: 2024-08-19 03.31.23.944
 Severity: INFO
 Message: 'Pikachu healed by 5 HP. Current HP: 30/35'
 
+Timestamp: 2024-08-19 04.29.41.447
+Severity: INFO
+Message: 'Pikachu took 10 damage. Current HP: 25/35'
+
+Timestamp: 2024-08-19 04.29.41.447
+Severity: INFO
+Message: 'Pikachu healed by 5 HP. Current HP: 30/35'
+
