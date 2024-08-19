@@ -13,7 +13,7 @@
 
     <!-- Package metadata -->
     <PackageId>PokemonGameLib</PackageId>
-    <Version>8.0.0-Release</Version>
+    <Version>8.1.0</Version>
     <Authors>Mads72</Authors>
     <Company>Zealand</Company>
     <Product>Custom Pokemon Game</Product>

@@ -247,7 +247,7 @@ Please follow our [code of conduct](../CODE_OF_CONDUCT.md) and [contributing gui
 
 ## License
 
-`PokemonGameLib` is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+`PokemonGameLib` is licensed under the MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ---
 

@@ -5,7 +5,7 @@
   },
   "projects": {
     "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj": {
-      "version": "8.0.0-Release",
+      "version": "8.1.0",
       "restore": {
         "projectUniqueName": "/Users/madsludvigsen/Quest/PokemonLib/PokemonGameLib/PokemonGameLib.csproj",
         "projectName": "PokemonGameLib",
