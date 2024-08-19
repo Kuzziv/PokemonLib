@@ -1,54 +1,52 @@
-## PokemonGameLib
+## Release Notes - Pokémon Game Library
 
-### Version 8.0.0-Relase
+### New Features
 
-#### Overview
+- **Normal-Type Move Compatibility**
+  - You can now add Normal-type moves to any Pokémon, regardless of their primary type. This addresses the issue where adding a Normal-type move to a non-Normal Pokémon would previously throw an exception.
 
-This release introduces significant enhancements and new features to the `PokemonGameLib`, including the addition of a comprehensive `Battle` class to manage Pokémon battles, improvements to the `Trainer`, `Pokemon`, and `Move` classes, and better handling of type effectiveness and damage calculation.
+### Bug Fixes
 
-#### Key Updates
+- **Switching Pokémon Mid-Fight**
+  - Fixed an issue where switching a Pokémon during a battle could throw an `InvalidMoveException`. This ensures that Pokémon can now be switched mid-fight without errors.
 
-1. **New `Battle` Class**
-   - **Purpose**: Manages the interaction between two Trainers in a Pokémon battle.
-   - **Features**:
-     - **Turn Management**: Tracks and manages which Trainer is currently attacking.
-     - **Attack Execution**: Facilitates the use of Pokémon moves to perform attacks during a battle.
-     - **Damage Calculation**: Determines the damage dealt during an attack based on move power, attacker and defender stats, and type effectiveness.
-     - **Battle Outcome**: Determines and displays the result of the battle, including fainted Pokémon and the winning Trainer.
+- **HP Display Throughout Battle**
+  - Improved the battle interface by displaying Pokémon's HP consistently throughout the battle. Players no longer need to keep track of HP mentally.
 
-2. **`Trainer` Class Enhancements**
-   - **Pokemon Management**: Now includes methods to check if the Trainer has any valid (non-fainted) Pokémon.
-   - **Switching Pokémon**: Trainers can switch their current Pokémon during a battle, with validation to prevent switching to fainted Pokémon or Pokémon not owned by the Trainer.
+- **Menu Exit Button**
+  - Added an exit option in the item usage menu during battles. Players can now choose to go back to the main action menu instead of being forced to use an item.
 
-3. **`Pokemon` Class Enhancements**
-   - **Move Management**: Pokémon can learn up to 4 moves, with validations to ensure moves are compatible with the Pokémon's type and level.
-   - **Damage Handling**: Improved methods for applying damage and determining if a Pokémon has fainted.
-   - **Current vs. Max HP**: Clear distinction between a Pokémon's current HP and max HP, improving clarity in code.
+- **Potion Usage Error**
+  - Resolved an error where using a Potion during battle would throw an `InvalidMoveException`. Healing items can now be used without causing any crashes.
 
-4. **`Move` Class Enhancements**
-   - **Move Compatibility**: Includes checks to ensure moves are compatible with the Pokémon’s type and level.
-   - **Damage Calculation**: Integrated into the `Battle` class for more streamlined attack execution.
+- **Switching to an Already Active Pokémon**
+  - Fixed an issue where attempting to switch to the currently active Pokémon would throw an `InvalidPokemonSwitchException`. The game now properly handles this scenario, preventing unnecessary errors.
 
-5. **Type Effectiveness**
-   - **`TypeEffectiveness` Class**: Provides a static method to determine the effectiveness of a move based on type matchups.
-   - **Effectiveness Multiplier**: Calculates how effective a move is against a specific Pokémon type, with modifiers for super effective, not very effective, and no effect scenarios.
+### Known Issues
 
-6. **Battle Flow**
-   - **Turn-Based System**: Battle class now manages which Trainer's Pokémon is attacking and switches turns after each move.
-   - **Effectiveness Feedback**: After each attack, the game provides feedback on how effective the move was, adding depth to battle strategy.
+- None reported at this time.
 
-7. **Error Handling**
-   - **Null Checks**: Ensures that critical objects (e.g., Pokémon, moves) are not null before performing actions.
-   - **Invalid Actions**: Prevents invalid actions, such as using a move that the current Pokémon doesn’t know or switching to a fainted Pokémon.
+### Code Refinement and Restructuring
 
-#### Usage Updates
+In this release, significant improvements have been made to the underlying architecture of the Pokémon Game Library:
 
-- **Expanded Usage Examples**: The README now includes detailed examples covering the creation of Trainers and Pokémon, managing Pokémon teams, adding moves, and performing battles.
-- **Switching Pokémon**: Emphasized the need to set the current Pokémon for each Trainer before initiating a battle.
-- **Damage Calculation**: Clarified the factors involved in damage calculation, including move power, Pokémon stats, type effectiveness, STAB (Same Type Attack Bonus), and random variability.
+- **Enhanced Modularity through Interfaces**:
+  - The core components of the library have been refactored to utilize interfaces extensively. This change increases modularity and flexibility, allowing developers to easily extend or customize the library's functionality without modifying the core codebase.
+  - Key interfaces like `IPokemon`, `IMove`, `ITrainer`, and `IBattle` now define the contract for each component, ensuring consistent and predictable behavior across different implementations.
 
-#### Future Considerations
+- **Decoupled and Testable Code**:
+  - By leveraging interfaces, the codebase has been decoupled, meaning that individual components are now more independent. This decoupling facilitates better unit testing, as each part of the system can be tested in isolation using mock implementations of these interfaces.
+  - The use of dependency injection patterns (passing interfaces instead of concrete classes) has also been adopted, making the system more flexible and easier to maintain.
 
-- **Enhanced Battle Mechanics**: Explore additional features such as move effects, abilities, and multi-turn moves.
-- **Improved Type Effectiveness**: Further refine type matchups and consider dual-type Pokémon for more complex battle scenarios.
-- **AI Enhancements**: Implement smarter AI behavior for Trainer battles, including strategy-based move selection and Pokémon switching.
+- **Improved Maintainability**:
+  - The restructuring efforts focused on adhering to SOLID principles (Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion). This makes the code easier to maintain, understand, and extend in future development cycles.
+  - The introduction of clear and concise logging, via an `ILogger` interface, ensures that critical operations and errors are logged consistently across the application, aiding in debugging and operational monitoring.
+
+- **Enhanced Extensibility**:
+  - Developers can now introduce new types of Pokémon, moves, and trainers by simply implementing the corresponding interfaces (`IPokemon`, `IMove`, `ITrainer`). This reduces the risk of breaking existing functionality while adding new features.
+  - The refactored structure also allows for easier integration with other libraries or systems, as the interfaces provide a clear boundary for interaction.
+
+### Contributors
+
+- @Kuzziv
+

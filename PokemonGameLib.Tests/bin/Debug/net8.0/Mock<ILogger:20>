@@ -3474,3 +3474,71 @@ Timestamp: 2024-08-19 03.00.09.666
 Severity: INFO
 Message: Ash removed  from their inventory.
 
+Timestamp: 2024-08-19 03.31.23.947
+Severity: INFO
+Message: Pikachu was inflicted with Burn.
+
+Timestamp: 2024-08-19 03.31.23.950
+Severity: INFO
+Message: Pikachu was inflicted with Paralysis.
+
+Timestamp: 2024-08-19 03.31.23.950
+Severity: INFO
+Message: Pikachu was inflicted with Paralysis.
+
+Timestamp: 2024-08-19 03.31.23.952
+Severity: INFO
+Message: Pikachu was inflicted with Paralysis.
+
+Timestamp: 2024-08-19 03.31.23.952
+Severity: INFO
+Message: Pikachu is cured of its status condition.
+
+Timestamp: 2024-08-19 03.31.23.953
+Severity: INFO
+Message: 'Pikachu took 60 damage. Current HP: 40/100'
+
+Timestamp: 2024-08-19 03.31.23.953
+Severity: INFO
+Message: 'Pikachu healed by 20 HP. Current HP: 60/100'
+
+Timestamp: 2024-08-19 03.31.23.953
+Severity: INFO
+Message: Pikachu was healed by 20 HP using Potion.
+
+Timestamp: 2024-08-19 03.31.23.953
+Severity: INFO
+Message: 'Pikachu took 10 damage. Current HP: 90/100'
+
+Timestamp: 2024-08-19 03.31.23.953
+Severity: INFO
+Message: 'Pikachu healed by 20 HP. Current HP: 100/100'
+
+Timestamp: 2024-08-19 03.31.23.954
+Severity: INFO
+Message: Pikachu was healed by 20 HP using Potion.
+
+Timestamp: 2024-08-19 03.31.23.954
+Severity: WARNING
+Message: Bulbasaur is not fainted and cannot be revived.
+
+Timestamp: 2024-08-19 03.31.23.954
+Severity: INFO
+Message: 'Bulbasaur took 200 damage. Current HP: 0/200'
+
+Timestamp: 2024-08-19 03.31.23.955
+Severity: INFO
+Message: 'Bulbasaur healed by 100 HP. Current HP: 100/200'
+
+Timestamp: 2024-08-19 03.31.23.955
+Severity: INFO
+Message: Bulbasaur was revived with 100 HP.
+
+Timestamp: 2024-08-19 03.31.23.956
+Severity: INFO
+Message: Ash added  to their inventory.
+
+Timestamp: 2024-08-19 03.31.23.956
+Severity: INFO
+Message: Ash removed  from their inventory.
+

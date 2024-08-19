@@ -574,3 +574,11 @@ Timestamp: 2024-08-19 03.00.09.645
 Severity: INFO
 Message: Pikachu is cured of its status condition.
 
+Timestamp: 2024-08-19 03.31.23.935
+Severity: INFO
+Message: Pikachu was inflicted with Burn.
+
+Timestamp: 2024-08-19 03.31.23.936
+Severity: INFO
+Message: Pikachu is cured of its status condition.
+

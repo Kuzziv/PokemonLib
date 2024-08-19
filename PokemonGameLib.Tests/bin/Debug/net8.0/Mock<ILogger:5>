@@ -2882,3 +2882,43 @@ Timestamp: 2024-08-19 03.00.09.649
 Severity: INFO
 Message: Pikachu is cured of its status condition.
 
+Timestamp: 2024-08-19 03.31.23.937
+Severity: INFO
+Message: Pikachu was inflicted with Burn.
+
+Timestamp: 2024-08-19 03.31.23.938
+Severity: INFO
+Message: 'Pikachu took 2 damage. Current HP: 33/35'
+
+Timestamp: 2024-08-19 03.31.23.938
+Severity: INFO
+Message: Pikachu is hurt by its burn and takes 2 damage.
+
+Timestamp: 2024-08-19 03.31.23.938
+Severity: INFO
+Message: Pikachu is cured of its status condition.
+
+Timestamp: 2024-08-19 03.31.23.938
+Severity: INFO
+Message: Pikachu was inflicted with Sleep.
+
+Timestamp: 2024-08-19 03.31.23.938
+Severity: INFO
+Message: Pikachu will be asleep for 1 turns.
+
+Timestamp: 2024-08-19 03.31.23.939
+Severity: INFO
+Message: Pikachu is fast asleep.
+
+Timestamp: 2024-08-19 03.31.23.939
+Severity: INFO
+Message: Pikachu will be asleep for 0 turns.
+
+Timestamp: 2024-08-19 03.31.23.939
+Severity: INFO
+Message: Pikachu woke up!
+
+Timestamp: 2024-08-19 03.31.23.939
+Severity: INFO
+Message: Pikachu is cured of its status condition.
+

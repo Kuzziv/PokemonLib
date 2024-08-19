@@ -1,6 +1,6 @@
 # PokemonGameLib.Tests
 
-**PokemonGameLib.Tests** is a test project for the `PokemonGameLib` library. It includes unit tests that verify the functionality and correctness of the library's features.
+**PokemonGameLib.Tests** is a test project designed to verify the functionality and correctness of the `PokemonGameLib` library through unit testing.
 
 ## Prerequisites
 
@@ -18,13 +18,13 @@ To set up the test project:
    If you haven't already cloned the repository, do so with:
 
    ```bash
-   git clone https://github.com/YourUsername/PokemonGameLib.git
-   cd PokemonGameLib
+   git clone https://github.com/Kuzziv/PokemonLib.git
+   cd PokemonLib
    ```
 
 2. **Restore NuGet Packages**
 
-   Restore the packages for the test project:
+   Restore the packages for both the main library and the test project:
 
    ```bash
    dotnet restore
@@ -32,7 +32,7 @@ To set up the test project:
 
 3. **Build the Solution**
 
-   Build the solution to ensure everything is set up correctly:
+   Build the solution to ensure everything is configured correctly:
 
    ```bash
    dotnet build
@@ -56,7 +56,7 @@ The project uses [xUnit](https://xunit.net/) for unit testing. To run the tests:
    dotnet test
    ```
 
-   This will run all tests in the `PokemonGameLib.Tests` project and display the results in the terminal.
+   This will execute all tests in the `PokemonGameLib.Tests` project and display the results in the terminal.
 
 ## Adding New Tests
 
@@ -97,8 +97,8 @@ To add new test cases:
 
 ## Troubleshooting
 
-- **Test Failures**: If tests fail, review the test output to diagnose issues. Make sure to address any failing tests promptly.
-- **Dependency Issues**: Ensure that all dependencies are restored and up to date by running `dotnet restore`.
+- **Test Failures**: If tests fail, review the test output to diagnose issues. Ensure any failing tests are addressed promptly.
+- **Dependency Issues**: Ensure all dependencies are restored and up to date by running `dotnet restore`.
 
 ## Contribution
 
@@ -109,13 +109,15 @@ Contributions to the test project are welcome! To contribute:
 3. **Make Changes**: Implement your changes and add tests if applicable.
 4. **Submit a Pull Request**: Submit a pull request with a description of your changes.
 
+Please ensure that your contributions adhere to the [code of conduct](../CODE_OF_CONDUCT.md) and [contributing guidelines](../CONTRIBUTING.md).
+
 ## License
 
-The test project is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for more details.
+The test project is licensed under the [MIT License](../LICENSE). See the [LICENSE](../LICENSE) file for more details.
 
 ## Contact
 
 For any questions or support regarding the test project, please contact the author:
 
 - **Name**: Mads Ludvigsen
-- **Email**: [Mads72q2@edu.zealand.dk]
+- **Email**: [Mads72q2@edu.zealand.dk](mailto:Mads72q2@edu.zealand.dk)

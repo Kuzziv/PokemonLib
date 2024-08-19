@@ -1,148 +1,254 @@
-# Pokémon Game Library
+# PokemonGameLib
 
-Welcome to the **Pokémon Game Library**—a comprehensive C# library for building a Pokémon-style game. This library provides robust interfaces and classes to manage Pokémon, implement battle mechanics, and create trainers, items, and abilities. With built-in utilities for logging and AI, this library is designed to streamline your game development process.
+## Overview
+
+`PokemonGameLib` is a robust C# library designed to simulate Pokémon battles. It provides a comprehensive set of interfaces, classes, and services that model the core elements of a Pokémon game, including trainers, Pokémon, moves, items, and battle mechanics. This library is highly extensible, allowing developers to create complex battle systems, custom trainers, and unique game mechanics.
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+  - [Creating Pokémon and Moves](#creating-pokémon-and-moves)
+  - [Setting Up a Battle](#setting-up-a-battle)
+  - [Executing Commands](#executing-commands)
+  - [Battle Flow](#battle-flow)
+- [Logging and Debugging](#logging-and-debugging)
+- [Exception Handling](#exception-handling)
+- [Extending the Library](#extending-the-library)
+  - [Custom Pokémon](#custom-pokémon)
+  - [Custom Moves](#custom-moves)
+  - [Custom Items](#custom-items)
+  - [Custom Battle Mechanics](#custom-battle-mechanics)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
-- **Pokémon Management**: Easily create and manage Pokémon with various types, abilities, moves, and evolutions.
-- **Battle System**: Implement a full-featured Pokémon battle system, including turn-based mechanics, status effects, and type effectiveness.
-- **Items and Abilities**: Define and use items and abilities that influence battles, enhancing gameplay strategies.
-- **Trainer AI**: Includes an AI system for trainers, allowing for both human and AI-controlled opponents with smart decision-making.
-- **Logging**: Integrated logging service for tracking game events, errors, and debugging.
+- **Battle Simulation**: Fully functional battle system with support for player and AI-controlled trainers.
+- **Command Pattern**: Encapsulate actions like attacking, switching Pokémon, and using items as commands.
+- **Comprehensive Pokémon Models**: Define Pokémon with detailed attributes, including type, stats, moves, and evolutions.
+- **Item Usage**: Implement items that can heal, revive, or otherwise affect Pokémon during battles.
+- **Type Effectiveness**: Built-in type effectiveness calculator for accurate battle damage simulation.
+- **Status Conditions**: Handle status effects like paralysis, burn, sleep, and more, with detailed behavior.
+- **Evolution System**: Manage Pokémon evolution based on conditions like level or items.
+- **Advanced Logging**: Integrated logging system for detailed tracking of battle events.
+- **Custom Exceptions**: Rich set of custom exceptions for precise error handling.
 
 ## Installation
 
-Install the library via NuGet:
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Kuzziv/PokemonLib
+   ```
 
-```bash
-dotnet add package PokemonGameLib
-```
+2. **Build the Project**
+   - Open the solution in Visual Studio or your preferred C# IDE.
+   - Build the solution to generate the `PokemonGameLib.dll` file.
 
-Or using the NuGet Package Manager Console:
+3. **Include in Your Project or use the NuGet package**
+   - Add a reference to `PokemonGameLib.dll` in your project.
+   - https://www.nuget.org/packages/PokemonGameLib
 
-```bash
-Install-Package PokemonGameLib
-```
 
 ## Getting Started
 
-### Setting Up a Pokémon
+### Creating Pokémon and Moves
 
-Begin by creating a Pokémon with specified attributes:
+Start by creating Pokémon and their associated moves:
 
 ```csharp
 using PokemonGameLib.Models.Pokemons;
 using PokemonGameLib.Models.Pokemons.Moves;
-using PokemonGameLib.Models.Pokemons.Abilities;
 
 var pikachu = new Pokemon(
-    name: "Pikachu",
-    type: PokemonType.Electric,
-    level: 5,
-    maxHp: 35,
-    attack: 55,
-    defense: 40,
-    abilities: new List<IAbility> { new Ability("Static", "May cause paralysis if touched.") }
+    name: "Pikachu", 
+    type: PokemonType.Electric, 
+    level: 10, 
+    maxHp: 35, 
+    attack: 55, 
+    defense: 40
 );
+pikachu.AddMove(new Move("Thunder Shock", PokemonType.Electric, power: 40, level: 1));
+
+var charmander = new Pokemon(
+    name: "Charmander", 
+    type: PokemonType.Fire, 
+    level: 10, 
+    maxHp: 39, 
+    attack: 52, 
+    defense: 43
+);
+charmander.AddMove(new Move("Ember", PokemonType.Fire, power: 40, level: 1));
 ```
 
-### Adding Moves
+### Setting Up a Battle
 
-Add moves to your Pokémon to enhance its battle capabilities:
-
-```csharp
-var thunderShock = new Move("ThunderShock", PokemonType.Electric, power: 40, level: 1);
-pikachu.AddMove(thunderShock);
-```
-
-### Creating a Trainer
-
-Create a trainer and assign Pokémon to them:
+With your Pokémon ready, set up a battle between two trainers:
 
 ```csharp
 using PokemonGameLib.Models.Trainers;
+using PokemonGameLib.Models.Battles;
 
-var trainerAsh = new PlayerTrainer("Ash");
-trainerAsh.AddPokemon(pikachu);
-trainerAsh.CurrentPokemon = pikachu;
+var playerTrainer = new PlayerTrainer("Ash");
+playerTrainer.AddPokemon(pikachu);
+playerTrainer.CurrentPokemon = pikachu;
+
+var aiTrainer = new AITrainer("Brock");
+aiTrainer.AddPokemon(charmander);
+aiTrainer.CurrentPokemon = charmander;
+
+var battle = new Battle(playerTrainer, aiTrainer);
 ```
 
-### Starting a Battle
+### Executing Commands
 
-Initiate a battle between two trainers:
+Commands like attacking, switching Pokémon, or using items can be executed using the command pattern:
 
 ```csharp
-var trainerMisty = new AITrainer("Misty");
+using PokemonGameLib.Commands;
 
-var battle = new Battle(trainerAsh, trainerMisty);
-battle.PerformAttack(thunderShock);
+// Perform an attack
+var attackCommand = new AttackCommand(battle, pikachu.Moves.First());
+attackCommand.Execute();
+
+// Switch Pokémon
+var switchCommand = new SwitchCommand(battle, playerTrainer, charmander);
+switchCommand.Execute();
+
+// Use an item
+var potion = new Potion("Potion", "Heals 20 HP", 20);
+var useItemCommand = new UseItemCommand(battle, playerTrainer, potion, pikachu);
+useItemCommand.Execute();
 ```
 
-### Logging
+### Battle Flow
 
-Configure logging to monitor and debug game events:
+To run the battle, simply call `StartBattle()` on the `Battle` instance. This will automatically handle turn-taking, Pokémon fainting, and determining the winner.
+
+```csharp
+battle.StartBattle();
+```
+
+## Logging and Debugging
+
+`PokemonGameLib` includes an integrated logging system. Configure logging at the start of your application:
 
 ```csharp
 using PokemonGameLib.Utilities;
 
-LoggingService.Configure(); // Optional: Specify a custom log file path.
+LoggingService.Configure("path/to/logfile.yml");
+
+// Retrieve and use the logger
+var logger = LoggingService.GetLogger();
+logger.LogInfo("Battle started!");
 ```
+
+Logs will be written in YAML format, making it easy to trace and debug the flow of battles.
 
 ## Exception Handling
 
-The library includes custom exceptions to handle various invalid operations, ensuring robust error management:
+The library provides several custom exceptions to handle common issues in Pokémon battles:
 
-- **InvalidMoveException**: Thrown when an invalid move is attempted.
-- **InvalidPokemonSwitchException**: Thrown when an invalid Pokémon switch is attempted.
-- **ItemNotFoundException**: Thrown when an item is not found in the trainer's inventory.
-- **PokemonFaintedException**: Thrown when attempting to use a fainted Pokémon in battle.
+- **`InvalidMoveException`**: Thrown when a Pokémon tries to use a move it cannot perform.
+- **`InvalidPokemonSwitchException`**: Thrown when an invalid Pokémon switch is attempted.
+- **`ItemNotFoundException`**: Thrown when an item is not found in a trainer's inventory.
+- **`PokemonFaintedException`**: Thrown when trying to use a fainted Pokémon.
 
-## Advanced Features
-
-### Trainer AI
-
-The library includes a built-in AI system that allows trainers to make smart decisions during battles. The AI considers factors like type advantages, move effectiveness, and Pokémon health when choosing actions.
+Example of handling exceptions:
 
 ```csharp
-var aiTrainer = new AITrainer("AI Opponent");
-aiTrainer.TakeTurn(battle);
+try
+{
+    var invalidMove = new Move("InvalidMove", PokemonType.Fire, power: -1, level: 1);
+    pikachu.AddMove(invalidMove);
+}
+catch (InvalidMoveException ex)
+{
+    Console.WriteLine($"Error: {ex.Message}");
+}
 ```
 
-### Status Effects and Abilities
+## Extending the Library
 
-Incorporate abilities and status effects into your game to add depth and strategy:
+`PokemonGameLib` is designed to be easily extendable. You can add new Pokémon, moves, items, and even modify battle mechanics to suit your needs.
+
+### Custom Pokémon
+
+Create a new Pokémon by extending the `Pokemon` class or implementing the `IPokemon` interface:
 
 ```csharp
-pikachu.InflictStatus(StatusCondition.Paralysis);
-pikachu.ApplyStatusEffects();
+var bulbasaur = new Pokemon(
+    name: "Bulbasaur", 
+    type: PokemonType.Grass, 
+    level: 5, 
+    maxHp: 45, 
+    attack: 49, 
+    defense: 49
+);
 ```
 
-### Type Effectiveness
+### Custom Moves
 
-The library provides a comprehensive type effectiveness system to ensure battles are true to the Pokémon style:
+Define new moves by extending the `Move` class or implementing the `IMove` interface:
 
 ```csharp
-var effectiveness = TypeEffectivenessService.Instance.GetEffectiveness(PokemonType.Fire, PokemonType.Grass);
+var solarBeam = new Move(
+    name: "Solar Beam", 
+    type: PokemonType.Grass, 
+    power: 120, 
+    level: 50, 
+    maxHits: 1
+);
+```
+
+### Custom Items
+
+Create new items by extending the `Item` class or implementing the `IItem` interface:
+
+```csharp
+using PokemonGameLib.Models.Items;
+
+var maxPotion = new Potion("Max Potion", "Fully restores HP", healingAmount: 100);
+```
+
+### Custom Battle Mechanics
+
+To implement custom battle mechanics, extend or modify the `Battle` class. Override methods like `PerformAttack` or `SwitchTurns` to introduce new logic.
+
+```csharp
+using PokemonGameLib.Models.Battles;
+
+public class CustomBattle : Battle
+{
+    public CustomBattle(ITrainer trainer1, ITrainer trainer2) : base(trainer1, trainer2)
+    {
+    }
+
+    protected override void PerformAttack(IMove move)
+    {
+        // Custom attack logic
+    }
+}
 ```
 
 ## Contributing
 
-We welcome contributions! If you’d like to contribute, please fork the repository and submit a pull request on our [GitHub repository](https://github.com/kuzziv/pokemonLib).
+We welcome contributions! Whether it's new features, bug fixes, or improvements, your input is valuable.
+
+### How to Contribute
+
+1. **Fork the Repository**: Create a personal fork of the repository.
+2. **Create a Branch**: Make your changes in a new branch.
+3. **Implement Changes**: Write and test your code.
+4. **Submit a Pull Request**: Propose your changes to be merged into the main repository.
+
+Please follow our [code of conduct](../CODE_OF_CONDUCT.md) and [contributing guidelines](../CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Support
-
-If you encounter any issues or have feature requests, please open an issue on the [GitHub repository](https://github.com/kuzziv/pokemonLib).
-
-## Acknowledgments
-
-This library is inspired by the Pokémon series, developed by Game Freak and published by Nintendo. This project is an independent creation and is not affiliated with or endorsed by Nintendo, Game Freak, or The Pokémon Company.
+`PokemonGameLib` is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
-Start building your Pokémon adventure today with the **Pokémon Game Library**! 
-
-[GitHub Repository](https://github.com/kuzziv/pokemonLib)
+This README provides a comprehensive guide to using and extending `PokemonGameLib`. Dive into the code, experiment with the API, and create your own Pokémon battles! For more detailed examples and API documentation, refer to the inline code comments and explore the provided interfaces and classes. Enjoy building your Pokémon adventure!
