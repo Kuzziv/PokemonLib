@@ -13,21 +13,26 @@ namespace PokemonGameLib.Tests.Models.Pokemons
     [Collection("Test Collection")]
     public class PokemonTests
     {
-        private readonly Mock<Logger> _loggerMock;
+        private readonly Mock<ILogger> _loggerMock;
         private readonly Pokemon _pokemon;
 
         public PokemonTests()
         {
-            _loggerMock = new Mock<Logger>();
+            // Set up a mock logger to avoid actual logging during tests
+            _loggerMock = new Mock<ILogger>();
+
+            // Injecting a logger mock into the LoggingService
+            LoggingService.ResetConfiguration();  // Reset the configuration first
+            LoggingService.Configure(_loggerMock.ToString());
+
+            // Initialize a Pokemon for testing
             _pokemon = new Pokemon(
                 name: "Pikachu",
                 type: PokemonType.Electric,
                 level: 5,
                 maxHp: 35,
                 attack: 55,
-                defense: 40,
-                abilities: new List<IAbility>(),
-                evolutions: new List<IEvolution>()
+                defense: 40
             );
         }
 
@@ -121,34 +126,39 @@ namespace PokemonGameLib.Tests.Models.Pokemons
         {
             // Arrange
             var moveMock = new Mock<IMove>();
-            moveMock.Setup(m => m.Type).Returns(PokemonType.Water); // Assume Water is incompatible
-            moveMock.Setup(m => m.Level).Returns(1);
-
-            var pokemon = new Pokemon("Charmander", PokemonType.Fire, 5, 5, 5,5); // Assuming Type is set in the constructor
+            moveMock.Setup(m => m.ValidateMove(It.IsAny<IPokemon>())).Returns(false);
 
             // Act & Assert
-            Assert.Throws<ArgumentException>(() => pokemon.AddMove(moveMock.Object));
+            Assert.Throws<ArgumentException>(() => _pokemon.AddMove(moveMock.Object));
         }
 
         [Fact]
-        public void AddAbility_ThrowsExceptionsForInvalidAbilities()
+        public void AddMove_AllowsValidMove()
         {
-            var abilityMock = new Mock<IAbility>();
+            // Arrange
+            var moveMock = new Mock<IMove>();
+            moveMock.Setup(m => m.ValidateMove(It.IsAny<IPokemon>())).Returns(true);
 
-            _pokemon.AddAbility(abilityMock.Object);
-            Assert.Contains(abilityMock.Object, _pokemon.Abilities);
+            // Act
+            _pokemon.AddMove(moveMock.Object);
 
-            Assert.Throws<ArgumentException>(() => _pokemon.AddAbility(abilityMock.Object));
+            // Assert
+            Assert.Contains(moveMock.Object, _pokemon.Moves);
         }
 
         [Fact]
-        public void RemoveAbility_RemovesAbility()
+        public void RemoveMove_RemovesMove()
         {
-            var abilityMock = new Mock<IAbility>();
-            _pokemon.AddAbility(abilityMock.Object);
-            
-            _pokemon.RemoveAbility(abilityMock.Object);
-            Assert.DoesNotContain(abilityMock.Object, _pokemon.Abilities);
+            // Arrange
+            var moveMock = new Mock<IMove>();
+            moveMock.Setup(m => m.ValidateMove(It.IsAny<IPokemon>())).Returns(true);
+            _pokemon.AddMove(moveMock.Object);
+
+            // Act
+            _pokemon.RemoveMove(moveMock.Object);
+
+            // Assert
+            Assert.DoesNotContain(moveMock.Object, _pokemon.Moves);
         }
 
         [Fact]
@@ -182,7 +192,6 @@ namespace PokemonGameLib.Tests.Models.Pokemons
             Assert.Equal(StatusCondition.None, _pokemon.Status); // Ensure the Pokémon wakes up
         }
 
-
         [Fact]
         public void CureStatus_ResetsStatusCondition()
         {
@@ -194,8 +203,7 @@ namespace PokemonGameLib.Tests.Models.Pokemons
         [Fact]
         public void SetSleepDuration_SetsSleepCounter()
         {
-            // Use reflection to access protected field
-            SetProtectedField(_pokemon, "_sleepCounter", 3);
+            _pokemon.SetSleepDuration(3);
             Assert.Equal(3, GetProtectedField<int>(_pokemon, "_sleepCounter"));
         }
 
@@ -203,7 +211,7 @@ namespace PokemonGameLib.Tests.Models.Pokemons
         public void CanEvolve_ReturnsTrue_WhenEvolutionCriteriaMet()
         {
             var evolutionMock = new Mock<IEvolution>();
-            evolutionMock.Setup(e => e.CanEvolve(It.IsAny<Pokemon>())).Returns(true);
+            evolutionMock.Setup(e => e.CanEvolve(It.IsAny<IPokemon>())).Returns(true);
             _pokemon.Evolutions.Add(evolutionMock.Object);
             
             Assert.True(_pokemon.CanEvolve());
@@ -213,7 +221,7 @@ namespace PokemonGameLib.Tests.Models.Pokemons
         public void Evolve_PerformsEvolution()
         {
             var evolutionMock = new Mock<IEvolution>();
-            evolutionMock.Setup(e => e.CanEvolve(It.IsAny<Pokemon>())).Returns(true);
+            evolutionMock.Setup(e => e.CanEvolve(It.IsAny<IPokemon>())).Returns(true);
             evolutionMock.Setup(e => e.EvolvedFormName).Returns("Raichu");
             _pokemon.Evolutions.Add(evolutionMock.Object);
 
@@ -230,12 +238,6 @@ namespace PokemonGameLib.Tests.Models.Pokemons
         {
             var fieldInfo = obj.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
             return (T)fieldInfo.GetValue(obj);
-        }
-
-        private static void SetProtectedField(object obj, string fieldName, object value)
-        {
-            var fieldInfo = obj.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
-            fieldInfo.SetValue(obj, value);
         }
     }
 }

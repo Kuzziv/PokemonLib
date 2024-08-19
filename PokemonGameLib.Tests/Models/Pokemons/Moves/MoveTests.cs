@@ -50,39 +50,42 @@ namespace PokemonGameLib.Tests.Pokemons.Moves
         }
 
         [Fact]
-        public void TestIsCompatibleWith_Valid()
+        public void TestValidateMove_Valid()
         {
             // Arrange
             var move = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
+            var pokemon = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 55, 40);
 
             // Act
-            var isCompatible = move.IsCompatibleWith(PokemonType.Electric, 10);
+            var isCompatible = move.ValidateMove(pokemon);
 
             // Assert
             Assert.True(isCompatible);
         }
 
         [Fact]
-        public void TestIsCompatibleWith_InvalidType()
+        public void TestValidateMove_InvalidType()
         {
             // Arrange
             var move = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
+            var pokemon = new Pokemon("Charmander", PokemonType.Fire, 10, 100, 52, 43);
 
             // Act
-            var isCompatible = move.IsCompatibleWith(PokemonType.Fire, 10);
+            var isCompatible = move.ValidateMove(pokemon);
 
             // Assert
             Assert.False(isCompatible);
         }
 
         [Fact]
-        public void TestIsCompatibleWith_LevelTooHigh()
+        public void TestValidateMove_LevelTooHigh()
         {
             // Arrange
             var move = new Move("Thunderbolt", PokemonType.Electric, 90, 10);
+            var pokemon = new Pokemon("Pichu", PokemonType.Electric, 5, 100, 55, 40);
 
             // Act
-            var isCompatible = move.IsCompatibleWith(PokemonType.Electric, 5);
+            var isCompatible = move.ValidateMove(pokemon);
 
             // Assert
             Assert.False(isCompatible);

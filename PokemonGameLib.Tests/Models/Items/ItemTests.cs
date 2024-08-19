@@ -1,42 +1,52 @@
-// ItemTests.cs
 using System;
-using PokemonGameLib.Models;
-using Xunit;
-using PokemonGameLib.Models.Pokemons;
 using PokemonGameLib.Models.Items;
+using Xunit;
 
 namespace PokemonGameLib.Tests.Models.Items
 {
     public class ItemTests
     {
         [Fact]
-        public void Potion_ShouldHealPokemon_WhenUsed()
+        public void Item_Constructor_ShouldInitializeNameAndDescription()
         {
-            // Arrange
-            var potion = new Potion("Potion", "Heals 20 HP.", 20);
-            var pokemon = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 50, 40);
-            pokemon.TakeDamage(30);
-
-            // Act
-            potion.Use(null, pokemon);
+            // Arrange & Act
+            var item = new Item("Potion", "Heals 20 HP.");
 
             // Assert
-            Assert.Equal(90, pokemon.CurrentHP);
+            Assert.Equal("Potion", item.Name);
+            Assert.Equal("Heals 20 HP.", item.Description);
         }
 
         [Fact]
-        public void Potion_ShouldNotExceedMaxHP_WhenUsed()
+        public void Item_Constructor_ShouldThrowArgumentNullException_WhenNameIsNull()
         {
-            // Arrange
-            var potion = new Potion("Potion", "Heals 20 HP.", 20);
-            var pokemon = new Pokemon("Pikachu", PokemonType.Electric, 10, 100, 50, 40);
-            pokemon.TakeDamage(10);
+            // Act & Assert
+            var exception = Assert.Throws<ArgumentNullException>(() => new Item(null, "Heals 20 HP."));
+            Assert.Equal("Item name cannot be null or empty. (Parameter 'name')", exception.Message);
+        }
 
-            // Act
-            potion.Use(null, pokemon);
+        [Fact]
+        public void Item_Constructor_ShouldThrowArgumentNullException_WhenDescriptionIsNull()
+        {
+            // Act & Assert
+            var exception = Assert.Throws<ArgumentNullException>(() => new Item("Potion", null));
+            Assert.Equal("Item description cannot be null or empty. (Parameter 'description')", exception.Message);
+        }
 
-            // Assert
-            Assert.Equal(100, pokemon.CurrentHP);
+        [Fact]
+        public void Item_Constructor_ShouldThrowArgumentNullException_WhenNameIsEmpty()
+        {
+            // Act & Assert
+            var exception = Assert.Throws<ArgumentNullException>(() => new Item(string.Empty, "Heals 20 HP."));
+            Assert.Equal("Item name cannot be null or empty. (Parameter 'name')", exception.Message);
+        }
+
+        [Fact]
+        public void Item_Constructor_ShouldThrowArgumentNullException_WhenDescriptionIsEmpty()
+        {
+            // Act & Assert
+            var exception = Assert.Throws<ArgumentNullException>(() => new Item("Potion", string.Empty));
+            Assert.Equal("Item description cannot be null or empty. (Parameter 'description')", exception.Message);
         }
     }
 }

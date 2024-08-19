@@ -37,6 +37,11 @@ namespace PokemonGameLib.Models.Items
         /// <param name="target">The target Pokémon to heal.</param>
         public override void Use(ITrainer trainer, IPokemon target)
         {
+            if (trainer == null)
+                throw new ArgumentNullException(nameof(trainer), "Trainer cannot be null.");
+            if (target == null)
+                throw new ArgumentNullException(nameof(target), "Target Pokémon cannot be null.");
+
             target.Heal(HealingAmount);
             _logger.LogInfo($"{target.Name} was healed by {HealingAmount} HP using {Name}.");
             Console.WriteLine($"{target.Name} was healed by {HealingAmount} HP!");

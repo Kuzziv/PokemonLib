@@ -14,14 +14,14 @@ namespace PokemonGameLib.Utilities
         /// <param name="attacker">The Pokémon attempting to use the move.</param>
         /// <param name="move">The move to validate.</param>
         /// <exception cref="ArgumentNullException">Thrown if either the attacker or the move is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the move is not available to the attacker.</exception>
+        /// <exception cref="InvalidMoveException">Thrown if the move is not available to the attacker.</exception>
         public static void ValidateMove(IPokemon attacker, IMove move)
         {
             if (attacker == null || move == null)
                 throw new ArgumentNullException("Attacker or move cannot be null.");
 
             if (!attacker.Moves.Contains(move))
-                throw new InvalidOperationException($"{attacker.Name} cannot use {move.Name}.");
+                throw new InvalidMoveException($"{attacker.Name} cannot use {move.Name}.");
         }
 
         /// <summary>

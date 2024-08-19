@@ -1400,7 +1400,7 @@
             <param name="attacker">The Pokémon attempting to use the move.</param>
             <param name="move">The move to validate.</param>
             <exception cref="T:System.ArgumentNullException">Thrown if either the attacker or the move is null.</exception>
-            <exception cref="T:System.InvalidOperationException">Thrown if the move is not available to the attacker.</exception>
+            <exception cref="T:PokemonGameLib.Exceptions.InvalidMoveException">Thrown if the move is not available to the attacker.</exception>
         </member>
         <member name="M:PokemonGameLib.Utilities.BattleValidator.ValidatePokemonSwitch(PokemonGameLib.Interfaces.ITrainer,PokemonGameLib.Interfaces.IPokemon)">
             <summary>

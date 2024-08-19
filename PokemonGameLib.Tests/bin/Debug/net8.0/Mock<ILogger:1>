@@ -1,0 +1,436 @@
+﻿Timestamp: 2024-08-19 01.44.30.690
+Severity: INFO
+Message: ' took 25 recoil damage from using .'
+
+Timestamp: 2024-08-19 01.44.32.490
+Severity: INFO
+Message: "Effectiveness message: It's super effective!"
+
+Timestamp: 2024-08-19 01.44.34.118
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 01.52.26.328
+Severity: WARNING
+Message: Bulbasaur is not fainted and cannot be revived.
+
+Timestamp: 2024-08-19 01.52.26.335
+Severity: INFO
+Message: 'Pikachu took 30 damage. Current HP: 70/100'
+
+Timestamp: 2024-08-19 01.52.26.328
+Severity: INFO
+Message: Charmeleon cannot evolve into Charizard.
+
+Timestamp: 2024-08-19 01.52.26.334
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Fire, Level: 10).'
+
+Timestamp: 2024-08-19 01.52.26.333
+Severity: INFO
+Message: AI Trainer added Pikachu to their collection.
+
+Timestamp: 2024-08-19 01.52.26.362
+Severity: INFO
+Message: Opponent Trainer added Charmander to their collection.
+
+Timestamp: 2024-08-19 01.52.26.362
+Severity: INFO
+Message: 'Pikachu healed by 20 HP. Current HP: 90/100'
+
+Timestamp: 2024-08-19 01.52.26.328
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 01.52.26.363
+Severity: INFO
+Message: Pikachu was healed by 20 HP using Potion.
+
+Timestamp: 2024-08-19 01.52.26.364
+Severity: INFO
+Message: Charmeleon can evolve into Charizard.
+
+Timestamp: 2024-08-19 01.52.26.364
+Severity: INFO
+Message: 'Pikachu took 10 damage. Current HP: 90/100'
+
+Timestamp: 2024-08-19 01.52.26.364
+Severity: INFO
+Message: 'Pikachu healed by 20 HP. Current HP: 100/100'
+
+Timestamp: 2024-08-19 01.52.26.365
+Severity: INFO
+Message: Pikachu was healed by 20 HP using Potion.
+
+Timestamp: 2024-08-19 01.52.26.365
+Severity: INFO
+Message: 'Thunderbolt is compatible with the Pokémon (Type: Electric, Level: 10).'
+
+Timestamp: 2024-08-19 01.52.26.366
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Electric, Level: 5).'
+
+Timestamp: 2024-08-19 01.52.26.375
+Severity: INFO
+Message: AI Trainer chooses to use Thunderbolt.
+
+Timestamp: 2024-08-19 01.53.56.473
+Severity: INFO
+Message: Ash added Pikachu to their collection.
+
+Timestamp: 2024-08-19 01.54.06.285
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 01.54.36.478
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 01.54.43.307
+Severity: INFO
+Message: Pikachu is healing 100 HP using .
+
+Timestamp: 2024-08-19 01.54.47.026
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 01.54.48.509
+Severity: INFO
+Message: "Effectiveness message: It's super effective!"
+
+Timestamp: 2024-08-19 01.54.50.093
+Severity: INFO
+Message: ' took 25 recoil damage from using .'
+
+Timestamp: 2024-08-19 01.57.47.531
+Severity: INFO
+Message: Pikachu learned the move .
+
+Timestamp: 2024-08-19 01.57.47.552
+Severity: INFO
+Message: Pikachu forgot the move .
+
+Timestamp: 2024-08-19 01.58.45.363
+Severity: INFO
+Message: 'Pikachu took 30 damage. Current HP: 70/100'
+
+Timestamp: 2024-08-19 01.58.45.363
+Severity: INFO
+Message: AI Trainer added Pikachu to their collection.
+
+Timestamp: 2024-08-19 01.58.45.363
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 01.58.45.364
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Fire, Level: 10).'
+
+Timestamp: 2024-08-19 01.58.45.395
+Severity: INFO
+Message: 'Pikachu healed by 20 HP. Current HP: 90/100'
+
+Timestamp: 2024-08-19 01.58.45.396
+Severity: INFO
+Message: Pikachu was healed by 20 HP using Potion.
+
+Timestamp: 2024-08-19 01.58.45.397
+Severity: INFO
+Message: AI Trainer chooses to use Thunderbolt.
+
+Timestamp: 2024-08-19 01.59.25.222
+Severity: WARNING
+Message: Bulbasaur is not fainted and cannot be revived.
+
+Timestamp: 2024-08-19 01.59.25.222
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 01.59.25.222
+Severity: INFO
+Message: Charmeleon cannot evolve into Charizard.
+
+Timestamp: 2024-08-19 01.59.25.227
+Severity: INFO
+Message: AI Trainer added Pikachu to their collection.
+
+Timestamp: 2024-08-19 01.59.25.227
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Fire, Level: 10).'
+
+Timestamp: 2024-08-19 01.59.25.262
+Severity: INFO
+Message: AI Trainer chooses to use Thunderbolt.
+
+Timestamp: 2024-08-19 01.59.28.508
+Severity: INFO
+Message: 'Pikachu took 30 damage. Current HP: 70/100'
+
+Timestamp: 2024-08-19 01.59.28.503
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 01.59.28.506
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Fire, Level: 10).'
+
+Timestamp: 2024-08-19 01.59.28.503
+Severity: INFO
+Message: Charmeleon cannot evolve into Charizard.
+
+Timestamp: 2024-08-19 01.59.28.508
+Severity: INFO
+Message: AI Trainer added Pikachu to their collection.
+
+Timestamp: 2024-08-19 01.59.28.512
+Severity: WARNING
+Message: Bulbasaur is not fainted and cannot be revived.
+
+Timestamp: 2024-08-19 01.59.28.534
+Severity: INFO
+Message: 'Pikachu healed by 20 HP. Current HP: 90/100'
+
+Timestamp: 2024-08-19 01.59.28.535
+Severity: INFO
+Message: Opponent Trainer added Charmander to their collection.
+
+Timestamp: 2024-08-19 01.59.28.535
+Severity: INFO
+Message: Pikachu was healed by 20 HP using Potion.
+
+Timestamp: 2024-08-19 01.59.28.535
+Severity: INFO
+Message: Charmeleon can evolve into Charizard.
+
+Timestamp: 2024-08-19 01.59.28.537
+Severity: INFO
+Message: 'Thunderbolt is compatible with the Pokémon (Type: Electric, Level: 10).'
+
+Timestamp: 2024-08-19 01.59.28.537
+Severity: INFO
+Message: AI Trainer chooses to use Thunderbolt.
+
+Timestamp: 2024-08-19 01.59.28.537
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Electric, Level: 5).'
+
+Timestamp: 2024-08-19 01.59.28.538
+Severity: INFO
+Message: AI Trainer added Pikachu to their collection.
+
+Timestamp: 2024-08-19 01.59.28.538
+Severity: INFO
+Message: AI Trainer added Potion to their inventory.
+
+Timestamp: 2024-08-19 01.59.28.538
+Severity: INFO
+Message: Opponent Trainer added Charmander to their collection.
+
+Timestamp: 2024-08-19 02.00.43.166
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 02.00.43.175
+Severity: INFO
+Message: 'Pikachu took 30 damage. Current HP: 70/100'
+
+Timestamp: 2024-08-19 02.00.43.175
+Severity: INFO
+Message: AI Trainer added Pikachu to their collection.
+
+Timestamp: 2024-08-19 02.00.43.173
+Severity: WARNING
+Message: Bulbasaur is not fainted and cannot be revived.
+
+Timestamp: 2024-08-19 02.00.43.204
+Severity: INFO
+Message: 'Pikachu healed by 20 HP. Current HP: 90/100'
+
+Timestamp: 2024-08-19 02.00.43.205
+Severity: INFO
+Message: Pikachu was healed by 20 HP using Potion.
+
+Timestamp: 2024-08-19 02.00.43.206
+Severity: INFO
+Message: AI Trainer chooses to use Thunderbolt.
+
+Timestamp: 2024-08-19 02.00.53.541
+Severity: INFO
+Message: Charmeleon cannot evolve into Charizard.
+
+Timestamp: 2024-08-19 02.00.53.541
+Severity: WARNING
+Message: Bulbasaur is not fainted and cannot be revived.
+
+Timestamp: 2024-08-19 02.00.53.546
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Fire, Level: 10).'
+
+Timestamp: 2024-08-19 02.00.53.550
+Severity: INFO
+Message: AI Trainer added Pikachu to their collection.
+
+Timestamp: 2024-08-19 02.00.53.541
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 02.00.53.549
+Severity: INFO
+Message: 'Pikachu took 30 damage. Current HP: 70/100'
+
+Timestamp: 2024-08-19 02.00.53.578
+Severity: INFO
+Message: 'Pikachu healed by 20 HP. Current HP: 90/100'
+
+Timestamp: 2024-08-19 02.00.53.579
+Severity: INFO
+Message: Pikachu was healed by 20 HP using Potion.
+
+Timestamp: 2024-08-19 02.00.53.582
+Severity: INFO
+Message: AI Trainer chooses to use Thunderbolt.
+
+Timestamp: 2024-08-19 02.06.21.481
+Severity: INFO
+Message: AI Trainer added FaintedMon1 to their collection.
+
+Timestamp: 2024-08-19 02.06.21.481
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 02.06.21.518
+Severity: INFO
+Message: AI Trainer added FaintedMon2 to their collection.
+
+Timestamp: 2024-08-19 02.24.10.823
+Severity: INFO
+Message: AI Trainer added FaintedMon1 to their collection.
+
+Timestamp: 2024-08-19 02.24.10.823
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Fire, Level: 10).'
+
+Timestamp: 2024-08-19 02.24.10.820
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 02.24.10.821
+Severity: INFO
+Message: 'Pikachu took 60 damage. Current HP: 40/100'
+
+Timestamp: 2024-08-19 02.24.10.820
+Severity: INFO
+Message: Charmeleon cannot evolve into Charizard.
+
+Timestamp: 2024-08-19 02.24.10.848
+Severity: INFO
+Message: AI Trainer added FaintedMon2 to their collection.
+
+Timestamp: 2024-08-19 02.24.10.854
+Severity: INFO
+Message: 'Pikachu healed by 20 HP. Current HP: 60/100'
+
+Timestamp: 2024-08-19 02.24.10.854
+Severity: INFO
+Message: Pikachu was healed by 20 HP using Potion.
+
+Timestamp: 2024-08-19 02.24.38.052
+Severity: INFO
+Message: Charmeleon cannot evolve into Charizard.
+
+Timestamp: 2024-08-19 02.24.38.052
+Severity: INFO
+Message: This is an info message.
+
+Timestamp: 2024-08-19 02.24.38.052
+Severity: WARNING
+Message: Bulbasaur is not fainted and cannot be revived.
+
+Timestamp: 2024-08-19 02.24.38.054
+Severity: INFO
+Message: 'Pikachu took 60 damage. Current HP: 40/100'
+
+Timestamp: 2024-08-19 02.24.38.062
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Fire, Level: 10).'
+
+Timestamp: 2024-08-19 02.24.38.096
+Severity: INFO
+Message: 'Pikachu healed by 20 HP. Current HP: 60/100'
+
+Timestamp: 2024-08-19 02.24.38.098
+Severity: INFO
+Message: Pikachu was healed by 20 HP using Potion.
+
+Timestamp: 2024-08-19 02.26.54.887
+Severity: INFO
+Message: AI Trainer added FaintedMon1 to their collection.
+
+Timestamp: 2024-08-19 02.26.54.887
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 02.26.54.924
+Severity: INFO
+Message: AI Trainer added FaintedMon2 to their collection.
+
+Timestamp: 2024-08-19 02.28.05.622
+Severity: INFO
+Message: Charmeleon can evolve into Charizard.
+
+Timestamp: 2024-08-19 02.28.05.622
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Fire, Level: 10).'
+
+Timestamp: 2024-08-19 02.28.05.617
+Severity: INFO
+Message: AI Trainer added FaintedMon1 to their collection.
+
+Timestamp: 2024-08-19 02.28.05.661
+Severity: INFO
+Message: AI Trainer added FaintedMon2 to their collection.
+
+Timestamp: 2024-08-19 02.28.05.617
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 02.28.21.321
+Severity: INFO
+Message: Charmeleon cannot evolve into Charizard.
+
+Timestamp: 2024-08-19 02.28.21.317
+Severity: INFO
+Message: AI Trainer added FaintedMon1 to their collection.
+
+Timestamp: 2024-08-19 02.28.21.317
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 02.28.21.353
+Severity: INFO
+Message: AI Trainer added FaintedMon2 to their collection.
+
+Timestamp: 2024-08-19 02.29.29.781
+Severity: INFO
+Message: Charmeleon cannot evolve into Charizard.
+
+Timestamp: 2024-08-19 02.29.29.781
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+
+Timestamp: 2024-08-19 02.29.29.788
+Severity: WARNING
+Message: 'Thunderbolt is not compatible with the Pokémon (Type: Fire, Level: 10).'
+
+Timestamp: 2024-08-19 02.29.29.781
+Severity: INFO
+Message: AI Trainer added FaintedMon1 to their collection.
+
+Timestamp: 2024-08-19 02.29.29.822
+Severity: INFO
+Message: AI Trainer added FaintedMon2 to their collection.
+
+Timestamp: 2024-08-19 02.30.39.579
+Severity: INFO
+Message: "Effectiveness message: It's not very effective!"
+

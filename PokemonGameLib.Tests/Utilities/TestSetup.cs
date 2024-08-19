@@ -1,21 +1,42 @@
 using System;
+using System.IO;
 using Xunit;
 using PokemonGameLib.Utilities;
 
-namespace PokemonGameLib.Tests.Utilities 
+namespace PokemonGameLib.Tests.Utilities
 {
+    [CollectionDefinition("Test Collection")]
+    public class TestCollection : ICollectionFixture<TestSetup>
+    {
+    }
+
+    // Use this setup to configure the logger only once
     public class TestSetup : IDisposable
     {
+        private static bool _isConfigured = false;
+
         public TestSetup()
         {
-            // Configure the logger here
-            LoggingService.Configure();
+            if (!_isConfigured)
+            {
+                string logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "tmp_logs");
+                string logFilePath = Path.Combine(logDirectory, "Logs.yml");
+
+                if (!Directory.Exists(logDirectory))
+                {
+                    Directory.CreateDirectory(logDirectory);
+                }
+
+                LoggingService.ResetConfiguration();
+                LoggingService.Configure(logFilePath);
+                _isConfigured = true;
+            }
         }
 
-        // This method will be called after all the tests in the collection have run
         public void Dispose()
         {
-            // You can add any teardown logic here if needed
+            // Any cleanup if necessary
         }
     }
+
 }
